@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Data
-@Document(collation = "events")
+@Document(collection = "events")
 public class Event {
     @Id
     private String id;

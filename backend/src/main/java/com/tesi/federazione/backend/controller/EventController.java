@@ -2,13 +2,13 @@ package com.tesi.federazione.backend.controller;
 
 import com.tesi.federazione.backend.dto.CreateEventDTO;
 import com.tesi.federazione.backend.dto.EventDTO;
-import com.tesi.federazione.backend.model.Event;
 import com.tesi.federazione.backend.service.EventService;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/api/event")
 public class EventController {
 
     private final EventService eventService;
@@ -17,7 +17,7 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<EventDTO> getAllEvents() {
         return eventService.getAllEvents();
     }
