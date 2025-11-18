@@ -3,6 +3,7 @@ package com.tesi.federazione.backend.controller;
 import com.tesi.federazione.backend.dto.CreateUserDTO;
 import com.tesi.federazione.backend.dto.JwtResponseDTO;
 import com.tesi.federazione.backend.dto.LogUserDTO;
+import com.tesi.federazione.backend.enums.Role;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.ClubManager;
 import com.tesi.federazione.backend.model.FederationManager;
@@ -59,11 +60,11 @@ public class AuthController {
         User user;
         String role = createUserDTO.getRole();
 
-        if ("ROLE_ATHLETE".equals(role)) {
+        if (role.equals(Role.ATHLETE.name())) {
             user = new Athlete();
-        } else if ("ROLE_CLUB_MANAGER".equals(role)) {
+        } else if (role.equals(Role.CLUB_MANAGER.name())) {
             user = new ClubManager();
-        } else if ("ROLE_FEDERATION_MANAGER".equals(role)) {
+        } else if (role.equals(Role.FEDERATION_MANAGER.name())) {
             user = new FederationManager();
         } else {
             return ResponseEntity.badRequest().body("Error: Role not specified!");
