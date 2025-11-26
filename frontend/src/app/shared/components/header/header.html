@@ -1,0 +1,12 @@
+<div class="flex flex-row justify-center">
+    @for (item of items; track item.label) {
+    <a [routerLink]="item.routerLink" class="mx-2 text-lg font-semibold text-gray-700 hover:text-gray-900">
+        @if (item.icon) { 
+            <fa-icon [icon]="item.icon" class="mr-2"></fa-icon> 
+        }
+        @if (item.label) { 
+            {{ item.label }}
+        }
+    </a>
+}
+</div>
