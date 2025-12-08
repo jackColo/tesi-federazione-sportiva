@@ -1,12 +1,25 @@
-<div class="flex flex-row justify-center">
-    @for (item of items; track item.label) {
-    <a [routerLink]="item.routerLink" class="mx-2 text-lg font-semibold text-gray-700 hover:text-gray-900">
-        @if (item.icon) { 
-            <fa-icon [icon]="item.icon" class="mr-2"></fa-icon> 
-        }
-        @if (item.label) { 
-            {{ item.label }}
-        }
-    </a>
-}
-</div>
+<header class="bg-gray-800 shadow-md">
+    <div class="flex items-center justify-between mx-auto px-4 py-3 max-w-7xl">
+        
+        <a routerLink="/" class="text-xl font-extrabold text-amber-400 hover:text-amber-500 transition duration-150">
+            <fa-icon [icon]="faTrophy" class="mr-3"></fa-icon>
+            FEDERAZIONE COMBAT
+        </a>
+
+        <nav class="flex items-center">
+            @for (item of filteredItems(); track item.label) {
+                <a [routerLink]="item.routerLink" 
+                   class="p-2 text-sm font-medium text-gray-200 
+                          hover:text-amber-400 transition duration-150 flex items-center">
+                    
+                    @if (item.icon) { 
+                        <fa-icon [icon]="item.icon" class="text-xl"></fa-icon> 
+                    }
+                    @if (item.label) { 
+                        {{ item.label }}
+                    }
+                </a>
+            }
+        </nav>
+    </div>
+</header>

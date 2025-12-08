@@ -6,9 +6,13 @@ import { EventComponent } from './features/events/event-component/event-componen
 import { CreateEventComponent } from './features/admin/create-event-component/create-event-component';
 import { EnrollmentsComponent } from './features/admin/enrollments-component/enrollments-component';
 import { DashboardComponent } from './features/dashboard/dashboard-component/dashboard-component';
+import { RegisterComponent } from './features/auth/register-component/register-component';
+import { HomeComponent } from './features/home/home-component/home-component';
 
 export const routes: Routes = [
+  { path: '', component: HomeComponent },
   { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/register', component: RegisterComponent },
   { path: 'event', component: EventComponent },
 
   {
