@@ -1,4 +1,4 @@
-<div class="flex items-center justify-center h-full bg-gray-50">
+<div class="flex items-center justify-center h-[calc(100vh-16rem)]">
     <div class="w-full max-w-md p-8 space-y-6 bg-white shadow-xl rounded-lg border border-gray-200">
         
         <h2 class="text-3xl font-extrabold text-gray-900 text-center">
@@ -12,7 +12,6 @@
                 <input 
                     type="email" 
                     formControlName="email" 
-                    placeholder="Inserisci la tua email" 
                     class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900"
                     [ngClass]="{'border-red-500': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}"
                 />
@@ -31,7 +30,6 @@
                     <input 
                         [type]="passwordVisible() ? 'text' : 'password'"
                         formControlName="password" 
-                        placeholder="••••••••" 
                         class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900 pr-10" 
                         [ngClass]="{'border-red-500': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}"
                     />

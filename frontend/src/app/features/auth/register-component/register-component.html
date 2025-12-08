@@ -1,0 +1,166 @@
+<div class="flex items-center justify-center">
+    <div class="w-full max-w-2xl p-8 space-y-8 bg-white shadow-xl rounded-lg border border-gray-200">        
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center">
+            Registra la tua Società
+        </h2>
+
+        <form [formGroup]="createClubForm" (ngSubmit)="onSubmit()" class="space-y-8">
+            
+            <fieldset [formGroupName]="'club'" class="border border-gray-300 p-6 rounded-lg space-y-4">
+                <legend class="text-xl font-semibold text-gray-800 px-2">Dati Società</legend>
+
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nome della Società <span class="text-red-600">*</span></label>
+                    <input 
+                        type="text" 
+                        formControlName="name" 
+                        class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900"
+                        [ngClass]="{
+                            'border-red-500': createClubForm.get('club.name')?.invalid && createClubForm.get('club.name')?.touched,
+                            'border-green-500': createClubForm.get('club.name')?.valid && createClubForm.get('club.name')?.touched
+                        }"
+                    />
+                    @if (createClubForm.get('club.name')?.hasError('required') && createClubForm.get('club.name')?.touched) {
+                        <div class="text-sm text-red-600 mt-1">Il nome della società è obbligatorio.</div>
+                    }
+                </div>
+
+                <div>
+                    <label for="fiscalCode" class="block text-sm font-medium text-gray-700 mb-1">Codice Fiscale / Partita IVA <span class="text-red-600">*</span></label>
+                    <input 
+                        type="text" 
+                        formControlName="fiscalCode" 
+                        class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900"
+                        [ngClass]="{
+                            'border-red-500': createClubForm.get('club.fiscalCode')?.invalid && createClubForm.get('club.fiscalCode')?.touched,
+                            'border-green-500': createClubForm.get('club.fiscalCode')?.valid && createClubForm.get('club.fiscalCode')?.touched
+                        }"
+                    />
+                    @if (createClubForm.get('club.fiscalCode')?.hasError('required') && createClubForm.get('club.fiscalCode')?.touched) {
+                        <div class="text-sm text-red-600 mt-1">Il codice fiscale è obbligatorio.</div>
+                    }
+                </div>
+                
+                <div>
+                    <label for="legalAddress" class="block text-sm font-medium text-gray-700 mb-1">Indirizzo Legale <span class="text-red-600">*</span></label>
+                    <input 
+                        type="text" 
+                        formControlName="legalAddress" 
+                        class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900"
+                        [ngClass]="{
+                            'border-red-500': createClubForm.get('club.legalAddress')?.invalid && createClubForm.get('club.legalAddress')?.touched,
+                            'border-green-500': createClubForm.get('club.legalAddress')?.valid && createClubForm.get('club.legalAddress')?.touched
+                        }"
+                    />
+                    @if (createClubForm.get('club.legalAddress')?.hasError('required') && createClubForm.get('club.legalAddress')?.touched) {
+                        <div class="text-sm text-red-600 mt-1">L'indirizzo è obbligatorio.</div>
+                    }
+                </div>
+            </fieldset>
+
+            <fieldset [formGroupName]="'manager'" class="border border-gray-300 p-6 rounded-lg space-y-4">
+                <legend class="text-xl font-semibold text-gray-800 px-2">Dati Responsabile</legend>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Nome <span class="text-red-600">*</span></label>
+                        <input 
+                            type="text" 
+                            formControlName="firstName" 
+                            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900"
+                            [ngClass]="{
+                                'border-red-500': createClubForm.get('manager.firstName')?.invalid && createClubForm.get('manager.firstName')?.touched,
+                                'border-green-500': createClubForm.get('manager.firstName')?.valid && createClubForm.get('manager.firstName')?.touched
+                            }"
+                        />
+                        @if (createClubForm.get('manager.firstName')?.hasError('required') && createClubForm.get('manager.firstName')?.touched) {
+                            <div class="text-sm text-red-600 mt-1">Il nome è obbligatorio.</div>
+                        }
+                    </div>
+                    
+                    <div>
+                        <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Cognome <span class="text-red-600">*</span></label>
+                        <input 
+                            type="text" 
+                            formControlName="lastName" 
+                            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900"
+                            [ngClass]="{
+                                'border-red-500': createClubForm.get('manager.lastName')?.invalid && createClubForm.get('manager.lastName')?.touched,
+                                'border-green-500': createClubForm.get('manager.lastName')?.valid && createClubForm.get('manager.lastName')?.touched
+                            }"
+                        />
+                        @if (createClubForm.get('manager.lastName')?.hasError('required') && createClubForm.get('manager.lastName')?.touched) {
+                            <div class="text-sm text-red-600 mt-1">Il cognome è obbligatorio.</div>
+                        }
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email (Usata per l'accesso) <span class="text-red-600">*</span></label>
+                    <input 
+                        type="email" 
+                        formControlName="email" 
+                        class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900"
+                        [ngClass]="{
+                            'border-red-500': createClubForm.get('manager.email')?.invalid && createClubForm.get('manager.email')?.touched,
+                            'border-green-500': createClubForm.get('manager.email')?.valid && createClubForm.get('manager.email')?.touched
+                        }"
+                    />
+                    @if (createClubForm.get('manager.email')?.hasError('email') && createClubForm.get('manager.email')?.touched) {
+                        <div class="text-sm text-red-600 mt-1">L'email non è valida.</div>
+                    }
+                    @if (createClubForm.get('manager.email')?.hasError('required') && createClubForm.get('manager.email')?.touched) {
+                            <div class="text-sm text-red-600 mt-1">L'email è obbligatoria.</div>
+                        }
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-600">*</span></label>
+                    <div class="relative"> 
+                    <input 
+                        [type]="passwordVisible() ? 'text' : 'password'"
+                        formControlName="password" 
+                        class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500 text-gray-900 pr-10" 
+                        [ngClass]="{
+                            'border-red-500': createClubForm.get('manager.password')?.invalid && createClubForm.get('manager.password')?.touched,
+                            'border-green-500': createClubForm.get('manager.password')?.valid && createClubForm.get('manager.password')?.touched
+                        }"
+                    />
+                    
+                    <button 
+                        type="button" 
+                        (click)="togglePasswordVisibility()" 
+                        class="absolute inset-y-0 right-0 -top-2 flex items-center pr-3 text-gray-500 cursor-pointer hover:text-amber-600 focus:outline-none"
+                        title="Mostra/Nascondi Password"
+                    >
+                        <fa-icon [icon]="passwordVisible() ? faEye : faEyeSlash" class="h-4 w-4" />
+                    </button>
+                </div>
+                    @if (createClubForm.get('manager.password')?.hasError('minlength') && createClubForm.get('manager.password')?.touched) {
+                        <div class="text-sm text-red-600 mt-1">La password deve contenere almeno 8 caratteri.</div>
+                    }
+                    @if (createClubForm.get('manager.password')?.hasError('required') && createClubForm.get('manager.password')?.touched) {
+                        <div class="text-sm text-red-600 mt-1">La password è obbligatoria.</div>
+                    }
+                </div>
+            </fieldset>
+
+            <button 
+                type="submit" 
+                [disabled]="createClubForm.invalid"
+                class="w-full py-2 px-4 border border-transparent rounded-lg 
+                       font-semibold text-white bg-amber-600 shadow-md cursor-pointer
+                       hover:bg-amber-700 transition duration-150 ease-in-out
+                       disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                Conferma Registrazione
+            </button>
+
+            <p class="text-center text-sm text-gray-600">
+                Hai già un account?
+                <a routerLink="/auth/login" class="font-medium text-amber-600 cursor-pointer hover:text-amber-500">Accedi</a>
+            </p>
+
+        </form>
+    </div>
+</div>

@@ -14,7 +14,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
     CommonModule,
     RouterLink,
     FontAwesomeModule
-],
+  ],
   templateUrl: './login-component.html',
   styleUrl: './login-component.scss',
 })
