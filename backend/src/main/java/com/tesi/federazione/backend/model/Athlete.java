@@ -13,6 +13,7 @@ import java.time.LocalDate;
 public class Athlete extends User {
     private LocalDate birthDate;
     private Float weight;
+    private Float height;
     private String experience;
     private AffiliationStatus affiliationStatus;
     private LocalDate affiliationDate;
