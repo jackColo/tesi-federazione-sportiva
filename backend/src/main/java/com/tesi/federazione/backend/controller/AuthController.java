@@ -3,13 +3,17 @@ package com.tesi.federazione.backend.controller;
 import com.tesi.federazione.backend.dto.CreateUserDTO;
 import com.tesi.federazione.backend.dto.JwtResponseDTO;
 import com.tesi.federazione.backend.dto.LogUserDTO;
+import com.tesi.federazione.backend.dto.UserDTO;
 import com.tesi.federazione.backend.enums.Role;
+import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.ClubManager;
 import com.tesi.federazione.backend.model.FederationManager;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.security.JwtUtils;
+import com.tesi.federazione.backend.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,14 +28,14 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final UserMapper userMapper;
     private final JwtUtils jwtUtils;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+    public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtUtils jwtUtils,UserMapper userMapper) {
         this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
+        this.userMapper = userMapper;
         this.jwtUtils = jwtUtils;
     }
 
@@ -51,32 +55,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody CreateUserDTO createUserDTO) {
+    public ResponseEntity<UserDTO> registerUser(@RequestBody CreateUserDTO createUserDTO) {
 
-        if (userRepository.findByEmail(createUserDTO.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Error: Email is already in use!");
-        }
-
-        User user;
-        String role = createUserDTO.getRole();
-
-        if (role.equals(Role.ATHLETE.name())) {
-            user = new Athlete();
-        } else if (role.equals(Role.CLUB_MANAGER.name())) {
-            user = new ClubManager();
-        } else if (role.equals(Role.FEDERATION_MANAGER.name())) {
-            user = new FederationManager();
-        } else {
-            return ResponseEntity.badRequest().body("Error: Role not specified!");
-        }
-
-        user.setEmail(createUserDTO.getEmail());
-        user.setFirstName(createUserDTO.getFirstName());
-        user.setLastName(createUserDTO.getLastName());
-        user.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));
-
-        userRepository.save(user);
-
-        return ResponseEntity.ok("User registered successfully!");
+        User registeredUser = userService.createUser(createUserDTO);
+        UserDTO userDTO = userMapper.toDTO(registeredUser);
+        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 }
