@@ -74,7 +74,7 @@ export interface CreateClubDTO {
   fiscalCode: string;
   legalAddress: string;
   affiliationStatus: AffiliationStatus;
-  managers: CreateUserDTO[];
+  manager: CreateUserDTO;
 }
 
 export interface ClubDTO {

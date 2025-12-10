@@ -12,5 +12,5 @@ public class CreateClubDTO {
     private String fiscalCode;
     private String legalAddress;
     private AffiliationStatus affiliationStatus;
-    private ArrayList<ClubManager> managers ;
+    private CreateUserDTO manager ;
 }

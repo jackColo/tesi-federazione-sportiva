@@ -7,6 +7,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { CreateClubDTO } from '../../../models/dtos';
 import { AffiliationStatus } from '../../../enums/affiliation-status.enum';
 import { Role } from '../../../enums/role.enum';
+import { ClubService } from '../../../core/services/club.service';
 
 @Component({
   selector: 'app-register-component',
@@ -15,6 +16,7 @@ import { Role } from '../../../enums/role.enum';
   styleUrl: './register-component.scss',
 })
 export class RegisterComponent {
+  private userService = inject(ClubService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   protected isSubmitting = false;
@@ -53,15 +55,13 @@ export class RegisterComponent {
         fiscalCode: this.createClubForm.value.club?.fiscalCode!,
         legalAddress: this.createClubForm.value.club?.legalAddress!,
         affiliationStatus: AffiliationStatus.SUBMITTED,
-        managers: [
-          {
-            firstName: this.createClubForm.value.manager?.firstName!,
-            lastName: this.createClubForm.value.manager?.lastName!,
-            email: this.createClubForm.value.manager?.email!,
-            password: this.createClubForm.value.manager?.password!,
-            role: Role.CLUB_MANAGER,
-          },
-        ],
+        manager: {
+          firstName: this.createClubForm.value.manager?.firstName!,
+          lastName: this.createClubForm.value.manager?.lastName!,
+          email: this.createClubForm.value.manager?.email!,
+          password: this.createClubForm.value.manager?.password!,
+          role: Role.CLUB_MANAGER,
+        },
       };
     } else {
       console.error('Form is invalid');
@@ -69,10 +69,10 @@ export class RegisterComponent {
     }
 
     try {
+      this.userService.createClub(club);
       this.router.navigateByUrl('/auth/login');
     } catch (error) {
-      // this.loginError = 'Email o password errate.';
-      console.error('Login failed', error);
+      console.error('Create club failed', error);
     }
   }
 }

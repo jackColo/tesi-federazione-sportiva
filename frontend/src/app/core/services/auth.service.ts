@@ -72,7 +72,7 @@ export class AuthService {
     );
 
     return await lastValueFrom(observable); 
-}
+  }
 
   logout(): void {
     localStorage.removeItem('jwt_token');
