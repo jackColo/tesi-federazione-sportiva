@@ -4,13 +4,8 @@ import com.tesi.federazione.backend.dto.CreateUserDTO;
 import com.tesi.federazione.backend.dto.JwtResponseDTO;
 import com.tesi.federazione.backend.dto.LogUserDTO;
 import com.tesi.federazione.backend.dto.UserDTO;
-import com.tesi.federazione.backend.enums.Role;
 import com.tesi.federazione.backend.mapper.UserMapper;
-import com.tesi.federazione.backend.model.Athlete;
-import com.tesi.federazione.backend.model.ClubManager;
-import com.tesi.federazione.backend.model.FederationManager;
 import com.tesi.federazione.backend.model.User;
-import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.security.JwtUtils;
 import com.tesi.federazione.backend.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -20,8 +15,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")

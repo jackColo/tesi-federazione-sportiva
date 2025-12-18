@@ -1,9 +1,9 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { lastValueFrom, Observable, tap } from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { JwtResponseDTO, LogUserDTO } from '../../models/dtos';
+import { lastValueFrom, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { JwtResponseDTO, LogUserDTO } from '../../models/dtos';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -62,21 +62,19 @@ export class AuthService {
     }
   }
 
-  async login(credentials: LogUserDTO): Promise<JwtResponseDTO> { 
+  async login(credentials: LogUserDTO): Promise<JwtResponseDTO> {
     const observable = this.http.post<JwtResponseDTO>(this.apiUrl + 'login', credentials).pipe(
       tap((response) => {
         localStorage.setItem('jwt_token', response.token);
         this.handleToken(response.token);
-        
       })
     );
 
-    return await lastValueFrom(observable); 
+    return await lastValueFrom(observable);
   }
 
   logout(): void {
     localStorage.removeItem('jwt_token');
     this.handleToken(null);
   }
-
 }

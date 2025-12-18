@@ -1,25 +1,24 @@
 package com.tesi.federazione.backend.service.impl;
 
 import com.tesi.federazione.backend.dto.CreateUserDTO;
-import com.tesi.federazione.backend.enums.Role;
-import com.tesi.federazione.backend.model.Athlete;
-import com.tesi.federazione.backend.model.ClubManager;
-import com.tesi.federazione.backend.model.FederationManager;
+import com.tesi.federazione.backend.factory.user.UserCreator;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.repository.UserRepository;
-import com.tesi.federazione.backend.security.JwtUtils;
 import com.tesi.federazione.backend.service.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final Map<String, UserCreator> creators;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository,  PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(Map<String, UserCreator> creators,UserRepository userRepository,  PasswordEncoder passwordEncoder) {
+        this.creators = creators;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -29,30 +28,18 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already in use.");
         }
-        User user = createUserEntity(dto);
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
-        return userRepository.save(user);
-    }
+        String roleKey = dto.getRole().toLowerCase() + "Creator";
 
-    private User createUserEntity(CreateUserDTO dto) {
-        User user;
-        String role = dto.getRole();
+        UserCreator creator = creators.get(roleKey);
 
-        if (role.equals(Role.ATHLETE.name())) {
-            user = new Athlete();
-        } else if (role.equals(Role.CLUB_MANAGER.name())) {
-            user = new ClubManager();
-        } else if (role.equals(Role.FEDERATION_MANAGER.name())) {
-            user = new FederationManager();
-        } else {
-            throw new IllegalArgumentException("Role not specified or invalid.");
-        }
+        User user = creator.createUser();
 
         user.setEmail(dto.getEmail());
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
-        return user;
+        return userRepository.save(user);
     }
 }
