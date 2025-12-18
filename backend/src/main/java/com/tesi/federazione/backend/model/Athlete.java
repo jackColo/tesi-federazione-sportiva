@@ -2,6 +2,7 @@ package com.tesi.federazione.backend.model;
 
 import com.tesi.federazione.backend.enums.AffiliationStatus;
 import com.tesi.federazione.backend.enums.Role;
+import com.tesi.federazione.backend.state.athlete.AthleteState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -24,6 +25,20 @@ public class Athlete extends User {
 
     public Athlete() {
         this.setRole(Role.ATHLETE);
+    }
+
+    private transient AthleteState state;
+
+    public void approve() {
+        state.next(this);
+    }
+
+    public void invalidate() {
+        state.expire(this);
+    }
+
+    public boolean canOperate() {
+        return state.canOperate();
     }
 
 }
