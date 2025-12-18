@@ -1,4 +1,4 @@
-package com.tesi.federazione.backend.dto;
+package com.tesi.federazione.backend.dto.user;
 import lombok.Data;
 @Data
 public class LogUserDTO {

@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.controller;
 
-import com.tesi.federazione.backend.dto.CreateEventDTO;
+import com.tesi.federazione.backend.dto.event.CreateEventDTO;
 import com.tesi.federazione.backend.dto.EventDTO;
 import com.tesi.federazione.backend.service.EventService;
 import org.springframework.web.bind.annotation.*;

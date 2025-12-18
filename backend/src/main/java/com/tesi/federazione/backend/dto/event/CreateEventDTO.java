@@ -1,4 +1,4 @@
-package com.tesi.federazione.backend.dto;
+package com.tesi.federazione.backend.dto.event;
 
 import com.tesi.federazione.backend.enums.CompetitionType;
 import lombok.Data;

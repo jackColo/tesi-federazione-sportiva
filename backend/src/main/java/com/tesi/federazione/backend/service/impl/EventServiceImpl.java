@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.service.impl;
 
-import com.tesi.federazione.backend.dto.CreateEventDTO;
+import com.tesi.federazione.backend.dto.event.CreateEventDTO;
 import com.tesi.federazione.backend.dto.EventDTO;
 import com.tesi.federazione.backend.enums.EventStatus;
 import com.tesi.federazione.backend.mapper.EventMapper;

@@ -1,24 +1,20 @@
 package com.tesi.federazione.backend.service.impl;
 
-import com.tesi.federazione.backend.dto.ClubDTO;
-import com.tesi.federazione.backend.dto.ClubManagerDTO;
-import com.tesi.federazione.backend.dto.CreateClubDTO;
-import com.tesi.federazione.backend.dto.CreateUserDTO;
-import com.tesi.federazione.backend.mapper.ClubMapper;
-import com.tesi.federazione.backend.mapper.UserMapper;
+import com.tesi.federazione.backend.dto.user.CreateClubDTO;
+import com.tesi.federazione.backend.enums.AffiliationStatus;
+import com.tesi.federazione.backend.enums.Role;
+import com.tesi.federazione.backend.factory.state.ClubStateFactory;
 import com.tesi.federazione.backend.model.Club;
 import com.tesi.federazione.backend.model.ClubManager;
-import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.repository.ClubRepository;
 import com.tesi.federazione.backend.repository.UserRepository;
-import com.tesi.federazione.backend.security.JwtUtils;
 import com.tesi.federazione.backend.service.ClubService;
 import com.tesi.federazione.backend.service.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ClubServiceImpl implements ClubService {
@@ -34,9 +30,18 @@ public class ClubServiceImpl implements ClubService {
         this.userService = userService;
     }
 
+    /**
+     * Creazione contestuale di club e manager del club.
+     * Transactional garantisce che vengano creati entrambi o nessuno.
+     *
+     *  @param dto dati per la creazione del club (manager incluso)
+     */
     @Override
     @Transactional
     public Club createClub(CreateClubDTO dto) {
+        // Sovrascrivo il ruolo che arriva da FE per sicurezza
+        dto.getManager().setRole(Role.CLUB_MANAGER.name());
+
         ClubManager clubManager = (ClubManager) userService.createUser(dto.getManager());
         Club newClub = new Club();
         newClub.setName(dto.getName());
@@ -53,5 +58,19 @@ public class ClubServiceImpl implements ClubService {
         userRepository.save(clubManager);
 
         return club;
+    }
+
+    @Override
+    public List<Club> getClubsToApprove() {
+        return clubRepository.findAllByAffiliationStatus(AffiliationStatus.SUBMITTED.name());
+    }
+
+    @Override
+    public void approveClub(String id) throws Exception {
+        Club club = clubRepository.findById(id).orElseThrow(() -> new Exception("Club non trovato"));
+
+        club.setState(ClubStateFactory.getInitialState(club.getAffiliationStatus()));
+        club.approve();
+        clubRepository.save(club);
     }
 }

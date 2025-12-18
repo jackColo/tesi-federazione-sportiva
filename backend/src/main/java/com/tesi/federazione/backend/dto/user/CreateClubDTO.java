@@ -1,10 +1,7 @@
-package com.tesi.federazione.backend.dto;
+package com.tesi.federazione.backend.dto.user;
 
 import com.tesi.federazione.backend.enums.AffiliationStatus;
-import com.tesi.federazione.backend.model.ClubManager;
 import lombok.Data;
-
-import java.util.ArrayList;
 
 @Data
 public class CreateClubDTO {

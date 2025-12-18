@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.service.impl;
 
-import com.tesi.federazione.backend.dto.CreateUserDTO;
+import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.factory.user.UserCreator;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.repository.UserRepository;
@@ -17,9 +17,9 @@ public class UserServiceImpl implements UserService {
     private final Map<String, UserCreator> creators;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(Map<String, UserCreator> creators,UserRepository userRepository,  PasswordEncoder passwordEncoder) {
-        this.creators = creators;
+    public UserServiceImpl(UserRepository userRepository, Map<String, UserCreator> creators, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.creators = creators;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Email already in use.");
         }
 
-        String roleKey = dto.getRole().toLowerCase() + "Creator";
+        String roleKey = dto.getRole();
 
         UserCreator creator = creators.get(roleKey);
 

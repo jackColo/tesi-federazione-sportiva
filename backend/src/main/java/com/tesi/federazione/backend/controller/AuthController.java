@@ -1,9 +1,9 @@
 package com.tesi.federazione.backend.controller;
 
-import com.tesi.federazione.backend.dto.CreateUserDTO;
-import com.tesi.federazione.backend.dto.JwtResponseDTO;
-import com.tesi.federazione.backend.dto.LogUserDTO;
-import com.tesi.federazione.backend.dto.UserDTO;
+import com.tesi.federazione.backend.dto.user.CreateUserDTO;
+import com.tesi.federazione.backend.dto.user.JwtResponseDTO;
+import com.tesi.federazione.backend.dto.user.LogUserDTO;
+import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.security.JwtUtils;

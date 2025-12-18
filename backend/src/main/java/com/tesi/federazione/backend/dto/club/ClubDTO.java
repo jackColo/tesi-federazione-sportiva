@@ -1,4 +1,4 @@
-package com.tesi.federazione.backend.dto;
+package com.tesi.federazione.backend.dto.club;
 
 import com.tesi.federazione.backend.enums.AffiliationStatus;
 import lombok.Data;
