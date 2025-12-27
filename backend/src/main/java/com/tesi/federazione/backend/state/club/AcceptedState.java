@@ -1,13 +1,13 @@
 package com.tesi.federazione.backend.state.club;
 
-import com.tesi.federazione.backend.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Club;
 
 public class AcceptedState implements ClubState {
 
     @Override
     public void next(Club club) {
-
+        throw new IllegalStateException("Club già approvato");
     }
 
     @Override

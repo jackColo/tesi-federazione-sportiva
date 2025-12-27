@@ -1,8 +1,9 @@
 package com.tesi.federazione.backend.service.impl;
 
-import com.tesi.federazione.backend.dto.user.CreateClubDTO;
-import com.tesi.federazione.backend.enums.AffiliationStatus;
-import com.tesi.federazione.backend.enums.Role;
+import com.tesi.federazione.backend.dto.club.CreateClubDTO;
+import com.tesi.federazione.backend.exception.ResourceNotFoundException;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.factory.state.ClubStateFactory;
 import com.tesi.federazione.backend.model.Club;
 import com.tesi.federazione.backend.model.ClubManager;
@@ -13,8 +14,10 @@ import com.tesi.federazione.backend.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClubServiceImpl implements ClubService {
@@ -54,23 +57,36 @@ public class ClubServiceImpl implements ClubService {
         newClub.setManagers(managers);
 
         Club club = clubRepository.save(newClub);
-        clubManager.setManagedClub(club);
+        clubManager.setManagedClub(club.getId());
         userRepository.save(clubManager);
 
         return club;
     }
 
     @Override
-    public List<Club> getClubsToApprove() {
-        return clubRepository.findAllByAffiliationStatus(AffiliationStatus.SUBMITTED.name());
+    public Optional<Club> getClubById(String id) {
+        return clubRepository.findById(id);
     }
 
     @Override
-    public void approveClub(String id) throws Exception {
-        Club club = clubRepository.findById(id).orElseThrow(() -> new Exception("Club non trovato"));
+    public List<Club> getClubsByStatus(AffiliationStatus status) {
+        return clubRepository.findAllByAffiliationStatus(status);
+    }
+
+    @Override
+    public void approveClub(String id){
+        Club club = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Impossibile approvare: Club non trovato con ID " + id));
 
         club.setState(ClubStateFactory.getInitialState(club.getAffiliationStatus()));
-        club.approve();
-        clubRepository.save(club);
+
+        try {
+            club.approve();
+            LocalDate now = LocalDate.now();
+            club.setAffiliationDate(now);
+            club.setFirstAffiliationDate(now);
+            clubRepository.save(club);
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException("Errore durante l'approvazione: " + e.getMessage());
+        }
     }
 }

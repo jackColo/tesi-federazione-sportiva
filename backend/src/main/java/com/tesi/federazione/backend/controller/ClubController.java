@@ -1,9 +1,11 @@
 package com.tesi.federazione.backend.controller;
 
 import com.tesi.federazione.backend.dto.club.ClubDTO;
-import com.tesi.federazione.backend.dto.user.CreateClubDTO;
+import com.tesi.federazione.backend.dto.club.CreateClubDTO;
+import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.mapper.ClubMapper;
 import com.tesi.federazione.backend.model.Club;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.service.ClubService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +33,19 @@ public class ClubController {
         return new ResponseEntity<>(clubDTO, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
+    public ResponseEntity<ClubDTO> getClubById(@PathVariable String id) {
+        Club club = clubService.getClubById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
+
+        ClubDTO clubDTO = clubMapper.toDTO(club);
+        return new ResponseEntity<>(clubDTO, HttpStatus.OK);
+    }
+
     @GetMapping("/to-approve")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<List<ClubDTO>> getClubsToApprove() {
-        List<Club> clubs = clubService.getClubsToApprove();
+        List<Club> clubs = clubService.getClubsByStatus(AffiliationStatus.SUBMITTED);
 
         List<ClubDTO> clubDTOS = clubs.stream()
                 .map(clubMapper::toDTO)
@@ -45,7 +56,7 @@ public class ClubController {
 
     @PostMapping("/approve/{id}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
-    public ResponseEntity<Void> approveClub(@PathVariable String id) throws Exception {
+    public ResponseEntity<Void> approveClub(@PathVariable String id) {
         clubService.approveClub(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
