@@ -1,5 +1,5 @@
 package com.tesi.federazione.backend.model;
-import com.tesi.federazione.backend.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.state.club.ClubState;
 import lombok.Data;
 import org.springframework.data.annotation.Id;

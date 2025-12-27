@@ -2,7 +2,7 @@ package com.tesi.federazione.backend.mapper;
 
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
-import com.tesi.federazione.backend.enums.Role;
+import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.model.User;
 import org.springframework.stereotype.Component;
 

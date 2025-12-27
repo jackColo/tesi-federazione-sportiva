@@ -1,15 +1,13 @@
-package com.tesi.federazione.backend.dto;
+package com.tesi.federazione.backend.dto.event;
 
-import com.tesi.federazione.backend.enums.CompetitionType;
+import com.tesi.federazione.backend.model.enums.CompetitionType;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 @Data
 public class EventDTO {
-    @Id
     private String id;
     private String name;
     private String location;

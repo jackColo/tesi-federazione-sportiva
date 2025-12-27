@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.state.club;
 
-import com.tesi.federazione.backend.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Club;
 
 public class SubmittedState implements ClubState {

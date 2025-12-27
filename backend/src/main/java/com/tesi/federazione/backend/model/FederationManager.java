@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.model;
 
-import com.tesi.federazione.backend.enums.Role;
+import com.tesi.federazione.backend.model.enums.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -1,8 +1,7 @@
 package com.tesi.federazione.backend.state.athlete;
 
-import com.tesi.federazione.backend.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Athlete;
-import com.tesi.federazione.backend.model.Club;
 
 public class ExpiredState implements AthleteState {
 

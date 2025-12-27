@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.model;
 
-import com.tesi.federazione.backend.enums.Role;
+import com.tesi.federazione.backend.model.enums.Role;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.factory.state;
 
-import com.tesi.federazione.backend.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.state.athlete.AthleteState;
 import com.tesi.federazione.backend.state.athlete.AcceptedState;
 import com.tesi.federazione.backend.state.athlete.ExpiredState;

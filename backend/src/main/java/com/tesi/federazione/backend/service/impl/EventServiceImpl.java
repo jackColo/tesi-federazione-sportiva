@@ -1,13 +1,12 @@
 package com.tesi.federazione.backend.service.impl;
 
 import com.tesi.federazione.backend.dto.event.CreateEventDTO;
-import com.tesi.federazione.backend.dto.EventDTO;
-import com.tesi.federazione.backend.enums.EventStatus;
+import com.tesi.federazione.backend.dto.event.EventDTO;
+import com.tesi.federazione.backend.model.enums.EventStatus;
 import com.tesi.federazione.backend.mapper.EventMapper;
 import com.tesi.federazione.backend.model.Event;
 import com.tesi.federazione.backend.repository.EventRepository;
 import com.tesi.federazione.backend.service.EventService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +32,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority(T(com.tesi.federazione.backend.enums.Role).FEDERATION_MANAGER.name())")
     public EventDTO createEvent(CreateEventDTO createEventDTO) {
         Event event = eventMapper.toEntity(createEventDTO);
 

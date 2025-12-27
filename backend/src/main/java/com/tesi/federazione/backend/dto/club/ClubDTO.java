@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.dto.club;
 
-import com.tesi.federazione.backend.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 @Data
 public class ClubDTO {
-    @Id
     private String id;
     private String name;
     private String fiscalCode;

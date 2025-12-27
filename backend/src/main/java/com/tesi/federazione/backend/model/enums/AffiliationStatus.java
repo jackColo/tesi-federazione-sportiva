@@ -1,4 +1,4 @@
-package com.tesi.federazione.backend.enums;
+package com.tesi.federazione.backend.model.enums;
 
 public enum AffiliationStatus {
     SUBMITTED,

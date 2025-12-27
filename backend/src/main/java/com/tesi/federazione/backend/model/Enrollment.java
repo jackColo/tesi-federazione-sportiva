@@ -1,7 +1,7 @@
 package com.tesi.federazione.backend.model;
 
-import com.tesi.federazione.backend.enums.CompetitionType;
-import com.tesi.federazione.backend.enums.EnrollmentStatus;
+import com.tesi.federazione.backend.model.enums.CompetitionType;
+import com.tesi.federazione.backend.model.enums.EnrollmentStatus;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;

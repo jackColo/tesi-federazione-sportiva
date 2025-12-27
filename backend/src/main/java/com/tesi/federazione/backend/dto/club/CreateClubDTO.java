@@ -1,6 +1,7 @@
-package com.tesi.federazione.backend.dto.user;
+package com.tesi.federazione.backend.dto.club;
 
-import com.tesi.federazione.backend.enums.AffiliationStatus;
+import com.tesi.federazione.backend.dto.user.CreateUserDTO;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import lombok.Data;
 
 @Data

@@ -1,6 +1,6 @@
 package com.tesi.federazione.backend.dto.event;
 
-import com.tesi.federazione.backend.enums.CompetitionType;
+import com.tesi.federazione.backend.model.enums.CompetitionType;
 import lombok.Data;
 
 import java.time.LocalDate;

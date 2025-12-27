@@ -1,8 +1,9 @@
 package com.tesi.federazione.backend.controller;
 
 import com.tesi.federazione.backend.dto.event.CreateEventDTO;
-import com.tesi.federazione.backend.dto.EventDTO;
+import com.tesi.federazione.backend.dto.event.EventDTO;
 import com.tesi.federazione.backend.service.EventService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class EventController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public EventDTO createNewEvent(@RequestBody CreateEventDTO event) {
         return eventService.createEvent(event);
     }

@@ -1,7 +1,7 @@
 package com.tesi.federazione.backend.service;
 
 import com.tesi.federazione.backend.dto.event.CreateEventDTO;
-import com.tesi.federazione.backend.dto.EventDTO;
+import com.tesi.federazione.backend.dto.event.EventDTO;
 
 import java.util.List;
 
