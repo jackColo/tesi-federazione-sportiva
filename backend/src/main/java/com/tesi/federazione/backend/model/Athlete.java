@@ -1,11 +1,11 @@
 package com.tesi.federazione.backend.model;
 
-import com.tesi.federazione.backend.enums.AffiliationStatus;
-import com.tesi.federazione.backend.enums.Role;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.state.athlete.AthleteState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Transient;
 
 import java.time.LocalDate;
 
@@ -15,18 +15,18 @@ public class Athlete extends User {
     private LocalDate birthDate;
     private Float weight;
     private Float height;
-    private String experience;
     private AffiliationStatus affiliationStatus;
     private LocalDate affiliationDate;
     private LocalDate firstAffiliationDate;
-
-    @DBRef
-    private Club club;
+    private String medicalCertificateNumber;
+    private LocalDate medicalCertificateExpireDate;
+    private String clubId;
 
     public Athlete() {
         this.setRole(Role.ATHLETE);
     }
 
+    @Transient
     private transient AthleteState state;
 
     public void approve() {

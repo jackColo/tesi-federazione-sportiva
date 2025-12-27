@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
         UserCreator creator = creators.get(roleKey);
 
-        User user = creator.createUser();
+        User user = creator.createUser(dto);
 
         user.setEmail(dto.getEmail());
         user.setFirstName(dto.getFirstName());
