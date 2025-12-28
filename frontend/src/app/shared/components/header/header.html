@@ -7,7 +7,7 @@
         </a>
 
         <nav class="flex items-center">
-            @for (item of filteredItems(); track item.label) {
+            @for (item of filteredItems(); track item.id) {
                 <a [routerLink]="item.routerLink" 
                    class="p-2 text-sm font-medium text-gray-200 
                           hover:text-amber-400 transition duration-150 flex items-center">
@@ -20,6 +20,13 @@
                     }
                 </a>
             }
+            @if(isLoggedIn()) {
+                <button (click)="authService.logout()" 
+                        class="p-2 text-sm font-medium text-gray-200 
+                               hover:text-amber-400 transition duration-150 
+                               flex items-center cursor-pointer">
+                    <fa-icon [icon]="faRightFromBracket" class="text-xl"></fa-icon>
+                </button>}
         </nav>
     </div>
 </header>

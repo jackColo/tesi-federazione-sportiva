@@ -79,7 +79,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('jwt_token');
     this.handleToken(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['']);
   }
 
   private decodeToken(token: string): any | null {
