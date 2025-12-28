@@ -2,8 +2,10 @@ package com.tesi.federazione.backend.model;
 
 import com.tesi.federazione.backend.model.enums.CompetitionType;
 import com.tesi.federazione.backend.model.enums.EventStatus;
+import com.tesi.federazione.backend.state.event.EventState;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
@@ -25,4 +27,24 @@ public class Event {
     private LocalDate registrationCloseDate;
 
     private EventStatus status;
+
+    @Transient
+    private transient EventState state;
+
+    public void openRegistrations() {
+        this.state.openRegistrations(this);
+    }
+    public void closeRegistrations() {
+        this.state.closeRegistrations(this);
+    }
+    public void completeEvent() {
+        this.state.completeEvent(this);
+    }
+    public void cancelEvent() {
+        this.state.cancelEvent(this);
+    }
+    public void validateRegistration() {
+        this.state.validateRegistration(this);
+    }
+
 }

@@ -21,26 +21,4 @@ public class AthleteMapper {
         dto.setRole(Role.ATHLETE.name());
         return dto;
     }
-
-    public Athlete toEntity(AthleteDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
-        Athlete user = new Athlete();
-        user.setId(dto.getId());
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
-        user.setRole(Role.ATHLETE);
-        user.setAffiliationStatus(dto.getAffiliationStatus());
-        user.setWeight(dto.getWeight());
-        user.setHeight(dto.getHeight());
-        user.setAffiliationDate(dto.getAffiliationDate());
-        user.setMedicalCertificateNumber(dto.getMedicalCertificateNumber());
-        user.setMedicalCertificateExpireDate(dto.getMedicalCertificateExpireDate());
-        user.setClubId(dto.getClubId());
-
-        return user;
-    }
 }

@@ -2,7 +2,6 @@ package com.tesi.federazione.backend.service.impl;
 
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
-import com.tesi.federazione.backend.factory.state.AthleteStateFactory;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.service.AthleteService;
@@ -30,12 +29,19 @@ public class AthleteServiceImpl implements AthleteService {
     public void approveAthlete(String id) {
         Athlete athlete = (Athlete) userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Atleta con ID " + id + " non trovato"));
 
-        athlete.setState(AthleteStateFactory.getInitialState(athlete.getAffiliationStatus()));
-        athlete.approve();
+        if (!athlete.getAffiliationStatus().canTransitionTo(AffiliationStatus.ACCEPTED)) {
+            throw new IllegalStateException(
+                    "Transizione negata: impossibile approvare un atleta che si trova nello stato " + athlete.getAffiliationStatus()
+            );
+        }
+
+        athlete.setAffiliationStatus(AffiliationStatus.ACCEPTED);
 
         LocalDate now = LocalDate.now();
         athlete.setAffiliationDate(now);
-        athlete.setFirstAffiliationDate(now);
+        if (athlete.getFirstAffiliationDate() == null) {
+            athlete.setFirstAffiliationDate(now);
+        }
 
         userRepository.save(athlete);
     }

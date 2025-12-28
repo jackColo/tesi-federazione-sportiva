@@ -4,7 +4,6 @@ import com.tesi.federazione.backend.dto.club.CreateClubDTO;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.enums.Role;
-import com.tesi.federazione.backend.factory.state.ClubStateFactory;
 import com.tesi.federazione.backend.model.Club;
 import com.tesi.federazione.backend.model.ClubManager;
 import com.tesi.federazione.backend.repository.ClubRepository;
@@ -75,18 +74,22 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public void approveClub(String id){
-        Club club = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Impossibile approvare: Club non trovato con ID " + id));
+        Club club = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
 
-        club.setState(ClubStateFactory.getInitialState(club.getAffiliationStatus()));
-
-        try {
-            club.approve();
-            LocalDate now = LocalDate.now();
-            club.setAffiliationDate(now);
-            club.setFirstAffiliationDate(now);
-            clubRepository.save(club);
-        } catch (IllegalStateException e) {
-            throw new IllegalStateException("Errore durante l'approvazione: " + e.getMessage());
+        if (!club.getAffiliationStatus().canTransitionTo(AffiliationStatus.ACCEPTED)) {
+            throw new IllegalStateException(
+                    "Transizione negata: impossibile approvare un club che si trova nello stato " + club.getAffiliationStatus()
+            );
         }
+
+        club.setAffiliationStatus(AffiliationStatus.ACCEPTED);
+
+        LocalDate now = LocalDate.now();
+        club.setAffiliationDate(now);
+        if (club.getFirstAffiliationDate() == null) {
+            club.setFirstAffiliationDate(now);
+        }
+
+        clubRepository.save(club);
     }
 }
