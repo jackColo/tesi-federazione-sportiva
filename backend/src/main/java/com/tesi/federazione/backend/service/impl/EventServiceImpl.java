@@ -69,7 +69,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EnrollmentDTO enrollAthlete(CreateEnrollmentDTO enrollmentDTO) {
 
-        if (enrollmentRepository.existsByEventAndAthleteAndCompetitionType(enrollmentDTO.getEventId(), enrollmentDTO.getAthleteId(), enrollmentDTO.getCompetitionType())) {
+        if (enrollmentRepository.existsByEventAndAthleteAndDiscipline(enrollmentDTO.getEventId(), enrollmentDTO.getAthleteId(), enrollmentDTO.getCompetitionType())) {
             throw new IllegalStateException("Atleta già iscritto all'evento " + enrollmentDTO.getEventId() + " per la disciplina " + enrollmentDTO.getCompetitionType());
         }
 

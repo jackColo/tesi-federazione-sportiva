@@ -14,5 +14,5 @@ public interface EnrollmentRepository extends MongoRepository<Enrollment, String
     List<Enrollment> findByAthleteId(String athleteId);
 
     List<Enrollment> findByEnrollingClubIdAndEventId(String enrollingClubId, String eventId);
-    boolean existsByEventAndAthleteAndCompetitionType(String eventId, String athleteId, CompetitionType competitionType);
+    boolean existsByEventAndAthleteAndDiscipline(String eventId, String athleteId, CompetitionType competitionType);
 }
