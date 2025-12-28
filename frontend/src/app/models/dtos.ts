@@ -22,6 +22,15 @@ export interface CreateUserDTO {
   role: Role;
 }
 
+export interface CreateAthleteDTO extends CreateUserDTO {
+  birthDate: Date;
+  weight: number;
+  height: number;
+  clubId: String;
+  medicalCertificateNumber: String;
+  medicalCertificateExpireDate: Date;
+}
+
 export interface UserDTO {
   id: string;
   firstName: string;

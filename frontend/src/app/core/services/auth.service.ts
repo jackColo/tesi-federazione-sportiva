@@ -4,10 +4,12 @@ import { jwtDecode } from 'jwt-decode';
 import { lastValueFrom, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { JwtResponseDTO, LogUserDTO } from '../../models/dtos';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private apiUrl = environment.apiUrl + '/auth/';
 
   private isLoggedInSignal = signal<boolean>(false);
@@ -19,7 +21,10 @@ export class AuthService {
   public userRole = computed<string | null>(() => {
     const claims = this.userClaims();
 
-    return claims?.roles?.[0]?.authority;
+    if (claims && claims.roles && claims.roles.length > 0) {
+      return claims.roles[0].authority;
+    }
+    return null;
   });
 
   constructor() {
@@ -39,6 +44,12 @@ export class AuthService {
     }
 
     const decodedClaims = this.decodeToken(token);
+
+    if (!decodedClaims) {
+      this.logout();
+      return;
+    }
+
     const isTokenExpired = decodedClaims.exp * 1000 < Date.now();
 
     if (isTokenExpired) {
@@ -52,14 +63,6 @@ export class AuthService {
 
   public getToken(): string | null {
     return localStorage.getItem('jwt_token');
-  }
-
-  private decodeToken(token: string): any | null {
-    try {
-      return jwtDecode(token);
-    } catch (e) {
-      return null;
-    }
   }
 
   async login(credentials: LogUserDTO): Promise<JwtResponseDTO> {
@@ -76,5 +79,14 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('jwt_token');
     this.handleToken(null);
+    this.router.navigate(['/login']);
+  }
+
+  private decodeToken(token: string): any | null {
+    try {
+      return jwtDecode(token);
+    } catch (e) {
+      return null;
+    }
   }
 }
