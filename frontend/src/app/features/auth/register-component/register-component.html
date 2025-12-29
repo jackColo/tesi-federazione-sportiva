@@ -1,9 +1,14 @@
-<div class="flex items-center justify-center">
-    <div class="w-full max-w-2xl p-8 space-y-8 bg-white shadow-xl rounded-lg border border-gray-200">        
-        <h2 class="text-3xl font-extrabold text-gray-900 text-center">
-            Registra la tua Società
-        </h2>
+<div class="flex flex-col items-center justify-center my-8">
 
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center mb-8">
+        <h2 class="text-3xl font-extrabold text-slate-900">
+        Registra la tua Società
+        </h2>
+        <p class="mt-2 text-sm text-slate-600">
+        Compila i dati per accedere al portale federale.
+        </p>
+    </div>
+    <div class="w-full max-w-3xl p-8 space-y-8 bg-white shadow-xl rounded-lg border border-gray-200">    
         <form [formGroup]="createClubForm" (ngSubmit)="onSubmit()" class="space-y-8">
             
             <fieldset [formGroupName]="'club'" class="border border-gray-300 p-6 rounded-lg space-y-4">

@@ -9,6 +9,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 @Component({
   selector: 'app-login-component',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     CommonModule,
@@ -16,7 +17,6 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
     FontAwesomeModule
   ],
   templateUrl: './login-component.html',
-  styleUrl: './login-component.scss',
 })
 export class LoginComponent {
   private authService= inject(AuthService);

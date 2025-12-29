@@ -11,9 +11,9 @@ import { ClubService } from '../../../core/services/club.service';
 
 @Component({
   selector: 'app-register-component',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink, FontAwesomeModule],
   templateUrl: './register-component.html',
-  styleUrl: './register-component.scss',
 })
 export class RegisterComponent {
   private userService = inject(ClubService);
