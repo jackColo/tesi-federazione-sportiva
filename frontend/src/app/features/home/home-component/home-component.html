@@ -1,1 +1,57 @@
-<p>home-component works!</p>
+<div class="flex-1 flex flex-col h-[calc(100vh-140px)]">
+
+  <section class="relative flex-1 flex items-center justify-center overflow-hidden">
+    
+    <div class="absolute inset-0 z-0">
+      <img src="https://wallpapers.com/images/hd/fierce-kickboxing-fight-wide-angle-vaxk1p4bvvadhh1w.jpg" 
+           alt="Hero Background" 
+           class="w-full h-full object-top object-cover">
+      <div class="absolute inset-0 bg-slate-900/70"></div> </div>
+
+    <div class="relative z-10 container mx-auto px-4 text-center text-white">
+      <span class="inline-block py-1 px-3 rounded-full bg-blue-600/30 border border-blue-400 text-blue-100 text-sm font-bold mb-6 backdrop-blur-sm">
+        FEDERAZIONE UFFICIALE
+      </span>
+      <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+        Passione, Disciplina, <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Vittoria.</span>
+      </h1>
+      <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-10">
+        Il punto di riferimento per gli sport da combattimento in Italia. 
+        Unisciti a noi per competere ai massimi livelli.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a routerLink="/events" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
+          Scopri Eventi
+          <fa-icon [icon]="icons.arrow"></fa-icon>
+        </a>
+        @if (!isLoggedIn()) {
+          <a routerLink="/auth/register" class="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold rounded-lg transition-all flex items-center justify-center">
+            Affilia la tua Società
+          </a>
+        } @else {
+          <a routerLink="/dashboard" class="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold rounded-lg transition-all flex items-center justify-center">
+            Visualizza dashboard
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+
+
+  <section class="bg-blue-900 py-8 border-y border-white/10">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        @for (stat of stats(); track stat.label) {
+          <div class="text-center">
+            <div class="text-blue-400 text-3xl mb-2">
+              <fa-icon [icon]="stat.icon"></fa-icon>
+            </div>
+            <p class="text-4xl font-extrabold text-white mb-1">{{ stat.value }}</p>
+            <p class="text-blue-200 text-sm uppercase tracking-wider">{{ stat.label }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+</div>

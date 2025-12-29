@@ -1,6 +1,8 @@
 import { AffiliationStatus } from '../enums/affiliation-status.enum';
 import { CompetitionType } from '../enums/competition-type.enum';
+import { EnrollmentStatus } from '../enums/enrollment-status.enum';
 import { EventStatus } from '../enums/event-status.enum';
+import { NotificationType } from '../enums/notification-type.enum';
 import { Role } from '../enums/role.enum';
 
 export interface JwtResponseDTO {
@@ -96,4 +98,37 @@ export interface ClubDTO {
   firstAffiliationDate: string;
   managers: string[];
   athletes: string[];
+}
+
+export interface CreateEnrollmentDTO {
+  clubId: string;
+  athleteId: string;
+  eventId: string;
+  competitionType: CompetitionType;
+}
+
+export interface EnrollmentDTO {
+    id: string;
+    eventName: string;
+    eventDate: string;
+
+    athleteName: string;
+    athleteSurname: string;
+
+    clubName: string;
+
+    discipline: CompetitionType;
+    category: string;
+    status: EnrollmentStatus;
+}
+
+// Notification DTOs
+export interface NotificationDTO {
+  id: string;
+  title: string;
+  message: string;
+  createdAt: string; // ISO String
+  isRead: boolean;
+  type: NotificationType;
+  link?: string; // Opzionale: se cliccando porta a una pagina specifica (es. dettaglio club)
 }
