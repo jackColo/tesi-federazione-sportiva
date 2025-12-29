@@ -1,32 +1,29 @@
-<header class="bg-gray-800 shadow-md">
-    <div class="flex items-center justify-between mx-auto px-4 py-3 max-w-7xl">
+<header class="bg-slate-900 shadow-md">
+    <div class="flex items-center justify-between mx-auto px-8 py-3">
         
-        <a routerLink="/" class="text-xl font-extrabold text-amber-400 hover:text-amber-500 transition duration-150">
+        <a routerLink="/" class="text-xl font-extrabold text-amber-400 hover:text-amber-500 cursor-pointer">
             <fa-icon [icon]="faTrophy" class="mr-3"></fa-icon>
             FEDERAZIONE COMBAT
         </a>
 
-        <nav class="flex items-center">
+        <nav class="flex items-center gap-2">
             @for (item of filteredItems(); track item.id) {
                 <a [routerLink]="item.routerLink" 
-                   class="p-2 text-sm font-medium text-gray-200 
-                          hover:text-amber-400 transition duration-150 flex items-center">
+                   class="p-2 text-sm font-medium text-slate-200 
+                          hover:text-amber-400">
                     
                     @if (item.icon) { 
                         <fa-icon [icon]="item.icon" class="text-xl"></fa-icon> 
-                    }
-                    @if (item.label) { 
-                        {{ item.label }}
                     }
                 </a>
             }
             @if(isLoggedIn()) {
                 <button (click)="authService.logout()" 
-                        class="p-2 text-sm font-medium text-gray-200 
-                               hover:text-amber-400 transition duration-150 
-                               flex items-center cursor-pointer">
+                        class="p-2 text-sm font-medium cursor-pointer rounded-full
+                               bg-red-600/30 text-red-400 hover:bg-red-600 hover:text-white">
                     <fa-icon [icon]="faRightFromBracket" class="text-xl"></fa-icon>
-                </button>}
+                </button>
+            }
         </nav>
     </div>
 </header>

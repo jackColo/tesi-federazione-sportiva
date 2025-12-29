@@ -4,11 +4,9 @@ import { RouterLink } from '@angular/router';
 import { faUser, faCalendarWeek, faTrophy, IconDefinition, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthService } from '../../../core/services/auth.service';
-import { Role } from '../../../enums/role.enum';
 
 interface HeaderItem {
   id: string;
-  label: string | null;
   icon: IconDefinition | null;
   routerLink: string;
   showWhenLoggedIn?: boolean;
@@ -32,29 +30,18 @@ export class Header {
 
   items: HeaderItem[] = [
     {
-      id: 'admin-panel',
-      label: 'Admin',
-      icon: null,
-      routerLink: '/admin/events/create',
-      showWhenLoggedIn: true,
-      showWhenLoggedInRoles: [Role.FEDERATION_MANAGER],
-    },
-    {
       id: 'events',
-      label: null,
       icon: faCalendarWeek,
       routerLink: '/event',
     },
     {
       id: 'profile-dashboard',
-      label: null,
       icon: faUser,
       routerLink: '/dashboard',
       showWhenLoggedIn: true,
     },
     {
       id: 'login',
-      label: null,
       icon: faUser,
       routerLink: '/auth/login',
       showWhenLoggedIn: false,
