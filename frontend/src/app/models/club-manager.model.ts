@@ -1,12 +1,19 @@
-import { Club } from './club.model';
 import { ClubManagerDTO } from './dtos';
 import { User } from './user.model';
 
 export class ClubManager extends User {
-  club: Club;
+  private _clubId: string;
 
   constructor(data: ClubManagerDTO) {
     super(data);
-    this.club = new Club(data.club);
+    this._clubId = data.clubId;
+  }
+
+  get clubId(): string {
+    return this._clubId;
+  }
+
+  set clubId(value: string) {
+    this._clubId = value;
   }
 }

@@ -16,7 +16,7 @@ export interface LogUserDTO {
   password: string;
 }
 
-export interface CreateUserDTO {
+export interface BaseCreateUserDTO {
   firstName: string;
   lastName: string;
   email: string;
@@ -24,16 +24,28 @@ export interface CreateUserDTO {
   role: Role;
 }
 
-export interface CreateAthleteDTO extends CreateUserDTO {
-  birthDate: Date;
-  weight: number;
-  height: number;
-  clubId: String;
-  medicalCertificateNumber: String;
-  medicalCertificateExpireDate: Date;
+export interface CreateFederationManagerDTO extends BaseCreateUserDTO {
+  role: Role.FEDERATION_MANAGER;
 }
 
-export interface UserDTO {
+export interface CreateClubManagerDTO extends BaseCreateUserDTO {
+  role: Role.CLUB_MANAGER;
+  clubId?: string;
+}
+
+export interface CreateAthleteDTO extends BaseCreateUserDTO {
+  role: Role.ATHLETE;
+  birthDate: string;
+  weight: number;
+  height: number;
+  clubId: string;
+  medicalCertificateNumber?: string;
+  medicalCertificateExpireDate: string;
+}
+
+export type CreateUserDTO = CreateFederationManagerDTO | CreateClubManagerDTO | CreateAthleteDTO;
+
+export interface BaseUserDTO {
   id: string;
   firstName: string;
   lastName: string;
@@ -41,20 +53,29 @@ export interface UserDTO {
   role: Role;
 }
 
-export interface ClubManagerDTO extends UserDTO {
-  club: ClubDTO;
+export interface FederationManagerDTO extends BaseUserDTO {
+  role: Role.FEDERATION_MANAGER;
 }
 
-export interface AthleteDTO extends UserDTO {
-  club: ClubDTO;
+export interface ClubManagerDTO extends BaseUserDTO {
+  role: Role.CLUB_MANAGER;
+  clubId: string;
+}
+
+export interface AthleteDTO extends BaseUserDTO {
+  role: Role.ATHLETE;
+  clubId: string;
   birthDate: string;
   weight: number;
   height: number;
-  experience: string;
   affiliationStatus: AffiliationStatus;
   affiliationDate: string;
   firstAffiliationDate: string;
+  medicalCertificateNumber: string;
+  medicalCertificateExpireDate: string;
 }
+
+export type UserDTO = FederationManagerDTO | ClubManagerDTO | AthleteDTO;
 
 // EVENT DTOs
 
@@ -111,12 +132,9 @@ export interface EnrollmentDTO {
     id: string;
     eventName: string;
     eventDate: string;
-
     athleteName: string;
     athleteSurname: string;
-
     clubName: string;
-
     discipline: CompetitionType;
     category: string;
     status: EnrollmentStatus;
