@@ -3,12 +3,14 @@ package com.tesi.federazione.backend.service.impl;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.factory.user.UserCreator;
+import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,6 +73,11 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User not found.");
         }
         return user.get();
+    }
+
+    @Override
+    public List<Athlete> getUsersByClubId(String clubId) {
+        return userRepository.findAllByClubId(clubId);
     }
 
     private User createEntity(CreateUserDTO dto) {

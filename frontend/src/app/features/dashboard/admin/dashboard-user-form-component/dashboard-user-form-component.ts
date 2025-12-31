@@ -13,6 +13,7 @@ import {
   faShieldAlt,
   faTimes,
   faUser,
+  faVenusMars,
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ClubService } from '../../../../core/services/club.service';
@@ -20,6 +21,7 @@ import { UserService } from '../../../../core/services/user.service';
 import { readableRole, Role } from '../../../../enums/role.enum';
 import { Club } from '../../../../models/club.model';
 import { CreateUserDTO } from '../../../../models/dtos';
+import { GenderEnum } from '../../../../enums/gender.enum';
 
 @Component({
   selector: 'app-dashboard-user-form-component',
@@ -41,7 +43,8 @@ export class DashboardUserFormComponent {
     faCheck,
     faTimes,
     faUser,
-    faLock
+    faLock,
+    faVenusMars
   };
 
   availableClubs: Signal<Club[]> = toSignal(this.clubService.getAllClubs(), {
@@ -60,6 +63,7 @@ export class DashboardUserFormComponent {
     birthDate: [null as string | null],
     weight: [null as number | null],
     height: [null as number | null],
+    gender: [null as GenderEnum | null],
     medicalCertificateNumber: [null as string | null],
     medicalCertificateExpireDate: [null as string | null],
   });
@@ -118,6 +122,7 @@ export class DashboardUserFormComponent {
             birthDate: this.form.value.birthDate!,
             weight: this.form.value.weight!,
             height: this.form.value.height!,
+            gender: this.form.value.gender!,
             medicalCertificateNumber: this.form.value.medicalCertificateNumber!,
             medicalCertificateExpireDate: this.form.value.medicalCertificateExpireDate!,
             clubId: this.form.value.clubId!,

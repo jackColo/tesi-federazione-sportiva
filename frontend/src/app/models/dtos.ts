@@ -2,6 +2,7 @@ import { AffiliationStatus } from '../enums/affiliation-status.enum';
 import { CompetitionType } from '../enums/competition-type.enum';
 import { EnrollmentStatus } from '../enums/enrollment-status.enum';
 import { EventStatus } from '../enums/event-status.enum';
+import { GenderEnum } from '../enums/gender.enum';
 import { NotificationType } from '../enums/notification-type.enum';
 import { Role } from '../enums/role.enum';
 
@@ -38,6 +39,7 @@ export interface CreateAthleteDTO extends BaseCreateUserDTO {
   birthDate: string;
   weight: number;
   height: number;
+  gender: GenderEnum;
   clubId: string;
   medicalCertificateNumber?: string;
   medicalCertificateExpireDate: string;
@@ -68,6 +70,7 @@ export interface AthleteDTO extends BaseUserDTO {
   birthDate: string;
   weight: number;
   height: number;
+  gender: GenderEnum;
   affiliationStatus: AffiliationStatus;
   affiliationDate: string;
   firstAffiliationDate: string;

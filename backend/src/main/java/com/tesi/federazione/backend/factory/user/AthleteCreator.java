@@ -13,6 +13,8 @@ public class AthleteCreator implements UserCreator {
         Athlete athlete = new Athlete();
         athlete.setHeight(dto.getHeight());
         athlete.setWeight(dto.getWeight());
+        athlete.setWeight(dto.getWeight());
+        athlete.setGender(dto.getGender());
         athlete.setBirthDate(dto.getBirthDate());
         athlete.setMedicalCertificateNumber(dto.getMedicalCertificateNumber());
         athlete.setMedicalCertificateExpireDate(dto.getMedicalCertificateExpireDate());

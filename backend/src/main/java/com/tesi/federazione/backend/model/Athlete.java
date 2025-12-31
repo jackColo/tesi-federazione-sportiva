@@ -1,6 +1,7 @@
 package com.tesi.federazione.backend.model;
 
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.GenderEnum;
 import com.tesi.federazione.backend.model.enums.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,6 +14,7 @@ public class Athlete extends User {
     private LocalDate birthDate;
     private Float weight;
     private Float height;
+    private GenderEnum gender;
     private AffiliationStatus affiliationStatus;
     private LocalDate affiliationDate;
     private LocalDate firstAffiliationDate;

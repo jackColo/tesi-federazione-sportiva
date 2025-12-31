@@ -1,6 +1,7 @@
 package com.tesi.federazione.backend.dto.user;
 
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.GenderEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,6 +13,7 @@ public class AthleteDTO extends UserDTO {
     private LocalDate birthDate;
     private Float weight;
     private Float height;
+    private GenderEnum gender;
     private AffiliationStatus affiliationStatus;
     private LocalDate affiliationDate;
     private LocalDate firstAffiliationDate;

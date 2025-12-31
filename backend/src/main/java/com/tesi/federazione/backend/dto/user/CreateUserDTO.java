@@ -1,5 +1,6 @@
 package com.tesi.federazione.backend.dto.user;
 
+import com.tesi.federazione.backend.model.enums.GenderEnum;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public class CreateUserDTO {
     private LocalDate birthDate;
     private Float weight;
     private Float height;
+    private GenderEnum gender;
     private String clubId;
     private String medicalCertificateNumber;
     private LocalDate medicalCertificateExpireDate;

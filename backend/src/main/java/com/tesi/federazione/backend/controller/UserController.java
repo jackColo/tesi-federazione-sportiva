@@ -3,12 +3,15 @@ package com.tesi.federazione.backend.controller;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.mapper.UserMapper;
+import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -58,5 +61,18 @@ public class UserController {
         User user = userService.updateUser(createUserDTO);
         UserDTO userDTO = userMapper.toDTO(user);
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+    }
+
+
+    @GetMapping("/club/{clubId}")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
+    public ResponseEntity<List<UserDTO>> getUsersByClubId(@PathVariable String clubId) {
+        List<Athlete> users = userService.getUsersByClubId(clubId);
+
+        List<UserDTO> usersDTO = users.stream()
+                .map(userMapper::toDTO)
+                .toList();
+
+        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
     }
 }

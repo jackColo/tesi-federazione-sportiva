@@ -46,6 +46,7 @@ public class UserMapper {
         dto.setBirthDate(user.getBirthDate());
         dto.setWeight(user.getWeight());
         dto.setHeight(user.getHeight());
+        dto.setGender(user.getGender());
         dto.setAffiliationStatus(user.getAffiliationStatus());
         dto.setAffiliationDate(user.getAffiliationDate());
         dto.setFirstAffiliationDate(user.getFirstAffiliationDate());

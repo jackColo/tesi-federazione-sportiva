@@ -25,6 +25,7 @@ import {
   faTimes,
   faTrash,
   faUser,
+  faVenusMars,
   faWeight,
 } from '@fortawesome/free-solid-svg-icons';
 import { filter, switchMap } from 'rxjs';
@@ -36,6 +37,7 @@ import { Athlete } from '../../../../models/athlete.model';
 import { Club } from '../../../../models/club.model';
 import { UserDTO } from '../../../../models/dtos';
 import { User } from '../../../../models/user.model';
+import { GenderEnum } from '../../../../enums/gender.enum';
 
 @Component({
   selector: 'app-dashboard-user-detail-component',
@@ -64,6 +66,7 @@ export class DashboardUserDetailComponent {
     faUser,
     faWeight,
     faRulerVertical,
+    faVenusMars
   };
 
   private id$ = toObservable(this.id);
@@ -99,6 +102,7 @@ export class DashboardUserDetailComponent {
     birthDate: [null as string | null],
     weight: [null as number | null],
     height: [null as number | null],
+    gender: [null as GenderEnum | null],
     medicalCertificateNumber: [null as string | null],
     medicalCertificateExpireDate: [null as string | null],
   });
@@ -125,6 +129,7 @@ export class DashboardUserDetailComponent {
         birthDate: u.birthDate,
         weight: u.weight,
         height: u.height,
+        gender: u.gender,
         medicalCertificateNumber: u.medicalCertificateNumber,
         medicalCertificateExpireDate: u.medicalCertificateExpireDate,
       });
@@ -161,6 +166,7 @@ export class DashboardUserDetailComponent {
             birthDate: formValues.birthDate!,
             weight: formValues.weight!,
             height: formValues.height!,
+            gender: formValues.gender!,
             medicalCertificateNumber: formValues.medicalCertificateNumber!,
             medicalCertificateExpireDate: formValues.medicalCertificateExpireDate!,
             affiliationStatus: (currentUser as Athlete).affiliationStatus,

@@ -13,6 +13,8 @@ import { FederationManager } from "../../models/federation-manager.model";
 export class UserService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/user/`;
+
+  // Base user CRUD
   
   getUserByEmail(email: string): Observable<User> {
     return this.http.get<UserDTO>(`${this.apiUrl}email/${email}`).pipe(
@@ -36,6 +38,17 @@ export class UserService {
     return this.http.patch<UserDTO>(`${this.apiUrl}update/${user.id}`, user).pipe(
       map(data => this.createUserInstance(data))
     );
+  }
+
+  // Club User CRUD
+
+  getClubAtheltes(clubId: string): Observable<Athlete[]> {
+    return this.http.get<UserDTO[]>(`${this.apiUrl}club/${clubId}`).pipe(
+      map(data => {
+        const users = data.map(d => this.createUserInstance(d))
+        return users.filter((u): u is Athlete => u instanceof Athlete);
+      })
+    ); 
   }
 
   private createUserInstance(dto: UserDTO): User {

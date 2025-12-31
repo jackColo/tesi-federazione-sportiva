@@ -1,4 +1,5 @@
 import { AffiliationStatus } from '../enums/affiliation-status.enum';
+import { GenderEnum } from '../enums/gender.enum';
 import { AthleteDTO } from './dtos';
 import { User } from './user.model';
 
@@ -7,6 +8,7 @@ export class Athlete extends User {
   private _clubId: string;
   private _weight: number;
   private _height: number;
+  private _gender: GenderEnum;
   private _affiliationStatus: AffiliationStatus;
   private _affiliationDate: string;
   private _firstAffiliationDate: string;
@@ -15,11 +17,12 @@ export class Athlete extends User {
 
   constructor(data: AthleteDTO) {
     super(data);
-    
+
     this._birthDate = data.birthDate;
     this._clubId = data.clubId;
     this._weight = data.weight;
     this._height = data.height;
+    this._gender = data.gender;
     this._affiliationStatus = data.affiliationStatus;
     this._affiliationDate = data.affiliationDate;
     this._firstAffiliationDate = data.firstAffiliationDate;
@@ -47,10 +50,9 @@ export class Athlete extends User {
     return this._weight;
   }
   set weight(value: number) {
-    // Validazione dei dati (Business Logic nel modello)
     if (value < 0) {
-      console.warn("Il peso non può essere negativo");
-      return; 
+      console.warn('Il peso non può essere negativo');
+      return;
     }
     this._weight = value;
   }
@@ -64,6 +66,13 @@ export class Athlete extends User {
       return;
     }
     this._height = value;
+  }
+
+  get gender(): GenderEnum {
+    return this._gender;
+  }
+  set gender(value: GenderEnum) {
+    this._gender = value;
   }
 
   get affiliationStatus(): AffiliationStatus {
@@ -102,7 +111,7 @@ export class Athlete extends User {
   }
 
   // Additional Methods
-  
+
   public isMedicalCertificateValid(): boolean {
     if (!this._medicalCertificateExpireDate) return false;
     const today = new Date();
