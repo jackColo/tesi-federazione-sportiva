@@ -9,11 +9,11 @@ export class ClubManager extends User {
     this._clubId = data.clubId;
   }
 
-  get clubId(): string {
+  override get clubId(): string {
     return this._clubId;
   }
 
-  set clubId(value: string) {
+  override set clubId(value: string) {
     this._clubId = value;
   }
 }

@@ -2,9 +2,10 @@ package com.tesi.federazione.backend.controller;
 
 import com.tesi.federazione.backend.dto.user.AthleteDTO;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
+import com.tesi.federazione.backend.dto.user.UserDTO;
+import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.enums.Role;
-import com.tesi.federazione.backend.mapper.AthleteMapper;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.service.AthleteService;
 import com.tesi.federazione.backend.service.UserService;
@@ -21,30 +22,21 @@ public class AthleteController {
 
     private final AthleteService athleteService;
     private final UserService userService;
-    private final AthleteMapper athleteMapper;
+    private final UserMapper userMapper;
 
-    public AthleteController(AthleteService athleteService, UserService userService, AthleteMapper athleteMapper) {
+    public AthleteController(AthleteService athleteService, UserService userService, UserMapper userMapper) {
         this.athleteService = athleteService;
         this.userService = userService;
-        this.athleteMapper = athleteMapper;
-    }
-
-
-    @PostMapping("/create")
-    public ResponseEntity<AthleteDTO> createClub(@RequestBody CreateUserDTO createUserDTO) {
-        createUserDTO.setRole(Role.ATHLETE.name());
-        Athlete athlete = (Athlete) userService.createUser(createUserDTO);
-        AthleteDTO athleteDTO = athleteMapper.toDTO(athlete);
-        return new ResponseEntity<>(athleteDTO, HttpStatus.CREATED);
+        this.userMapper = userMapper;
     }
 
     @GetMapping("/to-approve/{id}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
-    public ResponseEntity<List<AthleteDTO>> getAthletesToApprove(@PathVariable String clubId) {
+    public ResponseEntity<List<UserDTO>> getAthletesToApprove(@PathVariable String clubId) {
         List<Athlete> athletes = athleteService.getAthletesByStatusAndClubId(AffiliationStatus.SUBMITTED, clubId);
 
-        List<AthleteDTO> athleteDTOS = athletes.stream()
-                .map(athleteMapper::toDTO)
+        List<UserDTO> athleteDTOS = athletes.stream()
+                .map(userMapper::toDTO)
                 .toList();
 
         return new ResponseEntity<>(athleteDTOS, HttpStatus.OK);

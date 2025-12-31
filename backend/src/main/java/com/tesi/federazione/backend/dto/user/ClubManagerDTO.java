@@ -7,5 +7,5 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ClubManagerDTO extends UserDTO {
-    private ClubDTO club;
+    private String clubId;
 }

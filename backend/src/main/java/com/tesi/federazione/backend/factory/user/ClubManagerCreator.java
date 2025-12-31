@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 public class ClubManagerCreator implements UserCreator {
     @Override
     public User createUser(CreateUserDTO dto) {
-        return new ClubManager();
+        ClubManager clubManager = new ClubManager();
+        if (dto.getClubId() != null) {
+            clubManager.setManagedClub(dto.getClubId());
+        }
+        return clubManager;
     }
 }

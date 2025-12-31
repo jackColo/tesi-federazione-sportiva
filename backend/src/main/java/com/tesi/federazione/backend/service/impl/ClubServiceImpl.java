@@ -73,6 +73,11 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public List<Club> getAll() {
+        return clubRepository.findAll();
+    }
+
+    @Override
     public void approveClub(String id){
         Club club = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
 

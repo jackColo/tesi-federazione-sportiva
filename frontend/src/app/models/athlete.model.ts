@@ -36,10 +36,10 @@ export class Athlete extends User {
     this._birthDate = value;
   }
 
-  get clubId(): string {
+  override get clubId(): string {
     return this._clubId;
   }
-  set clubId(value: string) {
+  override set clubId(value: string) {
     this._clubId = value;
   }
 

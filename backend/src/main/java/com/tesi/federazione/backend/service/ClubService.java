@@ -11,5 +11,7 @@ public interface ClubService {
     Club createClub(CreateClubDTO club);
     Optional<Club> getClubById(String id);
     List<Club> getClubsByStatus(AffiliationStatus status);
+    List<Club> getAll();
+
     void approveClub(String id);
 }

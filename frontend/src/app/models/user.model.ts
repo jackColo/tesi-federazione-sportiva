@@ -50,4 +50,9 @@ export class User {
   set role(value: Role) {
     this._role = value;
   }
+
+  // Virtual method to be overridden by subclasses
+  get clubId(): string | null {
+    return null;
+  }
 }

@@ -34,7 +34,7 @@ public class ClubController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('CLUB_MANAGER', 'FEDERATION_MANAGER', 'ATHLETE')")
     public ResponseEntity<ClubDTO> getClubById(@PathVariable String id) {
         Club club = clubService.getClubById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
 
@@ -46,6 +46,18 @@ public class ClubController {
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<List<ClubDTO>> getClubsToApprove() {
         List<Club> clubs = clubService.getClubsByStatus(AffiliationStatus.SUBMITTED);
+
+        List<ClubDTO> clubDTOS = clubs.stream()
+                .map(clubMapper::toDTO)
+                .toList();
+
+        return new ResponseEntity<>(clubDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER', 'ATHLETE')")
+    public ResponseEntity<List<ClubDTO>> getAllClubs() {
+        List<Club> clubs = clubService.getAll();
 
         List<ClubDTO> clubDTOS = clubs.stream()
                 .map(clubMapper::toDTO)
