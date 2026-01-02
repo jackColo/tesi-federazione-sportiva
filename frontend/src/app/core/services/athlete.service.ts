@@ -4,13 +4,18 @@ import { environment } from '../../../environments/environment';
 import { Athlete } from '../../models/athlete.model';
 import { AthleteDTO, UserDTO } from '../../models/dtos';
 import { UserService } from './user.service';
+import { AffiliationStatus } from '../../enums/affiliation-status.enum';
 
 @Injectable({ providedIn: 'root' })
 export class AthleteService extends UserService {
   override apiUrl = `${environment.apiUrl}/athlete/`;
 
-  approveAthlete(athleteId: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}approve/${athleteId}`, null);
+  updateAthleteAffiliationStatus(athleteId: string, status: AffiliationStatus): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}update-status/${athleteId}/${status}`, null);
+  }
+
+  renewAthleteAffiliationRequest(athleteId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}renew-submission/${athleteId}`, null);
   }
 
   getClubAthletesToApprove(): Observable<Athlete[]> {

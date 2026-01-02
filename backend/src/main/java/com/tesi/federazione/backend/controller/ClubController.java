@@ -78,10 +78,10 @@ public class ClubController {
         return new ResponseEntity<>(clubDTOS, HttpStatus.OK);
     }
 
-    @PostMapping("/renew-submission/{id}/{newStatus}")
+    @PostMapping("/renew-submission/{id}")
     @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
-    public ResponseEntity<Void> renewClubAffiliationStatus(@PathVariable String id, @PathVariable AffiliationStatus newStatus) {
-        clubService.updateClubStatus(id, newStatus);
+    public ResponseEntity<Void> renewClubAffiliationStatus(@PathVariable String id) {
+        clubService.updateClubStatus(id, AffiliationStatus.SUBMITTED);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

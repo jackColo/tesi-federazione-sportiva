@@ -6,30 +6,26 @@
 
   <div class="border-b border-slate-200">
     <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+      @for (tab of tabs; track tab.id) {
       <button
-        (click)="setTab('CLUB')"
-        [class.border-blue-500]="currentFedTab() === 'CLUB'"
-        [class.text-blue-600]="currentFedTab() === 'CLUB'"
-        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+        (click)="setTab(tab.id)"
+        type="button"
+        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-200"
+        [ngClass]="
+          currentFedTab()?.id === tab.id
+            ? 'border-blue-500 text-blue-600'
+            : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+        "
       >
-        <fa-icon [icon]="icons.faBuilding"></fa-icon>
-        Club
+        <fa-icon [icon]="tab.icon"></fa-icon>
+        {{ tab.label }}
       </button>
-
-      <button
-        (click)="setTab('ATHLETE')"
-        [class.border-blue-500]="currentFedTab() === 'ATHLETE'"
-        [class.text-blue-600]="currentFedTab() === 'ATHLETE'"
-        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
-      >
-        <fa-icon [icon]="icons.faUsers"></fa-icon>
-        Atleti
-      </button>
+      }
     </nav>
   </div>
 
   <div class="mt-4">
-    @switch (currentFedTab()) { @case ('CLUB') { @if (clubs(); as clubs) { @for (club of clubs;
+    @switch (currentFedTab()?.id) { @case ('CLUB') { @if (clubs(); as clubs) { @for (club of clubs;
     track club.id) {
     <div class="m-8">
       <app-dashboard-clubs-card-component [club]="club"></app-dashboard-clubs-card-component>

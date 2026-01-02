@@ -36,10 +36,17 @@ public class AthleteController {
         return new ResponseEntity<>(athleteDTOS, HttpStatus.OK);
     }
 
-    @PostMapping("/approve/{id}")
+    @PostMapping("/update-status/{id}/{newStatus}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
-    public ResponseEntity<Void> approveAthlete(@PathVariable String id) {
-        athleteService.approveAthlete(id);
+    public ResponseEntity<Void> updateAthleteStatus(@PathVariable String id, @PathVariable AffiliationStatus newStatus) {
+        athleteService.updateStatus(id, newStatus);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/renew-submission/{id}")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
+    public ResponseEntity<Void> renewAthleteSubmissionStatus(@PathVariable String id) {
+        athleteService.updateStatus(id, AffiliationStatus.SUBMITTED);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

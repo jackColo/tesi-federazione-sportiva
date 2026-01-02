@@ -27,21 +27,23 @@ public class AthleteServiceImpl implements AthleteService {
     }
 
     @Override
-    public void approveAthlete(String id) {
+    public void updateStatus(String id, AffiliationStatus newStatus) {
         Athlete athlete = (Athlete) userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Atleta con ID " + id + " non trovato"));
 
-        if (!athlete.getAffiliationStatus().canTransitionTo(AffiliationStatus.ACCEPTED)) {
+        if (!athlete.getAffiliationStatus().canTransitionTo(newStatus)) {
             throw new IllegalStateException(
                     "Transizione negata: impossibile approvare un atleta che si trova nello stato " + athlete.getAffiliationStatus()
             );
         }
 
-        athlete.setAffiliationStatus(AffiliationStatus.ACCEPTED);
+        athlete.setAffiliationStatus(newStatus);
 
-        LocalDate now = LocalDate.now();
-        athlete.setAffiliationDate(now);
-        if (athlete.getFirstAffiliationDate() == null) {
-            athlete.setFirstAffiliationDate(now);
+        if (newStatus.equals(AffiliationStatus.ACCEPTED)) {
+            LocalDate now = LocalDate.now();
+            athlete.setAffiliationDate(now);
+            if (athlete.getFirstAffiliationDate() == null) {
+                athlete.setFirstAffiliationDate(now);
+            }
         }
 
         userRepository.save(athlete);

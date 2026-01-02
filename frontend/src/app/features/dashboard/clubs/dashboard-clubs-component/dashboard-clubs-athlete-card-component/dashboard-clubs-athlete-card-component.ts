@@ -19,6 +19,7 @@ import {
   faHistory,
   faClock,
   faBan,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   AffiliationStatus,
@@ -60,7 +61,7 @@ export class DashboardClubsAthleteCardComponent {
     faCalendarCheck,
     faHistory,
     faClock,
-    faBan,
+    faBan
   };
 
   private club = toSignal(
@@ -76,14 +77,37 @@ export class DashboardClubsAthleteCardComponent {
   });
 
   isAdmin = computed(() => this.authService.userRole() === Role.FEDERATION_MANAGER);
+  isManager = computed(() => this.authService.userRole() === Role.CLUB_MANAGER);
 
   approveAthleteAffiliation(clubId: string) {
-    this.athleteService.approveAthlete(clubId).subscribe({
+    this.athleteService.updateAthleteAffiliationStatus(clubId, AffiliationStatus.ACCEPTED).subscribe({
       next: () => {
         alert(`Affiliazione confermata con successo!`);
       },
       error: (err) => {
         alert(`Errore durante la conferma dell'affiliazione': ${err.message}`);
+      },
+    });
+  }
+
+  rejectAthleteAffiliation(clubId: string) {
+    this.athleteService.updateAthleteAffiliationStatus(clubId, AffiliationStatus.REJECTED).subscribe({
+      next: () => {
+        alert(`Affiliazione respinta con successo!`);
+      },
+      error: (err) => {
+        alert(`Errore durante il rifiuto dell'affiliazione': ${err.message}`);
+      },
+    });
+  }
+
+  renewAthleteAffiliation(clubId: string) {
+    this.athleteService.renewAthleteAffiliationRequest(clubId).subscribe({
+      next: () => {
+        alert(`Richiesta inviata con successo!`);
+      },
+      error: (err) => {
+        alert(`Errore durante l'invio della richiesta': ${err.message}`);
       },
     });
   }

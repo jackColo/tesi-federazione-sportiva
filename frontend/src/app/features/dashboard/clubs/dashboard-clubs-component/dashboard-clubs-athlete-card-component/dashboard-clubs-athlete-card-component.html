@@ -51,19 +51,42 @@
           </div>
         </div>
 
-        @if(isAdmin() && athlete().affiliationStatus === 'SUBMITTED' || athlete().affiliationStatus ===
-        'EXPIRED'){
-        <button
-          (click)="approveAthleteAffiliation(athlete().id)"
-          class="group flex items-center gap-2 px-4 py-2 bg-emerald-100 border border-emerald-200 rounded-lg text-sm font-bold text-emerald-600 hover:text-emerald-800 hover:border-emerald-400 hover:bg-emerald-300 transition-all shadow-sm"
-        >
-          <fa-icon
-            [icon]="icons.faCheckCircle"
-            class="text-xs text-emerald-600 group-hover:text-emerald-800 transition-colors"
-          ></fa-icon>
-          {{ athlete().affiliationStatus === 'SUBMITTED' ? 'Conferma ' : 'Rinnova ' }}
-          affiliazione</button
-        >}
+        @if(isAdmin() && athlete().affiliationStatus === 'SUBMITTED'){
+        <div class="flex gap-2">
+          <button
+            (click)="rejectAthleteAffiliation(athlete().id)"
+            class="group flex items-center gap-2 px-4 py-2 bg-red-100 border border-red-200 rounded-lg text-sm font-bold text-red-600 hover:text-red-800 hover:border-red-400 hover:bg-red-300 transition-all shadow-sm"
+          >
+            <fa-icon
+              [icon]="icons.faCheckCircle"
+              class="text-xs text-red-600 group-hover:text-red-800 transition-colors"
+            ></fa-icon>
+            Rifiuta affiliazione
+          </button>
+          <button
+            (click)="approveAthleteAffiliation(athlete().id)"
+            class="group flex items-center gap-2 px-4 py-2 bg-emerald-100 border border-emerald-200 rounded-lg text-sm font-bold text-emerald-600 hover:text-emerald-800 hover:border-emerald-400 hover:bg-emerald-300 transition-all shadow-sm"
+          >
+            <fa-icon
+              [icon]="icons.faCheckCircle"
+              class="text-xs text-emerald-600 group-hover:text-emerald-800 transition-colors"
+            ></fa-icon>
+            Conferma affiliazione
+          </button>
+        </div>
+        } @else if (isManager() && (athlete().affiliationStatus === 'REJECTED' || athlete().affiliationStatus === 'EXPIRED' )) {
+
+          <button
+            (click)="renewAthleteAffiliation(athlete().id)"
+            class="group flex items-center gap-2 px-4 py-2 bg-yellow-100 border border-yellow-200 rounded-lg text-sm font-bold text-yellow-600 hover:text-yellow-800 hover:border-yellow-400 hover:bg-yellow-300 transition-all shadow-sm"
+          >
+            <fa-icon
+              [icon]="icons.faClock"
+              class="text-xs text-yellow-600 group-hover:text-yellow-800 transition-colors"
+            ></fa-icon>
+            Rinnova affiliazione
+          </button>
+        }
       </div>
       <div class="grid grid-cols-3 gap-3">
         <div class="bg-slate-50 p-2 rounded-lg border border-slate-100 text-center">

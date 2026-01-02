@@ -10,6 +10,7 @@ import {
   faPen,
   faUserPlus,
   faUsers,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { filter, from, switchMap } from 'rxjs';
 import { AthleteService } from '../../../../core/services/athlete.service';
@@ -26,12 +27,21 @@ import { Club } from '../../../../models/club.model';
 import { DashboardClubsAthleteCardComponent } from './dashboard-clubs-athlete-card-component/dashboard-clubs-athlete-card-component';
 import { DashboardClubsCardComponent } from './dashboard-clubs-card-component/dashboard-clubs-card-component';
 
-type FedTab = 'CLUB' | 'ATHLETE';
+interface FedTab {
+  id: string;
+  label: string;
+  icon: IconDefinition;
+}
 
 @Component({
   selector: 'app-dashboard-clubs-component',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule, DashboardClubsAthleteCardComponent, DashboardClubsCardComponent],
+  imports: [
+    CommonModule,
+    FontAwesomeModule,
+    DashboardClubsAthleteCardComponent,
+    DashboardClubsCardComponent,
+  ],
   templateUrl: './dashboard-clubs-component.html',
 })
 export class DashboardClubsComponent {
@@ -50,11 +60,16 @@ export class DashboardClubsComponent {
     faCheck,
   };
 
+  tabs: FedTab[] = [
+    { id: 'CLUB', label: 'Club', icon: this.icons.faBuilding },
+    { id: 'ATHLETE', label: 'Atleti', icon: this.icons.faUsers },
+  ];
+
   role = computed(() => this.authService.userRole());
   isFederation = computed(() => this.role() === Role.FEDERATION_MANAGER);
   isClub = computed(() => this.role() === Role.CLUB_MANAGER);
 
-  currentFedTab = signal<FedTab>('CLUB');
+  currentFedTab = signal<FedTab | null>(this.tabs.find(tab => tab.id === 'CLUB') ?? null);
 
   pendingAffiliations = signal<number>(0);
 
@@ -72,10 +87,7 @@ export class DashboardClubsComponent {
     { initialValue: null }
   );
 
-  clubs: Signal<Club[] | null> = toSignal(
-    this.clubService.getAllClubs(),
-    {initialValue: null}
-  )
+  clubs: Signal<Club[] | null> = toSignal(this.clubService.getAllClubs(), { initialValue: null });
 
   statusReadableName(status: AffiliationStatus) {
     return readableAffiliationStatus(status);
@@ -104,15 +116,7 @@ export class DashboardClubsComponent {
     this.router.navigate([clubId], { relativeTo: this.route });
   }
 
-  setTab(tab: FedTab) {
-    this.currentFedTab.set(tab);
-    switch (tab) {
-      case 'CLUB':
-        // Carica la lista dei club
-        break;
-      case 'ATHLETE':
-        // Carica la lista degli atleti
-        break;
-    }
+  setTab(tabId: string) {
+    this.currentFedTab.set(this.tabs.find(tab => tab.id === tabId) ?? null);
   }
 }

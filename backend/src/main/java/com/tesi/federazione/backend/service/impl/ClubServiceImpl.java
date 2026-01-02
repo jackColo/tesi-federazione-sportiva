@@ -84,6 +84,7 @@ public class ClubServiceImpl implements ClubService {
         newClub.setName(dto.getName());
         newClub.setFiscalCode(dto.getFiscalCode());
         newClub.setLegalAddress(dto.getLegalAddress());
+
         newClub.setAffiliationStatus(oldClub.get().getAffiliationStatus());
         newClub.setManagers(oldClub.get().getManagers());
         newClub.setAthletes(oldClub.get().getAthletes());
@@ -105,10 +106,12 @@ public class ClubServiceImpl implements ClubService {
 
         club.setAffiliationStatus(newStatus);
 
-        LocalDate now = LocalDate.now();
-        club.setAffiliationDate(now);
-        if (club.getFirstAffiliationDate() == null) {
-            club.setFirstAffiliationDate(now);
+        if (newStatus.equals(AffiliationStatus.ACCEPTED)) {
+            LocalDate now = LocalDate.now();
+            club.setAffiliationDate(now);
+            if (club.getFirstAffiliationDate() == null) {
+                club.setFirstAffiliationDate(now);
+            }
         }
 
         clubRepository.save(club);

@@ -35,8 +35,7 @@ export class ClubService {
   }
 
   renewClubAffiliationRequest(clubId: string): Observable<void> { 
-    const newStatus:AffiliationStatus = AffiliationStatus.SUBMITTED;
-    return this.http.post<void>(`${this.apiUrl}renew-submission/${clubId}/${newStatus}`, null); 
+    return this.http.post<void>(`${this.apiUrl}renew-submission/${clubId}`, null); 
   }
 
   getClubsToApprove(): Observable<Club[]> { 
