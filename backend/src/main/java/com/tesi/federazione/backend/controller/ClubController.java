@@ -2,9 +2,13 @@ package com.tesi.federazione.backend.controller;
 
 import com.tesi.federazione.backend.dto.club.ClubDTO;
 import com.tesi.federazione.backend.dto.club.CreateClubDTO;
+import com.tesi.federazione.backend.dto.club.UpdatedClubDTO;
+import com.tesi.federazione.backend.dto.user.CreateUserDTO;
+import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.mapper.ClubMapper;
 import com.tesi.federazione.backend.model.Club;
+import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.service.ClubService;
 import org.springframework.http.HttpStatus;
@@ -31,6 +35,14 @@ public class ClubController {
         Club club = clubService.createClub(createClubDTO);
         ClubDTO clubDTO = clubMapper.toDTO(club);
         return new ResponseEntity<>(clubDTO, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/update/{id}")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER', 'ATHLETE')")
+    public ResponseEntity<ClubDTO> updateClub(@RequestBody UpdatedClubDTO updateClub ) {
+        Club club = clubService.updateClub(updateClub);
+        ClubDTO clubDTO = clubMapper.toDTO(club);
+        return new ResponseEntity<>(clubDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -66,10 +78,17 @@ public class ClubController {
         return new ResponseEntity<>(clubDTOS, HttpStatus.OK);
     }
 
-    @PostMapping("/approve/{id}")
+    @PostMapping("/renew-submission/{id}/{newStatus}")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
+    public ResponseEntity<Void> renewClubAffiliationStatus(@PathVariable String id, @PathVariable AffiliationStatus newStatus) {
+        clubService.updateClubStatus(id, newStatus);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/update-status/{id}/{newStatus}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
-    public ResponseEntity<Void> approveClub(@PathVariable String id) {
-        clubService.approveClub(id);
+    public ResponseEntity<Void> updateAffiliationStatus(@PathVariable String id, @PathVariable AffiliationStatus newStatus) {
+        clubService.updateClubStatus(id, newStatus);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

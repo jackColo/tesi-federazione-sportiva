@@ -1,0 +1,208 @@
+@if(club(); as club) {
+<div class="max-w-4xl mx-auto space-y-6" [formGroup]="form">
+  <div class="flex items-center gap-4">
+    <a
+      routerLink="../"
+      class="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
+    >
+      <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
+    </a>
+
+    <div class="flex-1">
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold text-slate-800">{{ club.name || 'Dettaglio Società' }}</h1>
+
+        <span
+          [class]="
+            'px-2.5 py-0.5 rounded-full text-xs font-bold border uppercase ' +
+            statusColorClass(club.affiliationStatus)
+          "
+        >
+          {{ readableStatusName(club.affiliationStatus) }}
+        </span>
+      </div>
+      <p class="text-slate-500 text-sm mt-1">Gestione dati anagrafici e stato affiliazione.</p>
+    </div>
+
+    <div class="ml-auto flex gap-2">
+      @if (!isEditing) {
+      <button
+        (click)="toggleEdit()"
+        class="text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors p-2 rounded-lg"
+        title="Modifica Dati"
+      >
+        <fa-icon [icon]="icons.faPen"></fa-icon>
+      </button>
+      } @else {
+      <button
+        (click)="saveChanges()"
+        [disabled]="form.invalid || form.pristine"
+        class="text-green-600 bg-green-50 hover:bg-green-100 transition-colors p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        title="Salva Modifiche"
+      >
+        <fa-icon [icon]="icons.faSave"></fa-icon>
+      </button>
+      <button
+        (click)="cancelEdit()"
+        class="text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors p-2 rounded-lg"
+        title="Annulla"
+      >
+        <fa-icon [icon]="icons.faTimes"></fa-icon>
+      </button>
+      }
+    </div>
+  </div>
+
+  @if (isFederation() && club.affiliationStatus === 'SUBMITTED') {
+  <div
+    class="bg-blue-50 border border-blue-100 p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2"
+  >
+    <div>
+      <h3 class="font-bold text-blue-900 flex items-center gap-2">
+        <fa-icon [icon]="icons.faInfoCircle"></fa-icon> Richiesta in Attesa
+      </h3>
+      <p class="text-sm text-blue-700 mt-1">
+        Questa società ha richiesto l'affiliazione. Verifica i dati e procedi.
+      </p>
+    </div>
+    <div class="flex gap-3">
+      <button
+        (click)="rejectAffiliation()"
+        class="px-4 py-2 rounded-lg border border-red-200 bg-white text-red-600 hover:bg-red-50 font-medium text-sm transition-colors"
+      >
+        Rifiuta
+      </button>
+      <button
+        (click)="approveAffiliation()"
+        class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium shadow-sm flex items-center gap-2 text-sm transition-colors"
+      >
+        <fa-icon [icon]="icons.faCheck"></fa-icon> Approva
+      </button>
+    </div>
+  </div>
+  }
+
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-8 border-b border-slate-100">
+      <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
+        <div
+          class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"
+        >
+          <fa-icon [icon]="icons.faBuilding" class="text-sm"></fa-icon>
+        </div>
+        Dati Societari
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="group">
+          <label
+            class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+            >Ragione Sociale</label
+          >
+          <input
+            type="text"
+            formControlName="name"
+            [disabled]="!isEditing"
+            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-500 disabled:border-transparent"
+          />
+        </div>
+
+        <div class="group">
+          <label
+            class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+            >Partita IVA / C.F.</label
+          >
+          <input
+            type="text"
+            formControlName="fiscalCode"
+            [disabled]="!isEditing"
+            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg font-mono text-sm font-bold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-500 disabled:border-transparent"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="p-8 bg-slate-50/30">
+      <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
+        <div
+          class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"
+        >
+          <fa-icon [icon]="icons.faMapMarkerAlt" class="text-sm"></fa-icon>
+        </div>
+        Sede e Contatti
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- <div>
+          <label
+            class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+            >Email Ufficiale</label
+          >
+          <div class="relative">
+            <input
+              type="email"
+              formControlName="email"
+              [disabled]="!isEditing"
+              class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-500 disabled:border-transparent"
+            />
+            @if(isEditing) {
+            <div
+              class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400"
+            >
+              <fa-icon [icon]="icons.faEnvelope"></fa-icon>
+            </div>
+            }
+          </div>
+        </div> -->
+
+        <!-- <div>
+          <label
+            class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+            >Telefono</label
+          >
+          <input
+            type="text"
+            formControlName="phone"
+            [disabled]="!isEditing"
+            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-500 disabled:border-transparent"
+          />
+        </div> -->
+
+        <div class="md:col-span-2">
+          <label
+            class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+            >Indirizzo Sede Legale</label
+          >
+          <input
+            type="text"
+            formControlName="legalAddress"
+            [disabled]="!isEditing"
+            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-500 disabled:border-transparent"
+          />
+        </div>
+      </div>
+    </div>
+
+    @if (isEditing && isClubManager() && (club.affiliationStatus === 'EXPIRED' || club.affiliationStatus ===
+    'REJECTED')) {
+    <div
+      class="p-6 bg-yellow-50 border-t border-yellow-100 flex items-center justify-between gap-4 animate-in fade-in"
+    >
+      <div>
+        <h4 class="font-bold text-yellow-800 text-sm">Rinnovo Affiliazione Necessario</h4>
+        <p class="text-xs text-yellow-700 mt-1">
+          Aggiorna i dati se necessario e invia una nuova richiesta alla federazione.
+        </p>
+      </div>
+      <button
+        (click)="resubmitAffiliation()"
+        class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-bold rounded-lg shadow-sm transition-colors flex items-center gap-2"
+      >
+        <fa-icon [icon]="icons.faPaperPlane"></fa-icon>
+        Invia Richiesta
+      </button>
+    </div>
+    }
+  </div>
+</div>
+}

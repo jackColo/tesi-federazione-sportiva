@@ -28,7 +28,7 @@ export function affiliationStatusColorClass(status: AffiliationStatus): string {
       return 'bg-emerald-100 text-emerald-700 border-emerald-200';
     case AffiliationStatus.REJECTED:
     case AffiliationStatus.EXPIRED:
-      return 'bg-red-50 text-red-600 border-red-200';
+      return 'bg-red-100 text-red-600 border-red-200';
     default:
       return 'bg-gray-100 text-gray-700';
   }

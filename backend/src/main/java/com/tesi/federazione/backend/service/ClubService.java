@@ -1,6 +1,7 @@
 package com.tesi.federazione.backend.service;
 
 import com.tesi.federazione.backend.dto.club.CreateClubDTO;
+import com.tesi.federazione.backend.dto.club.UpdatedClubDTO;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Club;
 
@@ -12,6 +13,6 @@ public interface ClubService {
     Optional<Club> getClubById(String id);
     List<Club> getClubsByStatus(AffiliationStatus status);
     List<Club> getAll();
-
-    void approveClub(String id);
+    Club updateClub(UpdatedClubDTO club);
+    void updateClubStatus(String id, AffiliationStatus newStatus);
 }

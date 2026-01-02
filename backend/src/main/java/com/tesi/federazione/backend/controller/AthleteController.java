@@ -1,14 +1,10 @@
 package com.tesi.federazione.backend.controller;
 
-import com.tesi.federazione.backend.dto.user.AthleteDTO;
-import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
-import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.service.AthleteService;
-import com.tesi.federazione.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,12 +17,10 @@ import java.util.List;
 public class AthleteController {
 
     private final AthleteService athleteService;
-    private final UserService userService;
     private final UserMapper userMapper;
 
-    public AthleteController(AthleteService athleteService, UserService userService, UserMapper userMapper) {
+    public AthleteController(AthleteService athleteService, UserMapper userMapper) {
         this.athleteService = athleteService;
-        this.userService = userService;
         this.userMapper = userMapper;
     }
 
@@ -47,5 +41,31 @@ public class AthleteController {
     public ResponseEntity<Void> approveAthlete(@PathVariable String id) {
         athleteService.approveAthlete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @GetMapping("/club/{clubId}")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
+    public ResponseEntity<List<UserDTO>> getAthleteByClubId(@PathVariable String clubId) {
+        List<Athlete> athletes = athleteService.getAthletesByClubId(clubId);
+
+        List<UserDTO> athletesDTO = athletes.stream()
+                .map(userMapper::toDTO)
+                .toList();
+
+        return new ResponseEntity<>(athletesDTO, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
+    public ResponseEntity<List<UserDTO>> getAllAthletes() {
+        List<Athlete> users = athleteService.getAllAthletes();
+
+        List<UserDTO> usersDTO = users.stream()
+                .map(userMapper::toDTO)
+                .toList();
+
+        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
     }
 }

@@ -63,16 +63,4 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
-
-    @GetMapping("/club/{clubId}")
-    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
-    public ResponseEntity<List<UserDTO>> getUsersByClubId(@PathVariable String clubId) {
-        List<Athlete> users = userService.getUsersByClubId(clubId);
-
-        List<UserDTO> usersDTO = users.stream()
-                .map(userMapper::toDTO)
-                .toList();
-
-        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
-    }
 }

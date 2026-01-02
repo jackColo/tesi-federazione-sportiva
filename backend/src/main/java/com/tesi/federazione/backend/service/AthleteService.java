@@ -8,4 +8,6 @@ import java.util.List;
 public interface AthleteService {
     List<Athlete> getAthletesByStatusAndClubId(AffiliationStatus status, String clubId);
     void approveAthlete(String id);
+    List<Athlete> getAthletesByClubId(String clubId);
+    List<Athlete> getAllAthletes();
 }

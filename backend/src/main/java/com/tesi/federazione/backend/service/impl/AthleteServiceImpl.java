@@ -3,6 +3,7 @@ package com.tesi.federazione.backend.service.impl;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Athlete;
+import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.service.AthleteService;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,15 @@ public class AthleteServiceImpl implements AthleteService {
         }
 
         userRepository.save(athlete);
+    }
+
+    @Override
+    public List<Athlete> getAthletesByClubId(String clubId) {
+        return userRepository.findAllByClubId(clubId);
+    }
+
+    @Override
+    public List<Athlete> getAllAthletes() {
+        return userRepository.findByRole(Role.ATHLETE);
     }
 }

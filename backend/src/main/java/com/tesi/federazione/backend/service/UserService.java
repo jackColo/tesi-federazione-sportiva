@@ -12,5 +12,4 @@ public interface UserService {
     User updateUser(CreateUserDTO dto);
     User getUserByEmail(String email);
     User getUserById(String id);
-    List<Athlete> getUsersByClubId(String clubId);
 }

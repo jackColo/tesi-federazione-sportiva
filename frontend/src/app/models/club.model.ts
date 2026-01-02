@@ -86,4 +86,19 @@ export class Club {
   public isConfirmed(): boolean {
     return this._affiliationStatus === AffiliationStatus.ACCEPTED;
   }
+
+  public toDTO(): ClubDTO {
+    const clubDTO: ClubDTO = {
+      id: this.id,
+      name: this.name,
+      fiscalCode: this.fiscalCode,
+      legalAddress: this.legalAddress,
+      affiliationStatus: this.affiliationStatus,
+      affiliationDate: this.affiliationDate,
+      firstAffiliationDate: this.firstAffiliationDate,
+      managers: this.managerIds,
+      athletes: this.athleteIds
+    }
+    return clubDTO
+  }
 }

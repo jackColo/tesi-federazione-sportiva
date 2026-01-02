@@ -1,0 +1,85 @@
+<div class="space-y-6">
+  @if (isFederation()) {
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-slate-800">Registro Federazione</h1>
+  </div>
+
+  <div class="border-b border-slate-200">
+    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+      <button
+        (click)="setTab('CLUB')"
+        [class.border-blue-500]="currentFedTab() === 'CLUB'"
+        [class.text-blue-600]="currentFedTab() === 'CLUB'"
+        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+      >
+        <fa-icon [icon]="icons.faBuilding"></fa-icon>
+        Club
+      </button>
+
+      <button
+        (click)="setTab('ATHLETE')"
+        [class.border-blue-500]="currentFedTab() === 'ATHLETE'"
+        [class.text-blue-600]="currentFedTab() === 'ATHLETE'"
+        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+      >
+        <fa-icon [icon]="icons.faUsers"></fa-icon>
+        Atleti
+      </button>
+    </nav>
+  </div>
+
+  <div class="mt-4">
+    @switch (currentFedTab()) { @case ('CLUB') { @if (clubs(); as clubs) { @for (club of clubs;
+    track club.id) {
+    <div class="m-8">
+      <app-dashboard-clubs-card-component [club]="club"></app-dashboard-clubs-card-component>
+    </div>
+    }} } @case ('ATHLETE') {
+    <div class="py-2 text-center text-slate-500 bg-white rounded shadow-sm">
+      @if (athletes(); as athletes) { @for (ath of athletes; track ath.id) {
+      <div class="m-8">
+        <app-dashboard-clubs-athlete-card-component
+          [athlete]="ath"
+        ></app-dashboard-clubs-athlete-card-component>
+      </div>
+      } }
+    </div>
+    } }
+  </div>
+  } @if (isClub()) {
+  <div>
+    <h1 class="text-2xl font-bold text-slate-800">La mia società</h1>
+    <p class="text-slate-500">Gestisci i tesserati e i dati del club</p>
+  </div>
+  @if(myClub(); as club) {
+  <app-dashboard-clubs-card-component [club]="club"></app-dashboard-clubs-card-component>
+  }
+
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+      <h3 class="font-bold text-slate-700">
+        <fa-icon [icon]="icons.faUsers" class="mr-2 text-blue-500"></fa-icon> Dati Atleti
+      </h3>
+      <button
+        (click)="navigateToAddAthlete()"
+        class="flex items-center text-sm gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+      >
+        <fa-icon [icon]="icons.faUserPlus"></fa-icon>
+        <span>Aggiungi Atleta</span>
+      </button>
+    </div>
+
+    @if (athletes(); as athletes) { @for (ath of athletes; track ath.id) {
+    <div class="m-8">
+      <app-dashboard-clubs-athlete-card-component
+        [athlete]="ath"
+      ></app-dashboard-clubs-athlete-card-component>
+    </div>
+    } } @else {
+    <div class="p-8 text-center text-slate-500">
+      <p>Qui verrà visualizzata la lista dei tuoi atleti.</p>
+    </div>
+    }
+  </div>
+  }
+</div>

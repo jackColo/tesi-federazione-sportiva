@@ -105,11 +105,21 @@ export interface EventDTO {
 // CLUB DTOs
 
 export interface CreateClubDTO {
+  id?: string,
   name: string;
   fiscalCode: string;
   legalAddress: string;
   affiliationStatus: AffiliationStatus;
-  manager: CreateUserDTO;
+  manager?: CreateUserDTO;
+}
+
+
+export interface UpdateClubDTO {
+  id: string,
+  name: string;
+  fiscalCode: string;
+  legalAddress: string;
+  affiliationStatus: AffiliationStatus;
 }
 
 export interface ClubDTO {

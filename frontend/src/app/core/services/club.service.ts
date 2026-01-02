@@ -4,6 +4,7 @@ import { map, Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { ClubDTO, CreateClubDTO } from "../../models/dtos";
 import { Club } from "../../models/club.model";
+import { AffiliationStatus } from "../../enums/affiliation-status.enum";
 
 @Injectable({ providedIn: 'root' })
 export class ClubService {
@@ -16,14 +17,26 @@ export class ClubService {
     ); 
   }
 
+  updateClub(clubId:string, updateClub: Club): Observable<Club> { 
+    const clubDTO :ClubDTO = updateClub.toDTO()
+    return this.http.patch<ClubDTO>(`${this.apiUrl}update/${clubId}`, clubDTO).pipe(
+      map(data => new Club(data))
+    ); 
+  }
+
   getClub(clubId: string): Observable<Club> { 
     return this.http.get<ClubDTO>(`${this.apiUrl}${clubId}`).pipe(
       map(data => new Club(data))
     ); 
   }
 
-  approveClub(clubId: string): Observable<void> { 
-    return this.http.post<void>(`${this.apiUrl}approve/${clubId}`, null); 
+  updateAffiliationStatus(clubId: string, newStatus: AffiliationStatus): Observable<void> { 
+    return this.http.post<void>(`${this.apiUrl}update-status/${clubId}/${newStatus}`, null); 
+  }
+
+  renewClubAffiliationRequest(clubId: string): Observable<void> { 
+    const newStatus:AffiliationStatus = AffiliationStatus.SUBMITTED;
+    return this.http.post<void>(`${this.apiUrl}renew-submission/${clubId}/${newStatus}`, null); 
   }
 
   getClubsToApprove(): Observable<Club[]> { 

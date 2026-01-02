@@ -1,6 +1,7 @@
 package com.tesi.federazione.backend.service.impl;
 
 import com.tesi.federazione.backend.dto.club.CreateClubDTO;
+import com.tesi.federazione.backend.dto.club.UpdatedClubDTO;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.enums.Role;
@@ -32,12 +33,6 @@ public class ClubServiceImpl implements ClubService {
         this.userService = userService;
     }
 
-    /**
-     * Creazione contestuale di club e manager del club.
-     * Transactional garantisce che vengano creati entrambi o nessuno.
-     *
-     *  @param dto dati per la creazione del club (manager incluso)
-     */
     @Override
     @Transactional
     public Club createClub(CreateClubDTO dto) {
@@ -78,16 +73,37 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public void approveClub(String id){
+    public Club updateClub(UpdatedClubDTO dto) {
+        Optional<Club> oldClub = getClubById(dto.getId());
+        if (oldClub.isEmpty()) {
+            throw new ResourceNotFoundException("Club not found");
+        }
+
+        Club newClub = new Club();
+        newClub.setId(dto.getId());
+        newClub.setName(dto.getName());
+        newClub.setFiscalCode(dto.getFiscalCode());
+        newClub.setLegalAddress(dto.getLegalAddress());
+        newClub.setAffiliationStatus(oldClub.get().getAffiliationStatus());
+        newClub.setManagers(oldClub.get().getManagers());
+        newClub.setAthletes(oldClub.get().getAthletes());
+        newClub.setAffiliationDate(oldClub.get().getAffiliationDate());
+        newClub.setFirstAffiliationDate(oldClub.get().getFirstAffiliationDate());
+
+        return clubRepository.save(newClub);
+    }
+
+    @Override
+    public void updateClubStatus(String id, AffiliationStatus newStatus){
         Club club = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
 
-        if (!club.getAffiliationStatus().canTransitionTo(AffiliationStatus.ACCEPTED)) {
+        if (!club.getAffiliationStatus().canTransitionTo(newStatus)) {
             throw new IllegalStateException(
-                    "Transizione negata: impossibile approvare un club che si trova nello stato " + club.getAffiliationStatus()
+                    "Transizione negata: impossibile portare allo stato " + newStatus + " un club che si trova nello stato " + club.getAffiliationStatus()
             );
         }
 
-        club.setAffiliationStatus(AffiliationStatus.ACCEPTED);
+        club.setAffiliationStatus(newStatus);
 
         LocalDate now = LocalDate.now();
         club.setAffiliationDate(now);

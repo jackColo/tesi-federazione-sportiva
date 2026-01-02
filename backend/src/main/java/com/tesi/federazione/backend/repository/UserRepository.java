@@ -3,6 +3,7 @@ package com.tesi.federazione.backend.repository;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.User;
+import com.tesi.federazione.backend.model.enums.Role;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -14,5 +15,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
     List<Athlete> findAllByAffiliationStatusAndClubId(AffiliationStatus status, String clubId);
     List<Athlete> findAllByClubId(String clubId);
+    List<Athlete> findByRole(Role role);
 
 }

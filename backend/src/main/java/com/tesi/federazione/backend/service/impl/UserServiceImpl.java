@@ -75,11 +75,6 @@ public class UserServiceImpl implements UserService {
         return user.get();
     }
 
-    @Override
-    public List<Athlete> getUsersByClubId(String clubId) {
-        return userRepository.findAllByClubId(clubId);
-    }
-
     private User createEntity(CreateUserDTO dto) {
         String roleKey = dto.getRole();
 
