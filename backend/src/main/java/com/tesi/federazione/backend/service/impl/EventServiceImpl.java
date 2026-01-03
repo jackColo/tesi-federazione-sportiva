@@ -7,18 +7,19 @@ import com.tesi.federazione.backend.dto.event.EventDTO;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.factory.state.EventStateFactory;
 import com.tesi.federazione.backend.mapper.EnrollmentMapper;
+import com.tesi.federazione.backend.mapper.EventMapper;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.Club;
 import com.tesi.federazione.backend.model.Enrollment;
+import com.tesi.federazione.backend.model.Event;
 import com.tesi.federazione.backend.model.enums.EnrollmentStatus;
 import com.tesi.federazione.backend.model.enums.EventStatus;
-import com.tesi.federazione.backend.mapper.EventMapper;
-import com.tesi.federazione.backend.model.Event;
 import com.tesi.federazione.backend.repository.ClubRepository;
 import com.tesi.federazione.backend.repository.EnrollmentRepository;
 import com.tesi.federazione.backend.repository.EventRepository;
 import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.service.EventService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
@@ -33,18 +35,8 @@ public class EventServiceImpl implements EventService {
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
 
-
     private final EventMapper eventMapper;
     private final EnrollmentMapper enrollmentMapper;
-
-    public EventServiceImpl(EventRepository eventRepository, EnrollmentRepository enrollmentRepository, ClubRepository clubRepository, UserRepository userRepository, EventMapper eventMapper, EnrollmentMapper enrollmentMapper) {
-        this.eventRepository = eventRepository;
-        this.enrollmentRepository = enrollmentRepository;
-        this.clubRepository = clubRepository;
-        this.userRepository = userRepository;
-        this.eventMapper = eventMapper;
-        this.enrollmentMapper = enrollmentMapper;
-    }
 
 
     @Override
@@ -53,6 +45,12 @@ public class EventServiceImpl implements EventService {
                 .stream()
                 .map(eventMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public EventDTO getEventById(String id) {
+        Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + id + " non trovato"));
+        return eventMapper.toDTO(event);
     }
 
     @Override

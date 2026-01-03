@@ -8,6 +8,7 @@ import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.security.JwtUtils;
 import com.tesi.federazione.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -28,13 +30,6 @@ public class AuthController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final JwtUtils jwtUtils;
-
-    public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtUtils jwtUtils,UserMapper userMapper) {
-        this.authenticationManager = authenticationManager;
-        this.userService = userService;
-        this.userMapper = userMapper;
-        this.jwtUtils = jwtUtils;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponseDTO> authenticateUser(@RequestBody LogUserDTO loginDTO) {
@@ -53,9 +48,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody CreateUserDTO createUserDTO) {
-
-        User registeredUser = userService.createUser(createUserDTO);
-        UserDTO userDTO = userMapper.toDTO(registeredUser);
+        UserDTO userDTO = userService.createUser(createUserDTO);
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 }

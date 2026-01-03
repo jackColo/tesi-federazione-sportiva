@@ -8,8 +8,8 @@ import com.tesi.federazione.backend.model.User;
 import java.util.List;
 
 public interface UserService {
-    User createUser(CreateUserDTO dto);
-    User updateUser(CreateUserDTO dto);
-    User getUserByEmail(String email);
-    User getUserById(String id);
+    UserDTO createUser(CreateUserDTO dto);
+    UserDTO updateUser(CreateUserDTO dto);
+    UserDTO getUserByEmail(String email);
+    UserDTO getUserById(String id);
 }

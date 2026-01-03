@@ -1,5 +1,6 @@
 package com.tesi.federazione.backend.controller;
 
+import com.tesi.federazione.backend.dto.user.AthleteDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
@@ -17,23 +18,17 @@ import java.util.List;
 public class AthleteController {
 
     private final AthleteService athleteService;
-    private final UserMapper userMapper;
 
     public AthleteController(AthleteService athleteService, UserMapper userMapper) {
         this.athleteService = athleteService;
-        this.userMapper = userMapper;
     }
 
     @GetMapping("/to-approve/{id}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
-    public ResponseEntity<List<UserDTO>> getAthletesToApprove(@PathVariable String clubId) {
-        List<Athlete> athletes = athleteService.getAthletesByStatusAndClubId(AffiliationStatus.SUBMITTED, clubId);
+    public ResponseEntity<List<AthleteDTO>> getAthletesToApprove(@PathVariable String clubId) {
+        List<AthleteDTO> athleteDTOs = athleteService.getAthletesByStatusAndClubId(AffiliationStatus.SUBMITTED, clubId);
 
-        List<UserDTO> athleteDTOS = athletes.stream()
-                .map(userMapper::toDTO)
-                .toList();
-
-        return new ResponseEntity<>(athleteDTOS, HttpStatus.OK);
+        return new ResponseEntity<>(athleteDTOs, HttpStatus.OK);
     }
 
     @PostMapping("/update-status/{id}/{newStatus}")
@@ -53,12 +48,8 @@ public class AthleteController {
 
     @GetMapping("/club/{clubId}")
     @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
-    public ResponseEntity<List<UserDTO>> getAthleteByClubId(@PathVariable String clubId) {
-        List<Athlete> athletes = athleteService.getAthletesByClubId(clubId);
-
-        List<UserDTO> athletesDTO = athletes.stream()
-                .map(userMapper::toDTO)
-                .toList();
+    public ResponseEntity<List<AthleteDTO>> getAthleteByClubId(@PathVariable String clubId) {
+        List<AthleteDTO> athletesDTO = athleteService.getAthletesByClubId(clubId);
 
         return new ResponseEntity<>(athletesDTO, HttpStatus.OK);
     }
@@ -66,13 +57,9 @@ public class AthleteController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
-    public ResponseEntity<List<UserDTO>> getAllAthletes() {
-        List<Athlete> users = athleteService.getAllAthletes();
+    public ResponseEntity<List<AthleteDTO>> getAllAthletes() {
+        List<AthleteDTO> athleteDTOs = athleteService.getAllAthletes();
 
-        List<UserDTO> usersDTO = users.stream()
-                .map(userMapper::toDTO)
-                .toList();
-
-        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
+        return new ResponseEntity<>(athleteDTOs, HttpStatus.OK);
     }
 }

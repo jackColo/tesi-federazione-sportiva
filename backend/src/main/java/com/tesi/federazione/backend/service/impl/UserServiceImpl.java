@@ -2,33 +2,29 @@ package com.tesi.federazione.backend.service.impl;
 
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
+import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.factory.user.UserCreator;
-import com.tesi.federazione.backend.model.Athlete;
+import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final Map<String, UserCreator> creators;
     private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(UserRepository userRepository, Map<String, UserCreator> creators, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.creators = creators;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final UserMapper userMapper;
 
     @Override
-    public User createUser(CreateUserDTO dto) {
+    public UserDTO createUser(CreateUserDTO dto) {
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already in use.");
         }
@@ -36,12 +32,13 @@ public class UserServiceImpl implements UserService {
         User user = createEntity(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return userMapper.toDTO(savedUser);
     }
 
     @Override
-    public User updateUser(CreateUserDTO dto) {
-        User existingUser = getUserById(dto.getId());
+    public UserDTO updateUser(CreateUserDTO dto) {
+        User existingUser = userRepository.findById(dto.getId()).orElseThrow(() -> new ResourceNotFoundException("Utente con id " + dto.getId() + " non trovato"));
         String existingEmail = existingUser.getEmail();
         if (!existingEmail.equals(dto.getEmail())) {
             if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
@@ -53,26 +50,21 @@ public class UserServiceImpl implements UserService {
         user.setId(dto.getId());
         user.setPassword(existingUser.getPassword());
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return userMapper.toDTO(savedUser);
 
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found.");
-        }
-        return user.get();
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Utente " + email + " non trovato"));
+        return userMapper.toDTO(user);
     }
 
     @Override
-    public User getUserById(String id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found.");
-        }
-        return user.get();
+    public UserDTO getUserById(String id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Utente con id " + id + " non trovato"));
+        return userMapper.toDTO(user);
     }
 
     private User createEntity(CreateUserDTO dto) {

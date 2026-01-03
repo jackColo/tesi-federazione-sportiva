@@ -1,6 +1,8 @@
 package com.tesi.federazione.backend.service.impl;
 
+import com.tesi.federazione.backend.dto.user.AthleteDTO;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
+import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.enums.Role;
@@ -15,15 +17,20 @@ import java.util.List;
 public class AthleteServiceImpl implements AthleteService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public AthleteServiceImpl(UserRepository userRepository) {
+    public AthleteServiceImpl(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
 
     @Override
-    public List<Athlete> getAthletesByStatusAndClubId(AffiliationStatus status, String clubId) {
-        return userRepository.findAllByAffiliationStatusAndClubId(status, clubId);
+    public List<AthleteDTO> getAthletesByStatusAndClubId(AffiliationStatus status, String clubId) {
+        List<Athlete> athletes = userRepository.findAllByAffiliationStatusAndClubId(status, clubId);
+        return athletes.stream()
+                .map(athlete -> (AthleteDTO) userMapper.toDTO(athlete))
+                .toList();
     }
 
     @Override
@@ -50,12 +57,19 @@ public class AthleteServiceImpl implements AthleteService {
     }
 
     @Override
-    public List<Athlete> getAthletesByClubId(String clubId) {
-        return userRepository.findAllByClubId(clubId);
+    public List<AthleteDTO> getAthletesByClubId(String clubId) {
+        List<Athlete> athletes = userRepository.findAllByClubId(clubId);
+
+        return athletes.stream()
+                .map(athlete -> (AthleteDTO) userMapper.toDTO(athlete))
+                .toList();
     }
 
     @Override
-    public List<Athlete> getAllAthletes() {
-        return userRepository.findByRole(Role.ATHLETE);
+    public List<AthleteDTO> getAllAthletes() {
+        List<Athlete> athletes = userRepository.findByRole(Role.ATHLETE);
+        return athletes.stream()
+                .map(athlete -> (AthleteDTO) userMapper.toDTO(athlete))
+                .toList();
     }
 }

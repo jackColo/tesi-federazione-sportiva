@@ -1,13 +1,13 @@
 package com.tesi.federazione.backend.service;
 
+import com.tesi.federazione.backend.dto.user.AthleteDTO;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
-import com.tesi.federazione.backend.model.Athlete;
 
 import java.util.List;
 
 public interface AthleteService {
-    List<Athlete> getAthletesByStatusAndClubId(AffiliationStatus status, String clubId);
+    List<AthleteDTO> getAthletesByStatusAndClubId(AffiliationStatus status, String clubId);
     void updateStatus(String id, AffiliationStatus status);
-    List<Athlete> getAthletesByClubId(String clubId);
-    List<Athlete> getAllAthletes();
+    List<AthleteDTO> getAthletesByClubId(String clubId);
+    List<AthleteDTO> getAllAthletes();
 }

@@ -1,41 +1,40 @@
 package com.tesi.federazione.backend.service.impl;
 
+import com.tesi.federazione.backend.dto.club.ClubDTO;
 import com.tesi.federazione.backend.dto.club.CreateClubDTO;
 import com.tesi.federazione.backend.dto.club.UpdatedClubDTO;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
-import com.tesi.federazione.backend.model.enums.AffiliationStatus;
-import com.tesi.federazione.backend.model.enums.Role;
+import com.tesi.federazione.backend.mapper.ClubMapper;
 import com.tesi.federazione.backend.model.Club;
 import com.tesi.federazione.backend.model.ClubManager;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
+import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.repository.ClubRepository;
 import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.service.ClubService;
 import com.tesi.federazione.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ClubServiceImpl implements ClubService {
 
     private final UserRepository userRepository;
     private final ClubRepository clubRepository;
+
     private final UserService userService;
 
-
-    public ClubServiceImpl(UserRepository userRepository, ClubRepository clubRepository,  UserService userService) {
-        this.userRepository = userRepository;
-        this.clubRepository = clubRepository;
-        this.userService = userService;
-    }
+    private final ClubMapper clubMapper;
 
     @Override
     @Transactional
-    public Club createClub(CreateClubDTO dto) {
+    public ClubDTO createClub(CreateClubDTO dto) {
         // Sovrascrivo il ruolo che arriva da FE per sicurezza
         dto.getManager().setRole(Role.CLUB_MANAGER.name());
 
@@ -54,30 +53,30 @@ public class ClubServiceImpl implements ClubService {
         clubManager.setManagedClub(club.getId());
         userRepository.save(clubManager);
 
-        return club;
+        return clubMapper.toDTO(club);
     }
 
     @Override
-    public Optional<Club> getClubById(String id) {
-        return clubRepository.findById(id);
+    public ClubDTO getClubById(String id) {
+        Club club = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
+        return clubMapper.toDTO(club);
     }
 
     @Override
-    public List<Club> getClubsByStatus(AffiliationStatus status) {
-        return clubRepository.findAllByAffiliationStatus(status);
+    public List<ClubDTO> getClubsByStatus(AffiliationStatus status) {
+        List<Club> clubs = clubRepository.findAllByAffiliationStatus(status);
+        return clubs.stream().map(clubMapper::toDTO).toList();
     }
 
     @Override
-    public List<Club> getAll() {
-        return clubRepository.findAll();
+    public List<ClubDTO> getAll() {
+        List<Club> clubs = clubRepository.findAll();
+        return clubs.stream().map(clubMapper::toDTO).toList();
     }
 
     @Override
-    public Club updateClub(UpdatedClubDTO dto) {
-        Optional<Club> oldClub = getClubById(dto.getId());
-        if (oldClub.isEmpty()) {
-            throw new ResourceNotFoundException("Club not found");
-        }
+    public ClubDTO updateClub(UpdatedClubDTO dto) {
+        Club oldClub = clubRepository.findById(dto.getId()).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + dto.getId() + " non trovato"));
 
         Club newClub = new Club();
         newClub.setId(dto.getId());
@@ -85,13 +84,14 @@ public class ClubServiceImpl implements ClubService {
         newClub.setFiscalCode(dto.getFiscalCode());
         newClub.setLegalAddress(dto.getLegalAddress());
 
-        newClub.setAffiliationStatus(oldClub.get().getAffiliationStatus());
-        newClub.setManagers(oldClub.get().getManagers());
-        newClub.setAthletes(oldClub.get().getAthletes());
-        newClub.setAffiliationDate(oldClub.get().getAffiliationDate());
-        newClub.setFirstAffiliationDate(oldClub.get().getFirstAffiliationDate());
+        newClub.setAffiliationStatus(oldClub.getAffiliationStatus());
+        newClub.setManagers(oldClub.getManagers());
+        newClub.setAthletes(oldClub.getAthletes());
+        newClub.setAffiliationDate(oldClub.getAffiliationDate());
+        newClub.setFirstAffiliationDate(oldClub.getFirstAffiliationDate());
 
-        return clubRepository.save(newClub);
+        Club club = clubRepository.save(newClub);
+        return clubMapper.toDTO(club);
     }
 
     @Override
