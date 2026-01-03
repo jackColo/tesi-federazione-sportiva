@@ -50,6 +50,11 @@ export const routes: Routes = [
             canActivate: [roleGuard([Role.FEDERATION_MANAGER])] 
           },
           { 
+            path: 'update/:id', 
+            component: DashboardEventFormComponent,
+            canActivate: [roleGuard([Role.FEDERATION_MANAGER])] 
+          },
+          { 
             path: ':id', 
             component: DashboardEventDetailComponent
           }

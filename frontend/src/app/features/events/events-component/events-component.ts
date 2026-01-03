@@ -5,9 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faArrowRight,
-  faCalendarAlt,
   faFilter,
-  faMapMarkerAlt,
   faSearch,
   faTrophy,
   IconDefinition
@@ -15,13 +13,14 @@ import {
 import { from } from 'rxjs';
 
 import { EventService } from '../../../core/services/event.service';
-import { EventStatus, eventStatusColorClass, readableEventStatus } from '../../../enums/event-status.enum';
-import { EventDTO } from '../../../models/dtos';
+import { EventStatus } from '../../../enums/event-status.enum';
+import { Event } from '../../../models/event.model';
+import { EventCardComponent } from '../../../shared/components/event-card-component/event-card-component';
 
 @Component({
   selector: 'app-events-component',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, EventCardComponent],
   templateUrl: './events-component.html',
 })
 export class EventsComponent {
@@ -30,23 +29,13 @@ export class EventsComponent {
   
   icons: { [key: string]: IconDefinition } = {
     search: faSearch,
-    calendar: faCalendarAlt,
-    map: faMapMarkerAlt,
     trophy: faTrophy,
     filter: faFilter,
     arrow: faArrowRight
   };
 
-  allEvents: Signal<EventDTO[]> = toSignal(
+  allEvents: Signal<Event[]> = toSignal(
     from(this.eventService.getAllEvents()),
     { initialValue: [] }
   );
-
-  getStatusLabel(status: EventStatus): string {
-    return readableEventStatus(status);
-  }
-
-  getStatusClass(status: EventStatus): string {
-    return eventStatusColorClass(status);
-  }
 }

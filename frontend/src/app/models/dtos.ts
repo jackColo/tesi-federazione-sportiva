@@ -10,6 +10,10 @@ export interface JwtResponseDTO {
   token: string;
 }
 
+export interface ErrorResponse {
+  error: { status: number; message: string; timestamp: string };
+}
+
 // USER DTOs
 
 export interface LogUserDTO {
@@ -84,6 +88,7 @@ export type UserDTO = FederationManagerDTO | ClubManagerDTO | AthleteDTO;
 
 export interface CreateEventDTO {
   name: string;
+  description: string;
   location: string;
   date: string;
   registrationOpenDate: string;
@@ -94,18 +99,20 @@ export interface CreateEventDTO {
 export interface EventDTO {
   id: string;
   name: string;
+  description: string;
   location: string;
   date: string;
   registrationOpenDate: string;
   registrationCloseDate: string;
   status: EventStatus;
   disciplines: CompetitionType[];
+  enrolledCount: number;
 }
 
 // CLUB DTOs
 
 export interface CreateClubDTO {
-  id?: string,
+  id?: string;
   name: string;
   fiscalCode: string;
   legalAddress: string;
@@ -113,9 +120,8 @@ export interface CreateClubDTO {
   manager?: CreateUserDTO;
 }
 
-
 export interface UpdateClubDTO {
-  id: string,
+  id: string;
   name: string;
   fiscalCode: string;
   legalAddress: string;
@@ -142,15 +148,15 @@ export interface CreateEnrollmentDTO {
 }
 
 export interface EnrollmentDTO {
-    id: string;
-    eventName: string;
-    eventDate: string;
-    athleteName: string;
-    athleteSurname: string;
-    clubName: string;
-    discipline: CompetitionType;
-    category: string;
-    status: EnrollmentStatus;
+  id: string;
+  eventName: string;
+  eventDate: string;
+  athleteName: string;
+  athleteSurname: string;
+  clubName: string;
+  discipline: CompetitionType;
+  category: string;
+  status: EnrollmentStatus;
 }
 
 // Notification DTOs
