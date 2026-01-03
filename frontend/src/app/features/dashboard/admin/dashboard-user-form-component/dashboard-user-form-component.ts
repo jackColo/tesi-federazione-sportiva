@@ -20,7 +20,7 @@ import { ClubService } from '../../../../core/services/club.service';
 import { UserService } from '../../../../core/services/user.service';
 import { readableRole, Role } from '../../../../enums/role.enum';
 import { Club } from '../../../../models/club.model';
-import { CreateUserDTO } from '../../../../models/dtos';
+import { CreateUserDTO, ErrorResponse } from '../../../../models/dtos';
 import { GenderEnum } from '../../../../enums/gender.enum';
 
 @Component({
@@ -154,8 +154,8 @@ export class DashboardUserFormComponent {
         next: (user) => {
           alert(`Utente ${user.firstName} ${user.lastName} creato con successo!`);
         },
-        error: (err) => {
-          alert(`Errore durante la creazione dell'utente: ${err.message}`);
+        error: (err: ErrorResponse) => {
+          alert(`Errore durante la creazione dell'utente: ${err.error.message}`);
         },
       });
     }

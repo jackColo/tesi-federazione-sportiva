@@ -18,7 +18,9 @@ import {
   faBuilding,
   faCheck,
   faEnvelope,
+  faFileMedical,
   faIdBadge,
+  faInfoCircle,
   faPen,
   faRulerVertical,
   faShieldAlt,
@@ -35,7 +37,7 @@ import { UserService } from '../../../../core/services/user.service';
 import { readableRole, Role, roleClass } from '../../../../enums/role.enum';
 import { Athlete } from '../../../../models/athlete.model';
 import { Club } from '../../../../models/club.model';
-import { UserDTO } from '../../../../models/dtos';
+import { ErrorResponse, UserDTO } from '../../../../models/dtos';
 import { User } from '../../../../models/user.model';
 import { GenderEnum } from '../../../../enums/gender.enum';
 
@@ -66,10 +68,11 @@ export class DashboardUserDetailComponent {
     faUser,
     faWeight,
     faRulerVertical,
-    faVenusMars
+    faVenusMars,
+    faFileMedical,
+    faInfoCircle
   };
 
-  private id$ = toObservable(this.id);
 
   isAdmin = computed(() => this.authService.userRole() === Role.FEDERATION_MANAGER);
   isClubManager = computed(() => this.authService.userRole() === Role.CLUB_MANAGER);
@@ -80,7 +83,7 @@ export class DashboardUserDetailComponent {
   });
 
   user: Signal<User | null> = toSignal(
-    this.id$.pipe(switchMap((id) => this.userService.getUserById(id))),
+    toObservable(this.id).pipe(switchMap((id) => this.userService.getUserById(id))),
     { initialValue: null }
   );
 
@@ -206,8 +209,8 @@ export class DashboardUserDetailComponent {
           this.patchValues(newUser);
           alert('Utente aggiornato con successo');
         },
-        error: (err) => {
-          console.error(err);
+        error: (err: ErrorResponse) => {
+          console.error(err.error.message);
           alert("Errore durante l'aggiornamento");
         },
       });

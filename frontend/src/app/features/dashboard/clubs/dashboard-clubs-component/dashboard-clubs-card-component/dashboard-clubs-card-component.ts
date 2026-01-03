@@ -23,6 +23,7 @@ import {
 import { ClubService } from '../../../../../core/services/club.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { Role } from '../../../../../enums/role.enum';
+import { ErrorResponse } from '../../../../../models/dtos';
 
 @Component({
   selector: 'app-dashboard-clubs-card-component',
@@ -55,8 +56,8 @@ export class DashboardClubsCardComponent {
       next: () => {
         alert(`Club approvato con successo!`);
       },
-      error: (err) => {
-        alert(`Errore durante l'approvazione del club': ${err.message}`);
+      error: (err: ErrorResponse) => {
+        alert(`Errore durante l'approvazione del club': ${err.error.message}`);
       },
     });
   }
@@ -66,8 +67,8 @@ export class DashboardClubsCardComponent {
       next: () => {
         alert(`Richiesta del club respinta con successo!`);
       },
-      error: (err) => {
-        alert(`Errore durante il rifiuto della richiesta del club': ${err.message}`);
+      error: (err: ErrorResponse) => {
+        alert(`Errore durante il rifiuto della richiesta del club': ${err.error.message}`);
       },
     });
   }

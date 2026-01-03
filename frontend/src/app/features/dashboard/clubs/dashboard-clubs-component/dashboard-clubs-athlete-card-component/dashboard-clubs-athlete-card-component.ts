@@ -33,6 +33,7 @@ import { switchMap } from 'rxjs';
 import { Role } from '../../../../../enums/role.enum';
 import { AthleteService } from '../../../../../core/services/athlete.service';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { ErrorResponse } from '../../../../../models/dtos';
 
 @Component({
   selector: 'app-dashboard-clubs-athlete-card-component',
@@ -84,8 +85,8 @@ export class DashboardClubsAthleteCardComponent {
       next: () => {
         alert(`Affiliazione confermata con successo!`);
       },
-      error: (err) => {
-        alert(`Errore durante la conferma dell'affiliazione': ${err.message}`);
+      error: (err: ErrorResponse) => {
+        alert(`Errore durante la conferma dell'affiliazione': ${err.error.message}`);
       },
     });
   }
@@ -95,8 +96,8 @@ export class DashboardClubsAthleteCardComponent {
       next: () => {
         alert(`Affiliazione respinta con successo!`);
       },
-      error: (err) => {
-        alert(`Errore durante il rifiuto dell'affiliazione': ${err.message}`);
+      error: (err: ErrorResponse) => {
+        alert(`Errore durante il rifiuto dell'affiliazione': ${err.error.message}`);
       },
     });
   }
@@ -106,8 +107,8 @@ export class DashboardClubsAthleteCardComponent {
       next: () => {
         alert(`Richiesta inviata con successo!`);
       },
-      error: (err) => {
-        alert(`Errore durante l'invio della richiesta': ${err.message}`);
+      error: (err: ErrorResponse) => {
+        alert(`Errore durante l'invio della richiesta': ${err.error.message}`);
       },
     });
   }

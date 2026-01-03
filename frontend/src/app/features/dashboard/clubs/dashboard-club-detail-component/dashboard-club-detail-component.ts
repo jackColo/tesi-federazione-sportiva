@@ -28,6 +28,7 @@ import {
 } from '../../../../enums/affiliation-status.enum';
 import { Role } from '../../../../enums/role.enum';
 import { Club } from '../../../../models/club.model';
+import { ErrorResponse } from '../../../../models/dtos';
 
 @Component({
   selector: 'app-dashboard-club-detail-component',
@@ -119,7 +120,7 @@ export class DashboardClubDetailComponent {
         this.isEditing = false;
         this.form.disable();
       },
-      error: (err) => alert("Errore nell'invio della richiesta"),
+      error: (err: ErrorResponse) => alert("Errore nell'invio della richiesta"),
     });
   }
 
@@ -148,7 +149,7 @@ export class DashboardClubDetailComponent {
           alert('Richiesta inviata con successo!');
           this.isEditing = false;
         },
-        error: (err) => alert("Errore nell'invio della richiesta"),
+        error: (err: ErrorResponse) => alert("Errore nell'invio della richiesta"),
       });
   }
 
