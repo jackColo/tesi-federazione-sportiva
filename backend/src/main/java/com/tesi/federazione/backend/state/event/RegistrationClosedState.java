@@ -3,9 +3,15 @@ package com.tesi.federazione.backend.state.event;
 import com.tesi.federazione.backend.model.Event;
 import com.tesi.federazione.backend.model.enums.EventStatus;
 import lombok.extern.slf4j.Slf4j;
+import com.tesi.federazione.backend.exception.ActionNotAllowedException;
 
 @Slf4j
 public class RegistrationClosedState implements EventState {
+
+    @Override
+    public void resumeEvent(Event event) {
+        throw new ActionNotAllowedException("Impossibile riprogrammato l'evento!");
+    }
 
     @Override
     public void openRegistrations(Event event) {
@@ -20,7 +26,7 @@ public class RegistrationClosedState implements EventState {
 
     @Override
     public void closeRegistrations(Event event) {
-        throw new IllegalStateException("Le iscrizioni sono già chiuse!");
+        throw new ActionNotAllowedException("Le iscrizioni sono già chiuse!");
     }
 
     @Override
@@ -45,11 +51,6 @@ public class RegistrationClosedState implements EventState {
 
     @Override
     public void validateRegistration(Event event) {
-        throw new IllegalStateException("Il periodo di registrazione è terminato!");
-    }
-
-    @Override
-    public EventStatus getStatus() {
-        return EventStatus.REGISTRATION_CLOSED;
+        throw new ActionNotAllowedException("Il periodo di registrazione è terminato!");
     }
 }

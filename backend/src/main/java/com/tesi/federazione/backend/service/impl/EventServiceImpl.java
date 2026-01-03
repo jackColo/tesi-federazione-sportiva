@@ -50,17 +50,48 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDTO getEventById(String id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + id + " non trovato"));
-        return eventMapper.toDTO(event);
+        long count = enrollmentRepository.findByEventId(id).size();
+        EventDTO dto = eventMapper.toDTO(event);
+        dto.setEnrolledCount(count);
+
+        return dto;
     }
 
     @Override
     public EventDTO createEvent(CreateEventDTO createEventDTO) {
-        Event event = eventMapper.toEntity(createEventDTO);
+        Event event = new Event();
+        event.setName(createEventDTO.getName());
+        event.setDescription(createEventDTO.getDescription());
+        event.setLocation(createEventDTO.getLocation());
+        event.setDate(createEventDTO.getDate());
+        event.setRegistrationOpenDate(createEventDTO.getRegistrationOpenDate());
+        event.setRegistrationCloseDate(createEventDTO.getRegistrationCloseDate());
+        event.setDisciplines(createEventDTO.getDisciplines());
 
         event.setStatus(EventStatus.SCHEDULED);
 
         Event savedEvent = eventRepository.save(event);
 
+        return eventMapper.toDTO(savedEvent);
+    }
+
+    @Override
+    public EventDTO updateEvent(EventDTO eventDTO) {
+        Event oldEvent = eventRepository.findById(eventDTO.getId()).orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + eventDTO.getId() + " non trovato"));
+
+        Event newEvent = new Event();
+        newEvent.setName(eventDTO.getName());
+        newEvent.setDescription(eventDTO.getDescription());
+        newEvent.setLocation(eventDTO.getLocation());
+        newEvent.setDate(eventDTO.getDate());
+        newEvent.setRegistrationOpenDate(eventDTO.getRegistrationOpenDate());
+        newEvent.setRegistrationCloseDate(eventDTO.getRegistrationCloseDate());
+        newEvent.setDisciplines(eventDTO.getDisciplines());
+
+        newEvent.setStatus(oldEvent.getStatus());
+        newEvent.setId(eventDTO.getId());
+
+        Event savedEvent = eventRepository.save(newEvent);
         return eventMapper.toDTO(savedEvent);
     }
 
@@ -92,5 +123,32 @@ public class EventServiceImpl implements EventService {
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
 
         return enrollmentMapper.toDTO(savedEnrollment);
+    }
+
+    @Override
+    public void updateEventState(String id, EventStatus newState) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + id + " non trovato"));
+        event.setState(EventStateFactory.getInitialState(event.getStatus()));
+
+        switch (newState) {
+            case SCHEDULED:
+                event.resumeEvent();
+                break;
+            case COMPLETED:
+                event.completeEvent();
+                break;
+            case CANCELLED:
+                event.cancelEvent();
+                break;
+            case REGISTRATION_CLOSED:
+                event.closeRegistrations();
+                break;
+            case REGISTRATION_OPEN:
+                event.openRegistrations();
+                break;
+        }
+
+        eventRepository.save(event);
     }
 }

@@ -12,4 +12,6 @@ public interface UserService {
     UserDTO updateUser(CreateUserDTO dto);
     UserDTO getUserByEmail(String email);
     UserDTO getUserById(String id);
+
+    User createUserEntity(CreateUserDTO dto);
 }

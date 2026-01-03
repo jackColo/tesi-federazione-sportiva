@@ -10,6 +10,7 @@ import java.util.Set;
 public class CreateEventDTO {
     private String name;
     private String location;
+    private String description;
     private LocalDate date;
     private LocalDate registrationOpenDate;
     private LocalDate registrationCloseDate;

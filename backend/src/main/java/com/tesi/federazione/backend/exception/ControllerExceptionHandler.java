@@ -20,8 +20,8 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalState(ResourceNotFoundException ex) {
+    @ExceptionHandler(ActionNotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(ActionNotAllowedException ex) {
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setMessage("Azione non consentita: " + ex.getMessage());
@@ -32,6 +32,8 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralError(Exception ex) {
+        System.out.println("ECCEZIONE CATTURATA DAL GENERICO: " + ex.getClass().getName());
+        ex.printStackTrace();
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         error.setMessage("Si è verificato un errore inaspettato: "  + ex.getMessage());

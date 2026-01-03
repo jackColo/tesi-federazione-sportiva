@@ -3,13 +3,19 @@ package com.tesi.federazione.backend.state.event;
 import com.tesi.federazione.backend.model.Event;
 import com.tesi.federazione.backend.model.enums.EventStatus;
 import lombok.extern.slf4j.Slf4j;
+import com.tesi.federazione.backend.exception.ActionNotAllowedException;
 
 @Slf4j
 public class RegistrationOpenState implements EventState {
 
     @Override
+    public void resumeEvent(Event event) {
+        throw new ActionNotAllowedException("Impossibile riprogrammato l'evento!");
+    }
+
+    @Override
     public void openRegistrations(Event event) {
-        throw new IllegalStateException("Le iscrizioni sono già aperte!");
+        throw new ActionNotAllowedException("Le iscrizioni sono già aperte!");
     }
 
     @Override
@@ -25,21 +31,16 @@ public class RegistrationOpenState implements EventState {
 
     @Override
     public void completeEvent(Event event) {
-        throw new IllegalStateException("Impossibile completare l'evento, le iscrizioni sono ancora state aperte!");
+        throw new ActionNotAllowedException("Impossibile completare l'evento, le iscrizioni sono ancora state aperte!");
     }
 
     @Override
     public void cancelEvent(Event event) {
-        throw new IllegalStateException("Per cancellare l'evento le iscrizioni devono essere chiuse.");
+        throw new ActionNotAllowedException("Per cancellare l'evento le iscrizioni devono essere chiuse.");
     }
 
     @Override
     public void validateRegistration(Event event) {
 
-    }
-
-    @Override
-    public EventStatus getStatus() {
-        return EventStatus.REGISTRATION_OPEN;
     }
 }

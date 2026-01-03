@@ -38,7 +38,7 @@ public class ClubServiceImpl implements ClubService {
         // Sovrascrivo il ruolo che arriva da FE per sicurezza
         dto.getManager().setRole(Role.CLUB_MANAGER.name());
 
-        ClubManager clubManager = (ClubManager) userService.createUser(dto.getManager());
+        ClubManager clubManager = (ClubManager) userService.createUserEntity(dto.getManager());
         Club newClub = new Club();
         newClub.setName(dto.getName());
         newClub.setFiscalCode(dto.getFiscalCode());
@@ -57,8 +57,13 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public Club findClubEntity(String id) {
+        return clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
+    }
+
+    @Override
     public ClubDTO getClubById(String id) {
-        Club club = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
+        Club club = findClubEntity(id);
         return clubMapper.toDTO(club);
     }
 
@@ -76,7 +81,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public ClubDTO updateClub(UpdatedClubDTO dto) {
-        Club oldClub = clubRepository.findById(dto.getId()).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + dto.getId() + " non trovato"));
+        Club oldClub = findClubEntity(dto.getId());
 
         Club newClub = new Club();
         newClub.setId(dto.getId());
@@ -96,7 +101,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public void updateClubStatus(String id, AffiliationStatus newStatus){
-        Club club = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));
+        Club club = findClubEntity(id);
 
         if (!club.getAffiliationStatus().canTransitionTo(newStatus)) {
             throw new IllegalStateException(

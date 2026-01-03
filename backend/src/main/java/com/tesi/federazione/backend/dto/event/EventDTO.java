@@ -10,10 +10,14 @@ import java.util.Set;
 public class EventDTO {
     private String id;
     private String name;
+    private String description;
     private String location;
     private LocalDate date;
     private LocalDate registrationOpenDate;
     private LocalDate registrationCloseDate;
     private String status;
     private Set<CompetitionType> disciplines;
+
+    // Parametri non salvati a db
+    private Long enrolledCount;
 }

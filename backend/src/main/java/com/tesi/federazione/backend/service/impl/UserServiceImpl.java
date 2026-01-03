@@ -25,16 +25,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(CreateUserDTO dto) {
-        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already in use.");
-        }
-
-        User user = createEntity(dto);
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-
-        User savedUser = userRepository.save(user);
+        User savedUser = createUserEntity(dto);
         return userMapper.toDTO(savedUser);
     }
+
 
     @Override
     public UserDTO updateUser(CreateUserDTO dto) {
@@ -65,6 +59,19 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(String id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Utente con id " + id + " non trovato"));
         return userMapper.toDTO(user);
+    }
+
+    @Override
+    public User createUserEntity(CreateUserDTO dto) {
+
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already in use.");
+        }
+
+        User user = createEntity(dto);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        return userRepository.save(user);
     }
 
     private User createEntity(CreateUserDTO dto) {

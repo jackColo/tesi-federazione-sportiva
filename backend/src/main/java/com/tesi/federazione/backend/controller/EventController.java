@@ -5,6 +5,7 @@ import com.tesi.federazione.backend.dto.enrollment.EnrollmentDTO;
 import com.tesi.federazione.backend.dto.event.CreateEventDTO;
 import com.tesi.federazione.backend.dto.event.EventDTO;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
+import com.tesi.federazione.backend.model.enums.EventStatus;
 import com.tesi.federazione.backend.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +35,25 @@ public class EventController {
         return new ResponseEntity<>(eventDTO, HttpStatus.OK);
     }
 
-    @PostMapping
+    @GetMapping("/update-state/{id}/{newState}")
+    @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
+    public ResponseEntity<Void> updateEvent(@PathVariable String id, @PathVariable EventStatus newState) {
+        eventService.updateEventState(id,newState);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<EventDTO> createNewEvent(@RequestBody CreateEventDTO event) {
         EventDTO newEvent = eventService.createEvent(event);
         return new ResponseEntity<>(newEvent, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/update")
+    @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
+    public ResponseEntity<EventDTO> updatedEvent(@RequestBody EventDTO newEventData) {
+        EventDTO event = eventService.updateEvent(newEventData);
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @PostMapping("/enroll")

@@ -3,12 +3,10 @@ package com.tesi.federazione.backend.service;
 import com.tesi.federazione.backend.dto.club.ClubDTO;
 import com.tesi.federazione.backend.dto.club.CreateClubDTO;
 import com.tesi.federazione.backend.dto.club.UpdatedClubDTO;
-import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Club;
-import org.springframework.stereotype.Service;
+import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ClubService {
     ClubDTO createClub(CreateClubDTO club);
@@ -17,4 +15,6 @@ public interface ClubService {
     List<ClubDTO> getAll();
     ClubDTO updateClub(UpdatedClubDTO club);
     void updateClubStatus(String id, AffiliationStatus newStatus);
+
+    Club findClubEntity(String id);
 }

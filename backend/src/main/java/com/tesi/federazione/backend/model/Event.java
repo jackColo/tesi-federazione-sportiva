@@ -31,6 +31,10 @@ public class Event {
     @Transient
     private transient EventState state;
 
+    public void resumeEvent() {
+        this.state.resumeEvent(this);
+    }
+
     public void openRegistrations() {
         this.state.openRegistrations(this);
     }
