@@ -8,8 +8,6 @@ import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.factory.state.EventStateFactory;
 import com.tesi.federazione.backend.mapper.EnrollmentMapper;
 import com.tesi.federazione.backend.mapper.EventMapper;
-import com.tesi.federazione.backend.model.Athlete;
-import com.tesi.federazione.backend.model.Club;
 import com.tesi.federazione.backend.model.Enrollment;
 import com.tesi.federazione.backend.model.Event;
 import com.tesi.federazione.backend.model.enums.EnrollmentStatus;
@@ -21,8 +19,10 @@ import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +55,33 @@ public class EventServiceImpl implements EventService {
         dto.setEnrolledCount(count);
 
         return dto;
+    }
+
+    @Override
+    public void updateEventState(String id, EventStatus newState) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + id + " non trovato"));
+        event.setState(EventStateFactory.getInitialState(event.getStatus()));
+
+        switch (newState) {
+            case SCHEDULED:
+                event.resumeEvent();
+                break;
+            case COMPLETED:
+                event.completeEvent();
+                break;
+            case CANCELLED:
+                event.cancelEvent();
+                break;
+            case REGISTRATION_CLOSED:
+                event.closeRegistrations();
+                break;
+            case REGISTRATION_OPEN:
+                event.openRegistrations();
+                break;
+        }
+
+        eventRepository.save(event);
     }
 
     @Override
@@ -98,27 +125,40 @@ public class EventServiceImpl implements EventService {
     @Override
     public EnrollmentDTO enrollAthlete(CreateEnrollmentDTO enrollmentDTO) {
 
-        if (enrollmentRepository.existsByEventAndAthleteAndDiscipline(enrollmentDTO.getEventId(), enrollmentDTO.getAthleteId(), enrollmentDTO.getCompetitionType())) {
+        if (enrollmentRepository.existsByEventIdAndAthleteIdAndDiscipline(enrollmentDTO.getEventId(), enrollmentDTO.getAthleteId(), enrollmentDTO.getCompetitionType())) {
             throw new IllegalStateException("Atleta già iscritto all'evento " + enrollmentDTO.getEventId() + " per la disciplina " + enrollmentDTO.getCompetitionType());
         }
+        clubRepository.findById(enrollmentDTO.getClubId())
+                .orElseThrow(() -> new ResourceNotFoundException("Club con ID " + enrollmentDTO.getClubId() + " non trovato"));
+        userRepository.findById(enrollmentDTO.getAthleteId())
+                .orElseThrow(() -> new ResourceNotFoundException("Atleta con ID " + enrollmentDTO.getClubId() + " non trovato"));
+
 
         Event event = eventRepository.findById(enrollmentDTO.getEventId())
                 .orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + enrollmentDTO.getEventId() + " non trovato"));
-        Club club = clubRepository.findById(enrollmentDTO.getClubId())
-                .orElseThrow(() -> new ResourceNotFoundException("Club con ID " + enrollmentDTO.getClubId() + " non trovato"));
-        Athlete athlete = (Athlete) userRepository.findById(enrollmentDTO.getAthleteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Atleta con ID " + enrollmentDTO.getClubId() + " non trovato"));
 
         event.setState(EventStateFactory.getInitialState(event.getStatus()));
         event.validateRegistration();
 
         Enrollment enrollment = new Enrollment();
-        enrollment.setAthlete(athlete);
-        enrollment.setEvent(event);
-        enrollment.setEnrollingClub(club);
+        enrollment.setAthleteId(enrollmentDTO.getAthleteId());
+        enrollment.setAthleteFirstname(enrollmentDTO.getAthleteFirstname());
+        enrollment.setAthleteLastname(enrollmentDTO.getAthleteLastname());
+        enrollment.setAthleteWeight(enrollmentDTO.getAthleteWeight());
+        enrollment.setAthleteHeight(enrollmentDTO.getAthleteHeight());
+        enrollment.setAthleteGender(enrollmentDTO.getAthleteGender());
+        enrollment.setAthleteAffiliationStatus(enrollmentDTO.getAthleteAffiliationStatus());
+        enrollment.setAthleteMedicalCertificateExpireDate(enrollmentDTO.getAthleteMedicalCertificateExpireDate());
+
+        enrollment.setEventId(event.getId());
+        enrollment.setClubId(enrollmentDTO.getClubId());
         enrollment.setEnrollmentDate(LocalDateTime.now());
         enrollment.setDiscipline(enrollmentDTO.getCompetitionType());
-        enrollment.setStatus(EnrollmentStatus.SUBMITTED);
+        if (enrollmentDTO.isDraft()) {
+            enrollment.setStatus(EnrollmentStatus.DRAFT);
+        } else {
+            enrollment.setStatus(EnrollmentStatus.SUBMITTED);
+        }
 
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
 
@@ -126,29 +166,63 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void updateEventState(String id, EventStatus newState) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + id + " non trovato"));
-        event.setState(EventStateFactory.getInitialState(event.getStatus()));
+    @Transactional
+    public EnrollmentDTO updateEnrollment(EnrollmentDTO enrollmentDTO) {
 
-        switch (newState) {
-            case SCHEDULED:
-                event.resumeEvent();
-                break;
-            case COMPLETED:
-                event.completeEvent();
-                break;
-            case CANCELLED:
-                event.cancelEvent();
-                break;
-            case REGISTRATION_CLOSED:
-                event.closeRegistrations();
-                break;
-            case REGISTRATION_OPEN:
-                event.openRegistrations();
-                break;
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Iscrizione con ID " + enrollmentDTO.getId() + " non trovata"));
+
+        Event event = eventRepository.findById(enrollment.getEventId())
+                .orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + enrollment.getEventId() + " non trovato"));
+
+        event.setState(EventStateFactory.getInitialState(event.getStatus()));
+        event.validateRegistration();
+
+        if (enrollmentDTO.getCompetitionType() != null &&
+                !enrollmentDTO.getCompetitionType().equals(enrollment.getDiscipline())) {
+
+            if (enrollmentRepository.existsByEventIdAndAthleteIdAndDiscipline(enrollmentDTO.getEventId(), enrollmentDTO.getAthleteId(), enrollmentDTO.getCompetitionType())) {
+                throw new IllegalStateException("Atleta già iscritto all'evento " + enrollmentDTO.getEventId() + " per la disciplina " + enrollmentDTO.getCompetitionType());
+            }
+
+            enrollment.setDiscipline(enrollmentDTO.getCompetitionType());
         }
 
-        eventRepository.save(event);
+        enrollment.setAthleteFirstname(enrollmentDTO.getAthleteFirstname());
+        enrollment.setAthleteLastname(enrollmentDTO.getAthleteLastname());
+        enrollment.setAthleteWeight(enrollmentDTO.getAthleteWeight());
+        enrollment.setAthleteHeight(enrollmentDTO.getAthleteHeight());
+        enrollment.setAthleteGender(enrollmentDTO.getAthleteGender());
+        enrollment.setAthleteAffiliationStatus(enrollmentDTO.getAthleteAffiliationStatus());
+        enrollment.setAthleteMedicalCertificateExpireDate(enrollmentDTO.getAthleteMedicalCertificateExpireDate());
+
+        enrollment.setStatus(enrollmentDTO.getStatus());
+
+        Enrollment updatedEnrollment = enrollmentRepository.save(enrollment);
+
+        return enrollmentMapper.toDTO(updatedEnrollment);
+    }
+
+    @Override
+    public List<EnrollmentDTO> getEnrollmentsByEventId(String eventId, String clubId, String athleteId) {
+        List<Enrollment> enrollments = new ArrayList<>();
+
+        if (athleteId != null) {
+            enrollments = enrollmentRepository.findByEventIdAndAthleteId(eventId, athleteId);
+        }
+        else if (clubId != null) {
+            enrollments = enrollmentRepository.findByEventIdAndClubId(eventId, clubId);
+        }
+        else {
+            enrollments = enrollmentRepository.findByEventId(eventId);
+        }
+
+        return enrollments.stream().map(enrollmentMapper::toDTO).toList();
+    }
+
+    @Override
+    public EnrollmentDTO getEnrollment(String id) {
+        Enrollment enrollment = enrollmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Iscrizione con id " + id + " non trovata."));
+        return enrollmentMapper.toDTO(enrollment);
     }
 }

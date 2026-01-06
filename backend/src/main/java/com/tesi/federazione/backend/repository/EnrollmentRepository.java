@@ -10,9 +10,11 @@ public interface EnrollmentRepository extends MongoRepository<Enrollment, String
     // Le CRUD di base vengono definite automaticamente da Spring Data
 
     List<Enrollment> findByEventId(String eventId);
-
     List<Enrollment> findByAthleteId(String athleteId);
 
-    List<Enrollment> findByEnrollingClubIdAndEventId(String enrollingClubId, String eventId);
-    boolean existsByEventAndAthleteAndDiscipline(String eventId, String athleteId, CompetitionType competitionType);
+    List<Enrollment> findByEventIdAndClubId(String eventId, String clubId);
+    List<Enrollment> findByEventIdAndAthleteId(String eventId, String athleteId);
+
+    List<Enrollment> findByClubIdAndEventId(String clubId, String eventId);
+    boolean existsByEventIdAndAthleteIdAndDiscipline(String eventId, String athleteId, CompetitionType competitionType);
 }

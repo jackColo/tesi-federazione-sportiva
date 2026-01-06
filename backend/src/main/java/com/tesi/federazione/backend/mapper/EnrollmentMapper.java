@@ -14,22 +14,20 @@ public class EnrollmentMapper {
 
         EnrollmentDTO dto = new EnrollmentDTO();
         dto.setId(enrollment.getId());
+        dto.setEventId(enrollment.getEventId());
+        dto.setClubId(enrollment.getClubId());
         dto.setStatus(enrollment.getStatus());
-        dto.setDiscipline(enrollment.getDiscipline());
+        dto.setCompetitionType(enrollment.getDiscipline());
+        dto.setEnrollmentDate(enrollment.getEnrollmentDate());
 
-        if (enrollment.getEvent() != null) {
-            dto.setEventDate(enrollment.getEvent().getDate());
-            dto.setEventName(enrollment.getEvent().getName());
-        }
+        dto.setAthleteFirstname(enrollment.getAthleteFirstname());
+        dto.setAthleteLastname(enrollment.getAthleteLastname());
+        dto.setAthleteWeight(enrollment.getAthleteWeight());
+        dto.setAthleteHeight(enrollment.getAthleteHeight());
+        dto.setAthleteGender(enrollment.getAthleteGender());
+        dto.setAthleteAffiliationStatus(enrollment.getAthleteAffiliationStatus());
+        dto.setAthleteMedicalCertificateExpireDate(enrollment.getAthleteMedicalCertificateExpireDate());
 
-        if (enrollment.getAthlete() != null) {
-            dto.setAthleteName(enrollment.getAthlete().getFirstName());
-            dto.setAthleteSurname(enrollment.getAthlete().getLastName());
-        }
-
-        if (enrollment.getEnrollingClub() != null) {
-            dto.setClubName(enrollment.getEnrollingClub().getName());
-        }
 
         return dto;
     }

@@ -141,22 +141,36 @@ export interface ClubDTO {
 }
 
 export interface CreateEnrollmentDTO {
-  clubId: string;
-  athleteId: string;
   eventId: string;
+  clubId: string;
   competitionType: CompetitionType;
+  enrollmentDate: string;
+  athleteId: string;
+  athleteFirstname: string;
+  athleteLastname: string;
+  athleteWeight: string;
+  athleteHeight: string;
+  athleteGender: string;
+  athleteAffiliationStatus: AffiliationStatus;
+  athleteMedicalCertificateExpireDate: string;
+  isDraft: boolean;
 }
 
 export interface EnrollmentDTO {
   id: string;
-  eventName: string;
-  eventDate: string;
-  athleteName: string;
-  athleteSurname: string;
-  clubName: string;
-  discipline: CompetitionType;
-  category: string;
+  eventId: string;
+  clubId: string;
+  competitionType: CompetitionType;
+  enrollmentDate: string;
   status: EnrollmentStatus;
+  athleteId: string;
+  athleteFirstname: string;
+  athleteLastname: string;
+  athleteWeight: string;
+  athleteHeight: string;
+  athleteGender: string;
+  athleteAffiliationStatus: AffiliationStatus;
+  athleteMedicalCertificateExpireDate: string;
 }
 
 // Notification DTOs

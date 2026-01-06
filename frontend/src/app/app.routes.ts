@@ -19,76 +19,91 @@ import { DashboardEventFormComponent } from './features/dashboard/events/dashboa
 import { DashboardEventsComponent } from './features/dashboard/events/dashboard-events-component/dashboard-events-component';
 import { DashboardComponent } from './features/dashboard/layout/dashboard-component/dashboard-component';
 import { DashboardSkeletonComponent } from './features/dashboard/layout/dashboard-skeleton-component/dashboard-skeleton-component';
+import { DashboardEventEnrollFormComponent } from './features/dashboard/events/enrollment-components/dashboard-event-enroll-form-component/dashboard-event-enroll-form-component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
   { path: 'events', component: EventsComponent },
-  { 
-    path: 'notifications', 
+  {
+    path: 'notifications',
     component: NotificationsComponent,
-    canActivate: [roleGuard([Role.ATHLETE, Role.CLUB_MANAGER, Role.FEDERATION_MANAGER])]
-   },
+    canActivate: [roleGuard([Role.ATHLETE, Role.CLUB_MANAGER, Role.FEDERATION_MANAGER])],
+  },
   {
     path: 'dashboard',
     component: DashboardSkeletonComponent,
     canActivate: [roleGuard([Role.ATHLETE, Role.CLUB_MANAGER, Role.FEDERATION_MANAGER])],
     children: [
-      { path: '', 
+      {
+        path: '',
         component: DashboardComponent,
-        canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER, Role.ATHLETE])]      
+        canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER, Role.ATHLETE])],
       },
-      { 
+      {
         path: 'events',
         canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER, Role.ATHLETE])],
         children: [
           { path: '', component: DashboardEventsComponent },
-          { 
-            path: 'new', 
+          {
+            path: 'new',
             component: DashboardEventFormComponent,
-            canActivate: [roleGuard([Role.FEDERATION_MANAGER])] 
+            canActivate: [roleGuard([Role.FEDERATION_MANAGER])],
           },
-          { 
-            path: 'update/:id', 
+          {
+            path: 'update/:id',
             component: DashboardEventFormComponent,
-            canActivate: [roleGuard([Role.FEDERATION_MANAGER])] 
+            canActivate: [roleGuard([Role.FEDERATION_MANAGER])],
           },
-          { 
-            path: ':id', 
-            component: DashboardEventDetailComponent
-          }
-        ] 
+          {
+            path: 'enroll/:enrollId',
+            component: DashboardEventEnrollFormComponent,
+          },
+          {
+            path: ':id',
+            children: [
+              { path: '', component: DashboardEventDetailComponent },
+              {
+                path: 'enroll/:clubId/:athleteId',
+                component: DashboardEventEnrollFormComponent,
+              },
+            ],
+          },
+        ],
       },
-      { path: 'clubs', 
+      {
+        path: 'clubs',
         children: [
-          { 
-            path: '', 
+          {
+            path: '',
             canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER])],
-            component: DashboardClubsComponent 
+            component: DashboardClubsComponent,
           },
-          { 
-            path: ':id', 
+          {
+            path: ':id',
             component: DashboardClubDetailComponent,
             canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER])],
-          }
-        ]
+          },
+        ],
       },
-      { path: 'user',
+      {
+        path: 'user',
         canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER, Role.ATHLETE])],
         children: [
-          { 
-            path: 'new', 
+          {
+            path: 'new',
             component: DashboardUserFormComponent,
             canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER])],
-          },{
-            path: ':id', 
+          },
+          {
+            path: ':id',
             component: DashboardUserDetailComponent,
-            canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER, Role.ATHLETE])]
-          }
-        ]
-      }
-    ]
+            canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER, Role.ATHLETE])],
+          },
+        ],
+      },
+    ],
   },
-  { path: '**', redirectTo: '', pathMatch: 'full' }
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

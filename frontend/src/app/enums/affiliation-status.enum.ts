@@ -1,3 +1,11 @@
+import {
+  faBan,
+  faCheckCircle,
+  faClock,
+  faExclamationCircle,
+  IconDefinition
+} from '@fortawesome/free-solid-svg-icons';
+
 export enum AffiliationStatus {
   SUBMITTED = 'SUBMITTED',
   ACCEPTED = 'ACCEPTED',
@@ -31,5 +39,20 @@ export function affiliationStatusColorClass(status: AffiliationStatus): string {
       return 'bg-red-100 text-red-600 border-red-200';
     default:
       return 'bg-gray-100 text-gray-700';
+  }
+}
+
+export function statusIcon(status: AffiliationStatus): IconDefinition {
+  switch (status) {
+    case AffiliationStatus.SUBMITTED:
+      return faClock;
+    case AffiliationStatus.ACCEPTED:
+      return faCheckCircle;
+    case AffiliationStatus.REJECTED:
+      return faBan;
+    case AffiliationStatus.EXPIRED:
+      return faExclamationCircle;
+    default:
+      return faExclamationCircle;
   }
 }

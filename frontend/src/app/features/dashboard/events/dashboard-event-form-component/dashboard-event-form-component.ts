@@ -31,6 +31,7 @@ import {
 import { Role } from '../../../../enums/role.enum';
 import { Event } from '../../../../models/event.model';
 import { ErrorResponse, EventDTO } from '../../../../models/dtos';
+import { formatDateForInput } from '../../../../shared/utility/utils';
 
 @Component({
   selector: 'app-dashboard-event-form',
@@ -108,9 +109,9 @@ export class DashboardEventFormComponent {
           location: evt.location,
           description: evt.description,
           disciplines: evt.disciplines,
-          date: this.formatDateForInput(evt.date),
-          registrationOpenDate: this.formatDateForInput(evt.registrationOpenDate),
-          registrationCloseDate: this.formatDateForInput(evt.registrationCloseDate),
+          date: formatDateForInput(evt.date),
+          registrationOpenDate: formatDateForInput(evt.registrationOpenDate),
+          registrationCloseDate: formatDateForInput(evt.registrationCloseDate),
         });
         this.form.disable();
       }
@@ -132,9 +133,9 @@ export class DashboardEventFormComponent {
         location: evt.location,
         description: evt.description,
         disciplines: evt.disciplines,
-        date: this.formatDateForInput(evt.date),
-        registrationOpenDate: this.formatDateForInput(evt.registrationOpenDate),
-        registrationCloseDate: this.formatDateForInput(evt.registrationCloseDate),
+        date: formatDateForInput(evt.date),
+        registrationOpenDate: formatDateForInput(evt.registrationOpenDate),
+        registrationCloseDate: formatDateForInput(evt.registrationCloseDate),
       });
     }
   }
@@ -179,18 +180,6 @@ export class DashboardEventFormComponent {
       });
       
     }
-  }
-
-  // --- UTILS ---
-
-  // Helper per convertire ISO string (o date obj) nel formato richiesto da <input type="datetime-local">
-  private formatDateForInput(dateStr: string | Date): string {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-
-    const offset = date.getTimezoneOffset() * 60000;
-    const localDate = new Date(date.getTime() - offset);
-    return localDate.toISOString().split('T')[0];
   }
 
   getStatusLabel(status: EventStatus): string {

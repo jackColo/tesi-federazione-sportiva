@@ -1,3 +1,4 @@
+import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { AffiliationStatus } from '../enums/affiliation-status.enum';
 import { GenderEnum } from '../enums/gender.enum';
 import { AthleteDTO } from './dtos';
