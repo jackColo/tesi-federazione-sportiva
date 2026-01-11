@@ -4,7 +4,6 @@ import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.JwtResponseDTO;
 import com.tesi.federazione.backend.dto.user.LogUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
-import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.security.JwtUtils;
 import com.tesi.federazione.backend.service.UserService;
@@ -15,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +26,6 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private final UserMapper userMapper;
     private final JwtUtils jwtUtils;
 
     @PostMapping("/login")
