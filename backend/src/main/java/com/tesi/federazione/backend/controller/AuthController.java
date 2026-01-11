@@ -39,11 +39,11 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User userDetails = (User) authentication.getPrincipal();
 
-        String jwt = jwtUtils.generateToken(userDetails);
+        JwtResponseDTO jwt = jwtUtils.generateToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponseDTO(jwt));
+        return ResponseEntity.ok(jwt);
     }
 
     @PostMapping("/register")
