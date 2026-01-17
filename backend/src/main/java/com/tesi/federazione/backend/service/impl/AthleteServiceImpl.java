@@ -3,6 +3,7 @@ package com.tesi.federazione.backend.service.impl;
 import com.tesi.federazione.backend.dto.user.AthleteDTO;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.mapper.UserMapper;
+import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.enums.Role;
@@ -67,8 +68,9 @@ public class AthleteServiceImpl implements AthleteService {
 
     @Override
     public List<AthleteDTO> getAllAthletes() {
-        List<Athlete> athletes = userRepository.findByRole(Role.ATHLETE);
+        List<User> athletes = userRepository.findByRole(Role.ATHLETE);
         return athletes.stream()
+                .map(user -> (Athlete) user)
                 .map(athlete -> (AthleteDTO) userMapper.toDTO(athlete))
                 .toList();
     }
