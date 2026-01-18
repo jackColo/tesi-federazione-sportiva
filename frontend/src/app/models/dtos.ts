@@ -3,11 +3,21 @@ import { CompetitionType } from '../enums/competition-type.enum';
 import { EnrollmentStatus } from '../enums/enrollment-status.enum';
 import { EventStatus } from '../enums/event-status.enum';
 import { GenderEnum } from '../enums/gender.enum';
-import { NotificationType } from '../enums/notification-type.enum';
 import { Role } from '../enums/role.enum';
 
 export interface JwtResponseDTO {
   token: string;
+  id: string;
+  email: string;
+  role: Role;
+}
+
+export interface JwtResponsePayload {
+  sub: string;        
+  id: string;         
+  role: string;       
+  iat: number;
+  exp: number;
 }
 
 export interface ErrorResponse {
@@ -173,13 +183,17 @@ export interface EnrollmentDTO {
   athleteMedicalCertificateExpireDate: string;
 }
 
-// Notification DTOs
-export interface NotificationDTO {
-  id: string;
-  title: string;
+// ChatMessage DTOs
+export interface ChatMessageOutputDTO {
   message: string;
-  createdAt: string; // ISO String
-  isRead: boolean;
-  type: NotificationType;
-  link?: string; // Opzionale: se cliccando porta a una pagina specifica (es. dettaglio club)
+  chatUserId: string;
+}
+
+export interface ChatMessageInputDTO {
+  id: string,
+  chatUserId: string,
+  senderId: string,
+  senderRole: Role,
+  content: string,
+  timestamp: string
 }

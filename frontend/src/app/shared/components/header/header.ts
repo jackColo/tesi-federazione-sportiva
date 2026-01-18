@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { faUser, faCalendarWeek, faTrophy, IconDefinition, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCalendarWeek, faRightFromBracket, faTrophy, faUser, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../core/services/auth.service';
 
 interface HeaderItem {
@@ -15,13 +15,13 @@ interface HeaderItem {
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [
     CommonModule,
     RouterLink,
     FontAwesomeModule
   ],
   templateUrl: './header.html',
-  styleUrl: './header.scss',
 })
 export class Header {
   protected authService = inject(AuthService);
@@ -32,7 +32,7 @@ export class Header {
     {
       id: 'events',
       icon: faCalendarWeek,
-      routerLink: '/event',
+      routerLink: '/events',
     },
     {
       id: 'profile-dashboard',

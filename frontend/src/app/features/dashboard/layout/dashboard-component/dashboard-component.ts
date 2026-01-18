@@ -25,7 +25,7 @@ export class DashboardComponent {
     add: faUserPlus
   };
 
-  userEmail = computed(() => this.authService.userClaims()?.sub || '');
+  userEmail = computed(() => this.authService.currentUserEmail() || '');
 
   user: Signal<User | null> = toSignal(
     this.userService.getUserByEmail(this.userEmail()),

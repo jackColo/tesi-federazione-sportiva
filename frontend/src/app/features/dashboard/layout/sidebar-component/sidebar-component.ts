@@ -31,10 +31,8 @@ export class SidebarComponent {
   faUsers = faUsers;
   faSignOut = faRightFromBracket;
 
-  userClaims = this.authService.userClaims;
-
   userEmail = computed(() => {
-    return this.userClaims()?.sub || 'Utente';
+    return this.authService.currentUserEmail() || 'Utente sconosciuto';
   });
 
   user: Signal<User | null> = toSignal(
@@ -48,7 +46,7 @@ export class SidebarComponent {
   });
 
   userRole = computed(() => {
-    return this.userClaims()?.roles[0]?.authority;
+    return this.authService.userRole();
   });
 
   userReadableRole = computed(() => {

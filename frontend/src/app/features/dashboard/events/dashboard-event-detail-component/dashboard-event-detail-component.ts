@@ -97,7 +97,7 @@ export class DashboardEventDetailComponent {
         if (role === Role.FEDERATION_MANAGER) {
           return of([]);
         }
-        const email = this.authService.userClaims()?.sub;
+        const email = this.authService.currentUserEmail()
         if (!email) {
           return of([]);
         }

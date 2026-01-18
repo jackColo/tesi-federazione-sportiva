@@ -3,7 +3,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { lastValueFrom, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { JwtResponseDTO, LogUserDTO } from '../../models/dtos';
+import { JwtResponsePayload, JwtResponseDTO, LogUserDTO } from '../../models/dtos';
 import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
@@ -13,18 +13,24 @@ export class AuthService {
   private apiUrl = environment.apiUrl + '/auth/';
 
   private isLoggedInSignal = signal<boolean>(false);
-  private userClaimsSignal = signal<any>(null);
+  private userClaimsSignal = signal<JwtResponsePayload | null>(null);
 
   public isLoggedIn = this.isLoggedInSignal.asReadonly();
   public userClaims = this.userClaimsSignal.asReadonly();
 
   public userRole = computed<string | null>(() => {
     const claims = this.userClaims();
+    return claims ? claims.role : null;
+  });
 
-    if (claims && claims.roles && claims.roles.length > 0) {
-      return claims.roles[0].authority;
-    }
-    return null;
+  public currentUserEmail = computed<string | null>(() => {
+    const claims = this.userClaims();
+    return claims ? claims.sub : null;
+  });
+
+  public currentUserId = computed<string | null>(() => {
+    const claims = this.userClaims();
+    return claims ? claims.id : null;
   });
 
   constructor() {
@@ -38,8 +44,7 @@ export class AuthService {
 
   private handleToken(token: string | null): void {
     if (!token) {
-      this.isLoggedInSignal.set(false);
-      this.userClaimsSignal.set(null);
+      this.resetState();
       return;
     }
 
@@ -67,7 +72,7 @@ export class AuthService {
 
   async login(credentials: LogUserDTO): Promise<JwtResponseDTO> {
     const observable = this.http.post<JwtResponseDTO>(this.apiUrl + 'login', credentials).pipe(
-      tap((response) => {
+      tap((response: JwtResponseDTO) => {
         localStorage.setItem('jwt_token', response.token);
         this.handleToken(response.token);
       })
@@ -78,8 +83,13 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('jwt_token');
-    this.handleToken(null);
+    this.resetState();
     this.router.navigate(['']);
+  }
+
+  private resetState(): void {
+    this.isLoggedInSignal.set(false);
+    this.userClaimsSignal.set(null);
   }
 
   private decodeToken(token: string): any | null {
