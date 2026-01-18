@@ -30,10 +30,18 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ResourceConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(ResourceConflictException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.CONFLICT.value()); // Restituisce 409
+        error.setMessage(ex.getMessage());
+        error.setTimestamp(LocalDateTime.now());
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralError(Exception ex) {
-        System.out.println("ECCEZIONE CATTURATA DAL GENERICO: " + ex.getClass().getName());
-        ex.printStackTrace();
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         error.setMessage("Si è verificato un errore inaspettato: "  + ex.getMessage());

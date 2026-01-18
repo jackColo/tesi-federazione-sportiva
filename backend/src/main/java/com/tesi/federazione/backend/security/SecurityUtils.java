@@ -14,6 +14,11 @@ public class SecurityUtils {
         return user != null ? user.getId() : null;
     }
 
+    public String getCurrentUserEmail() {
+        User user = getCurrentUser();
+        return user != null ? user.getEmail() : null;
+    }
+
     public boolean isFederationManager() {
         return hasAuthority("FEDERATION_MANAGER");
     }

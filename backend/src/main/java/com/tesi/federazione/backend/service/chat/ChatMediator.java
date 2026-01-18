@@ -1,13 +1,10 @@
-package com.tesi.federazione.backend.service;
+package com.tesi.federazione.backend.service.chat;
 
 import com.tesi.federazione.backend.dto.chat.ChatMessageInputDTO;
-import com.tesi.federazione.backend.dto.chat.ChatMessageOutputDTO;
 import com.tesi.federazione.backend.model.User;
 
-import java.util.List;
-
 /**
- * Interfacce del mediatore tra WebSocket - DB - Gestore dell'assegnazione delle chat per gli amministratori
+ * Interfacce del mediatore tra WebSocket - Gestore dell'assegnazione delle chat per gli amministratori
  */
 public interface ChatMediator {
 
@@ -26,9 +23,8 @@ public interface ChatMediator {
      *
      * @param chatUserId Id della chat tra amministratori e clubManager
      * @param adminId Id dell'amministratore che sta cercando di prendere in carico la chat
-     * @return boolean Booleano che indica il permesso concesso o negato
      */
-    boolean takeCharge(String chatUserId, String adminId);
+    void takeCharge(String chatUserId, String adminId);
 
 
     /**
@@ -38,14 +34,5 @@ public interface ChatMediator {
      * @param adminId Id dell'amministratore che sta richiedendo il rilascio della chat
      */
     void releaseChat(String chatUserId, String adminId);
-
-    /**
-     * Firma del metodo per recuperare l'elenco di tutti i messaggi inviati nella chat tra amministratori e
-     * clubManager con id 'clubUserId' utilizzato alla riapertura della connessione WebSocket.
-     *
-     * @param chatUserId Id della chat tra amministratori e clubManager
-     * @return List<ChatMessageOutputDTO> Lista ordinata dello storico dei messaggi appartenenti alla chat
-     */
-    List<ChatMessageOutputDTO> getAllChatMessages(String chatUserId);
 
 }
