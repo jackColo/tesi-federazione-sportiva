@@ -2,6 +2,7 @@ package com.tesi.federazione.backend.service.chat;
 
 import com.tesi.federazione.backend.dto.chat.ChatMessageInputDTO;
 import com.tesi.federazione.backend.dto.chat.ChatMessageOutputDTO;
+import com.tesi.federazione.backend.dto.chat.ChatSummaryDTO;
 import com.tesi.federazione.backend.model.ChatMessage;
 import com.tesi.federazione.backend.model.enums.Role;
 
@@ -30,4 +31,10 @@ public interface ChatMessageService {
      * @return Oggetto ChatMessage salvato.
      */
     ChatMessage saveChatMessage(ChatMessageInputDTO dto, String senderId, Role senderRole);
+
+    /**
+     * Firma del metodo per recuperare l'elenco sommario di tutte le chat tra federazione e club manager.
+     * @return List<ChatSummaryDTO> Elenco delle chat con formato ChatSummaryDTO
+     */
+    List<ChatSummaryDTO> getChatSummaries();
 }

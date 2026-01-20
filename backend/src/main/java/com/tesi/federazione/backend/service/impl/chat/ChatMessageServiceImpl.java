@@ -2,21 +2,31 @@ package com.tesi.federazione.backend.service.impl.chat;
 
 import com.tesi.federazione.backend.dto.chat.ChatMessageInputDTO;
 import com.tesi.federazione.backend.dto.chat.ChatMessageOutputDTO;
+import com.tesi.federazione.backend.dto.chat.ChatSummaryDTO;
 import com.tesi.federazione.backend.mapper.ChatMessageMapper;
 import com.tesi.federazione.backend.model.ChatMessage;
+import com.tesi.federazione.backend.model.ChatSession;
+import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.repository.ChatMessageRepository;
+import com.tesi.federazione.backend.repository.ChatSessionRepository;
+import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.service.chat.ChatMessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ChatMessageServiceImpl implements ChatMessageService {
 
+    private final UserRepository userRepository;
+    private final ChatSessionRepository chatSessionRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatMessageMapper chatMessageMapper;
 
@@ -51,5 +61,52 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         msg.setSenderRole(senderRole);
 
         return chatMessageRepository.save(msg);
+    }
+
+    /**
+     * Metodo per recuperare l'elenco sommario di tutte le chat tra federazione e club manager.
+     * @return List<ChatSummaryDTO> Elenco delle chat con formato ChatSummaryDTO
+     */
+    @Override
+    public List<ChatSummaryDTO> getChatSummaries() {
+        List<User> clubManagers = userRepository.findByRole(Role.CLUB_MANAGER);
+
+        List<ChatSummaryDTO> summaries = new ArrayList<>();
+
+        // Per ogni club manager verifico se ho una sessione attiva e recupero l'ultimo messaggio
+        // per determinare se il club manager sia in attesa di una risposta
+        for (User manager : clubManagers) {
+
+            Optional<ChatSession> activeSession = chatSessionRepository
+                    .findByClubManagerIdAndActiveTrue(manager.getId());
+
+            List<ChatMessage> lastMsgs = chatMessageRepository.findByChatUserIdOrderByTimestampDesc(manager.getId(), PageRequest.of(0, 1));
+
+            ChatMessage lastMsg = lastMsgs.isEmpty() ? null : lastMsgs.get(0);
+
+            boolean isWaiting = lastMsg != null && lastMsg.getSenderId().equals(manager.getId());
+
+            ChatSummaryDTO dto = new ChatSummaryDTO();
+            dto.setChatUserId(manager.getId());
+            dto.setClubManagerName(manager.getFirstName() + " " + manager.getLastName());
+            dto.setStatus(activeSession.isPresent() ? "ASSIGNED" : "FREE");
+            dto.setAssignedAdminId(activeSession.map(ChatSession::getAdminId).orElse(null));
+            dto.setLastMessageTime(lastMsg != null ? lastMsg.getTimestamp() : null);
+            dto.setWaitingForReply(isWaiting);
+
+            summaries.add(dto);
+        }
+
+        // Ordino l'elenco delle chat mettendo prima quelle in attesa per darne maggiore visibilità agli amministratori
+        summaries.sort((a, b) -> {
+            if (a.isWaitingForReply() != b.isWaitingForReply()) {
+                return a.isWaitingForReply() ? -1 : 1;
+            }
+            if (a.getLastMessageTime() == null) return 1;
+            if (b.getLastMessageTime() == null) return -1;
+            return b.getLastMessageTime().compareTo(a.getLastMessageTime());
+        });
+
+        return summaries;
     }
 }

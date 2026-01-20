@@ -2,6 +2,7 @@ package com.tesi.federazione.backend.controller;
 
 import com.tesi.federazione.backend.dto.chat.ChatMessageInputDTO;
 import com.tesi.federazione.backend.dto.chat.ChatMessageOutputDTO;
+import com.tesi.federazione.backend.dto.chat.ChatSummaryDTO;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.security.SecurityUtils;
 import com.tesi.federazione.backend.service.chat.ChatMediator;
@@ -86,5 +87,15 @@ public class ChatMessageController {
         String adminId = securityUtils.getCurrentUserId();
         chatMediator.releaseChat(clubManagerId, adminId);
         return ResponseEntity.ok("Chat rilasciata con successo.");
+    }
+
+    /**
+     * Metodo per recuperare l'elenco di tutte le chat tra amministratori e club manager
+     * @return List<ChatSummaryDTO> Elenco delle chat tra amministratori e club manager
+     */
+    @GetMapping("/summaries")
+    @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
+    public ResponseEntity<List<ChatSummaryDTO>> getChatSummaries() {
+        return ResponseEntity.ok(chatMessageService.getChatSummaries());
     }
 }
