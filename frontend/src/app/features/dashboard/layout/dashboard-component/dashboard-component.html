@@ -65,50 +65,136 @@
       </div>
     </div>
 
-    <div class="lg:col-span-2 space-y-6">
-      @if (isAdmin()) {
-      <div
-        class="bg-white rounded-xl shadow-sm border border-slate-200 min-h-[300px] flex items-center justify-center text-slate-400"
-      >
-        <div class="text-center">
-          <p class="text-lg font-medium">Benvenuto nella tua Area Personale</p>
-          <p class="text-sm">Premi il pulsante qui sotto per aggiungere un nuovo amministratore.</p>
-          <div class="flex mt-4 items-center justify-center">
-            <button
-              routerLink="user/new"
-              class="flex items-end gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-            >
-              <fa-icon [icon]="icons.add"></fa-icon>
-              <span>Nuovo Amministratore</span>
-            </button>
-          </div>
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-6 h-fit">
+      <div class="mb-6 flex items-center justify-start gap-4">
+        <div class="h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+          <fa-icon [icon]="icons.bolt"></fa-icon>
         </div>
+        <div>
+          <h3 class="text-lg font-bold text-slate-800">Azioni Rapide</h3>
+          <p class="text-sm text-slate-500">
+            Utilizza questi pulsanti per accedere rapidamente alle funzioni principali.
+          </p>
+        </div>
+      </div>
+
+      @if (isAdmin()) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <a
+          routerLink="/dashboard/user/new"
+          class="group flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+        >
+          <div
+            class="h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+          >
+            <fa-icon [icon]="icons.add" class="text-lg"></fa-icon>
+          </div>
+          <span class="font-semibold text-slate-700 group-hover:text-blue-600 text-sm"
+            >Nuovo Admin</span
+          >
+        </a>
+
+        <a
+          routerLink="/dashboard/events/new"
+          class="group flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+        >
+          <div
+            class="h-10 w-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+          >
+            <fa-icon [icon]="icons.calendar" class="text-lg"></fa-icon>
+          </div>
+          <span class="font-semibold text-slate-700 group-hover:text-purple-600 text-sm"
+            >Crea Evento</span
+          >
+        </a>
+
+        <a
+          routerLink="/dashboard/clubs"
+          class="group flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+        >
+          <div
+            class="h-10 w-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+          >
+            <fa-icon [icon]="icons.users" class="text-lg"></fa-icon>
+          </div>
+          <span class="font-semibold text-slate-700 group-hover:text-amber-600 text-sm"
+            >Gestione Club</span
+          >
+        </a>
       </div>
       } @else if (isAthlete()) {
-      <div class="grid grid-cols-1 md:w-1/3 gap-4">
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <p class="text-sm font-medium text-slate-500">Iscrizioni Attive</p>
-          <p class="text-3xl font-extrabold text-slate-900 mt-2">3</p>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <p class="text-sm font-medium text-slate-500">Eventi Completati</p>
-          <p class="text-3xl font-extrabold text-slate-900 mt-2">12</p>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <p class="text-sm font-medium text-slate-500">Da Approvare</p>
-          <p class="text-3xl font-extrabold text-slate-900 mt-2">0</p>
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a
+          [routerLink]="'user/' + user()?.id"
+          class="group flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+        >
+          <div
+            class="h-10 w-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+          >
+            <fa-icon [icon]="icons.user" class="text-lg"></fa-icon>
+          </div>
+          <span class="font-semibold text-slate-700 group-hover:text-green-600 text-sm"
+            >I tuoi dati</span
+          >
+        </a>
+
+        <a
+          routerLink="/dashboard/events"
+          class="group flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+        >
+          <div
+            class="h-10 w-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+          >
+            <fa-icon [icon]="icons.list" class="text-lg"></fa-icon>
+          </div>
+          <span class="font-semibold text-slate-700 group-hover:text-indigo-600 text-sm"
+            >Visualizza eventi</span
+          >
+        </a>
       </div>
       } @else {
-      <div class="grid grid-cols-1 gap-4 md:w-1/3">
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <p class="text-sm font-medium text-slate-500">Iscrizioni Atleti Attive</p>
-          <p class="text-3xl font-extrabold text-slate-900 mt-2">3</p>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <p class="text-sm font-medium text-slate-500">Eventi Completati</p>
-          <p class="text-3xl font-extrabold text-slate-900 mt-2">12</p>
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <a
+          routerLink="/dashboard/user/new"
+          class="group flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+        >
+          <div
+            class="h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+          >
+            <fa-icon [icon]="icons.userPlus" class="text-lg"></fa-icon>
+          </div>
+          <span class="font-semibold text-slate-700 group-hover:text-blue-600 text-sm"
+            >Registra Atleta</span
+          >
+        </a>
+
+        <a
+          routerLink="/dashboard/events"
+          class="group flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+        >
+          <div
+            class="h-10 w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+          >
+            <fa-icon [icon]="icons.ticket" class="text-lg"></fa-icon>
+          </div>
+          <span class="font-semibold text-slate-700 group-hover:text-emerald-600 text-sm"
+            >Iscrivi a Gara</span
+          >
+        </a>
+
+        <a
+          routerLink="/dashboard/clubs"
+          class="group flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+        >
+          <div
+            class="h-10 w-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+          >
+            <fa-icon [icon]="icons.building" class="text-lg"></fa-icon>
+          </div>
+          <span class="font-semibold text-slate-700 group-hover:text-cyan-600 text-sm"
+            >Il mio Club</span
+          >
+        </a>
       </div>
       }
     </div>

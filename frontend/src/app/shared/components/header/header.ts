@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faCalendarWeek,
-  faMessage,
+  faHeadset,
   faRightFromBracket,
   faTrophy,
   faUser,
@@ -47,7 +47,7 @@ export class Header {
     },
     {
       id: 'chat',
-      icon: faMessage,
+      icon: faHeadset,
       routerLink: this.userRole() === 'CLUB_MANAGER' ? '/dashboard/support' : '/dashboard/inbox',
       showWhenLoggedIn: true,
       showWhenLoggedInRoles: ['CLUB_MANAGER', 'FEDERATION_MANAGER'],

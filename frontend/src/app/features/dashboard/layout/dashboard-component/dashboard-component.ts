@@ -3,7 +3,20 @@ import { Component, computed, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEdit, faEnvelope, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faEdit, 
+  faEnvelope, 
+  faUserPlus, 
+  faBolt, 
+  faCalendar, 
+  faUsers, 
+  faSearch, 
+  faList, 
+  faHeadset, 
+  faTicket, 
+  faBuilding, 
+  faUser
+} from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
 import { readableRole, Role, roleClass } from '../../../../enums/role.enum';
@@ -22,7 +35,24 @@ export class DashboardComponent {
   icons = {
     email: faEnvelope,
     edit: faEdit,
-    add: faUserPlus
+    
+    // Icone generiche
+    add: faUserPlus,       // Usata per "Nuovo Admin"
+    userPlus: faUserPlus,  // Usata per "Registra Atleta"
+    bolt: faBolt,          // Icona decorativa header
+    
+    // Icone Admin
+    calendar: faCalendar,  // Crea Evento
+    users: faUsers,        // Gestione Club
+    
+    // Icone Atleta
+    user: faUser,      // Cerca Eventi
+    list: faList,          // Iscrizioni
+    headset: faHeadset,    // Supporto
+    
+    // Icone Club Manager
+    ticket: faTicket,      // Iscrivi a Gara
+    building: faBuilding   // Il mio Club
   };
 
   userEmail = computed(() => this.authService.currentUserEmail() || '');
