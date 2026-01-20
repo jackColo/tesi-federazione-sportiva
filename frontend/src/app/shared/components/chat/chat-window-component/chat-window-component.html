@@ -1,0 +1,51 @@
+
+    <div class="flex flex-col h-[50vh] bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+      
+      <div #chatContainer class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 scroll-smooth">
+        @for (msg of messages(); track msg.timestamp) {
+          <div class="flex w-full animate-fade-in-up" [ngClass]="isMe(msg.senderId) ? 'justify-end' : 'justify-start'">
+            <div class="max-w-[85%] p-3 rounded-2xl break-words shadow-sm"
+                 [ngClass]="isMe(msg.senderId) 
+                    ? 'bg-blue-600 text-white rounded-br-none' 
+                    : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none'">
+              
+              @if (!isMe(msg.senderId)) {
+                <p class="text-[10px] font-bold uppercase mb-1 opacity-70 tracking-wide text-blue-600">
+                  {{ msg.senderRole === "CLUB_MANAGER" ? contactName() : "Assistenza" }}
+                </p>
+              }
+              <p class="text-sm leading-relaxed whitespace-pre-wrap">{{ msg.content }}</p>
+              <div class="text-[10px] mt-1 text-right w-full"
+                   [ngClass]="isMe(msg.senderId) ? 'text-blue-100' : 'text-gray-400'">
+                {{ msg.timestamp | date:'HH:mm' }}
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="h-full flex flex-col items-center justify-center text-gray-400 opacity-60">
+            <p>Nessun messaggio.</p>
+          </div>
+        }
+      </div>
+
+      <div class="p-3 bg-white border-t border-gray-100">
+        <div class="flex items-center gap-2 relative">
+          <input 
+            type="text" 
+            [(ngModel)]="inputText" 
+            (keyup.enter)="sendMessage()"
+            [disabled]="readOnly()"
+            placeholder="Scrivi un messaggio..." 
+            class="flex-1 py-2 px-4 bg-gray-50 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:bg-gray-100  disabled:cursor-not-allowed text-sm"
+          >
+          <button 
+            (click)="sendMessage()" 
+            [disabled]="readOnly() || !inputText().trim()"
+            class="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform rotate-90" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>

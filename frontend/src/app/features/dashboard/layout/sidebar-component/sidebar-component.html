@@ -18,15 +18,34 @@
        routerLinkActive="bg-blue-600 text-white shadow-lg"
        [routerLinkActiveOptions]="{exact: true}"
        class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
-       <fa-icon [icon]="faChartLine" class="text-lg"></fa-icon>
+       <fa-icon [icon]="icons.faChartLine" class="text-lg"></fa-icon>
        <span class="font-medium">Dashboard</span>
     </a>
+    @if (showAdminChat()) {
+        <a routerLink="/dashboard/inbox" 
+            routerLinkActive="bg-blue-600 text-white shadow-lg"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
+            <fa-icon [icon]="icons.faEnvelope" class="text-lg w-6 text-center"></fa-icon>
+            <span class="font-medium">Richieste Club</span>
+        </a>
+    }
+
+    @if (showClubChat()) {
+        <a routerLink="/dashboard/support" 
+            routerLinkActive="bg-blue-600 text-white shadow-lg"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
+            <fa-icon [icon]="icons.faHeadset" class="text-lg w-6 text-center"></fa-icon>
+            <span class="font-medium">Assistenza</span>
+        </a>
+    }
+
+    <div class="border-t border-slate-700 my-2 pt-2"></div>
 
     @if (showEventsSection()) {
         <a routerLink="/dashboard/events" 
             routerLinkActive="bg-blue-600 text-white shadow-lg"
             class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
-            <fa-icon [icon]="faCalendar" class="text-lg"></fa-icon>
+            <fa-icon [icon]="icons.faCalendar" class="text-lg"></fa-icon>
             <span class="font-medium">Eventi</span>
         </a>
     }
@@ -35,7 +54,7 @@
         <a routerLink="/dashboard/clubs" 
             routerLinkActive="bg-blue-600 text-white shadow-lg"
             class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
-            <fa-icon [icon]="faUsers" class="text-lg"></fa-icon>
+            <fa-icon [icon]="icons.faUsers" class="text-lg"></fa-icon>
             <span class="font-medium">Atleti & Club</span>
         </a>
     }
@@ -44,7 +63,7 @@
 
   <div class="p-4 border-t border-slate-700">
     <button (click)="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-600/10 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition-colors duration-200 cursor-pointer">
-      <fa-icon [icon]="faSignOut"></fa-icon>
+      <fa-icon [icon]="icons.faRightFromBracket"></fa-icon>
       <span>Esci</span>
     </button>
   </div>

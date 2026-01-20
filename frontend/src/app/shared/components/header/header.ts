@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCalendarWeek, faRightFromBracket, faTrophy, faUser, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarWeek, faMessage, faRightFromBracket, faTrophy, faUser, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../core/services/auth.service';
 
 interface HeaderItem {
@@ -28,6 +28,8 @@ export class Header {
   faTrophy = faTrophy;
   faRightFromBracket = faRightFromBracket;
 
+  private userRole = computed(() => this.authService.userRole());
+
   items: HeaderItem[] = [
     {
       id: 'events',
@@ -38,6 +40,12 @@ export class Header {
       id: 'profile-dashboard',
       icon: faUser,
       routerLink: '/dashboard',
+      showWhenLoggedIn: true,
+    },
+    {
+      id: 'chat',
+      icon: faMessage,
+      routerLink: this.userRole() === 'CLUB_MANAGER' ? '/dashboard/support' : '/dashboard/inbox',
       showWhenLoggedIn: true,
     },
     {

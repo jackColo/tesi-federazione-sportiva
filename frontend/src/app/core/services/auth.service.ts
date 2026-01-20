@@ -67,7 +67,26 @@ export class AuthService {
   }
 
   public getToken(): string | null {
-    return localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('jwt_token');
+
+    if (!token) return null;
+
+    if (this.isTokenExpired(token)) {
+      console.warn('Token scaduto rilevato. Eseguo logout automatico.');
+      this.logout();
+      return null;
+    }
+
+    return token;
+  }
+
+  private isTokenExpired(token: string): boolean {
+    const decoded = this.decodeToken(token);
+    if (!decoded || !decoded.exp) return true;
+    const expirationDate = decoded.exp * 1000;
+    const now = Date.now();
+
+    return now > expirationDate;
   }
 
   async login(credentials: LogUserDTO): Promise<JwtResponseDTO> {

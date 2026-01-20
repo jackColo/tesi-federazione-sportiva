@@ -1,18 +1,19 @@
-import { Component, computed, inject, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, computed, inject, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { 
-  faChartLine, 
-  faCalendar, 
-  faUsers, 
-  faRightFromBracket
+import {
+  faCalendar,
+  faChartLine,
+  faEnvelope,
+  faHeadset,
+  faRightFromBracket,
+  faUsers
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../../core/services/auth.service';
-import { readableRole, Role } from '../../../../enums/role.enum';
-import { UserDTO } from '../../../../models/dtos';
 import { UserService } from '../../../../core/services/user.service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { readableRole, Role } from '../../../../enums/role.enum';
 import { User } from '../../../../models/user.model';
 
 @Component({
@@ -26,10 +27,14 @@ export class SidebarComponent {
   private userService = inject(UserService);
   protected readonly Role = Role;
   
-  faChartLine = faChartLine;
-  faCalendar = faCalendar;
-  faUsers = faUsers;
-  faSignOut = faRightFromBracket;
+  icons = {
+    faEnvelope,
+    faHeadset,
+    faChartLine,
+    faCalendar,
+    faUsers,
+    faRightFromBracket
+  }
 
   userEmail = computed(() => {
     return this.authService.currentUserEmail() || 'Utente sconosciuto';
@@ -59,6 +64,14 @@ export class SidebarComponent {
 
   showClubsSection = computed(() => {
     return [Role.FEDERATION_MANAGER, Role.CLUB_MANAGER].includes(this.userRole() as Role);
+  });
+
+  showAdminChat = computed(() => {
+    return this.userRole() === Role.FEDERATION_MANAGER;
+  });
+
+  showClubChat = computed(() => {
+    return this.userRole() === Role.CLUB_MANAGER;
   });
 
   logout(): void {

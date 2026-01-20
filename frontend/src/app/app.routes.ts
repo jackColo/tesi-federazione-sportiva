@@ -8,7 +8,7 @@ import { HomeComponent } from './features/home/home-component/home-component';
 
 import { EventsComponent } from './features/events/events-component/events-component';
 
-import { NotificationsComponent } from './shared/components/notifications/notifications-component/notifications-component';
+import { AdminChatDashboardComponent } from './shared/components/chat/admin-chat-dashboard-component/admin-chat-dashboard-component';
 
 import { DashboardUserDetailComponent } from './features/dashboard/admin/dashboard-user-detail-component/dashboard-user-detail-component';
 import { DashboardUserFormComponent } from './features/dashboard/admin/dashboard-user-form-component/dashboard-user-form-component';
@@ -17,20 +17,16 @@ import { DashboardClubsComponent } from './features/dashboard/clubs/dashboard-cl
 import { DashboardEventDetailComponent } from './features/dashboard/events/dashboard-event-detail-component/dashboard-event-detail-component';
 import { DashboardEventFormComponent } from './features/dashboard/events/dashboard-event-form-component/dashboard-event-form-component';
 import { DashboardEventsComponent } from './features/dashboard/events/dashboard-events-component/dashboard-events-component';
+import { DashboardEventEnrollFormComponent } from './features/dashboard/events/enrollment-components/dashboard-event-enroll-form-component/dashboard-event-enroll-form-component';
 import { DashboardComponent } from './features/dashboard/layout/dashboard-component/dashboard-component';
 import { DashboardSkeletonComponent } from './features/dashboard/layout/dashboard-skeleton-component/dashboard-skeleton-component';
-import { DashboardEventEnrollFormComponent } from './features/dashboard/events/enrollment-components/dashboard-event-enroll-form-component/dashboard-event-enroll-form-component';
+import { ClubChatPageComponent } from './shared/components/chat/club-chat-page-component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
   { path: 'events', component: EventsComponent },
-  {
-    path: 'notifications',
-    component: NotificationsComponent,
-    canActivate: [roleGuard([Role.ATHLETE, Role.CLUB_MANAGER, Role.FEDERATION_MANAGER])],
-  },
   {
     path: 'dashboard',
     component: DashboardSkeletonComponent,
@@ -40,6 +36,16 @@ export const routes: Routes = [
         path: '',
         component: DashboardComponent,
         canActivate: [roleGuard([Role.FEDERATION_MANAGER, Role.CLUB_MANAGER, Role.ATHLETE])],
+      },
+      {
+        path: 'inbox',
+        component: AdminChatDashboardComponent,
+        canActivate: [roleGuard([Role.FEDERATION_MANAGER])]
+      },
+      {
+        path: 'support',
+        component: ClubChatPageComponent,
+        canActivate: [roleGuard([Role.CLUB_MANAGER])]
       },
       {
         path: 'events',

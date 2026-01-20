@@ -1,12 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { Component, computed, inject, input, InputSignal } from "@angular/core";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { Event } from "../../../models/event.model";
-import { EventStatus, eventStatusColorClass, readableEventStatus } from "../../../enums/event-status.enum";
-import { faCalendarAlt, faMapMarkerAlt, IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { Role } from "../../../enums/role.enum";
-import { AuthService } from "../../../core/services/auth.service";
 import { RouterLink } from "@angular/router";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { AuthService } from "../../../core/services/auth.service";
+import { EventStatus, eventStatusColorClass, readableEventStatus } from "../../../enums/event-status.enum";
+import { Role } from "../../../enums/role.enum";
+import { Event } from "../../../models/event.model";
 
 @Component({
   selector: 'app-event-card-component',

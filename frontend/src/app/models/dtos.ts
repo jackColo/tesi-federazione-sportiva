@@ -197,3 +197,12 @@ export interface ChatMessageInputDTO {
   content: string,
   timestamp: string
 }
+
+export interface ChatSummaryDTO {
+  chatUserId: string;
+  clubManagerName: string;
+  lastMessageTime: string;
+  status: 'FREE' | 'ASSIGNED';
+  assignedAdminId?: string | null;
+  waitingForReply: boolean;
+}

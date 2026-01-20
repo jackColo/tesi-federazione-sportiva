@@ -12,7 +12,7 @@ export class Event {
   _registrationCloseDate: string;
   _status: EventStatus;
   _disciplines: CompetitionType[];
-  _enrolledCount: number
+  _enrolledCount: number;
 
   constructor(data: EventDTO) {
     this._id = data.id;
@@ -65,32 +65,31 @@ export class Event {
 
   get registrationOpenDate(): string {
     return this._registrationOpenDate;
-  }     
+  }
   set registrationOpenDate(value: string) {
     this._registrationOpenDate = value;
   }
 
   get registrationCloseDate(): string {
     return this._registrationCloseDate;
-  }     
+  }
   set registrationCloseDate(value: string) {
     this._registrationCloseDate = value;
   }
 
   get status(): EventStatus {
     return this._status;
-  }     
+  }
   set status(value: EventStatus) {
     this._status = value;
   }
 
   get disciplines(): CompetitionType[] {
     return this._disciplines;
-  }     
+  }
   set disciplines(value: CompetitionType[]) {
     this._disciplines = value;
-  }     
-
+  }
 
   get enrolledCount(): number {
     return this._enrolledCount;
@@ -100,19 +99,19 @@ export class Event {
     this._enrolledCount = value;
   }
 
-    public toDTO(): EventDTO {
-      const eventDTO: EventDTO = {
-        id: this.id,
-        name: this.name,
-        description: this.description,
-        location: this.location,
-        date: this.date,
-        registrationCloseDate: this.registrationCloseDate,
-        registrationOpenDate: this.registrationOpenDate,
-        status: this.status,
-        disciplines: this.disciplines,
-        enrolledCount: this.enrolledCount
-      }
-      return eventDTO
-    }
+  public toDTO(): EventDTO {
+    const eventDTO: EventDTO = {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      location: this.location,
+      date: this.date,
+      registrationCloseDate: this.registrationCloseDate,
+      registrationOpenDate: this.registrationOpenDate,
+      status: this.status,
+      disciplines: this.disciplines,
+      enrolledCount: this.enrolledCount,
+    };
+    return eventDTO;
+  }
 }
