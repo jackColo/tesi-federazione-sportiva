@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementazione del servizio ChatMessageService, necessario alla manipolazione a DB degli oggetti di tipo ChatMessage
+ */
 @Service
 @RequiredArgsConstructor
 public class ChatMessageServiceImpl implements ChatMessageService {
