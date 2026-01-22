@@ -8,7 +8,8 @@ import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import java.util.List;
 
 /**
- * Interfaccia tra Controller e implementazione dei service per i metodi che manipolano oggetti di tipo Club
+ * Interfaccia per il service che manipola oggetti di tipo CLUB
+ * Gestisce creazione, aggiornamento, recupero e modifica dello stato d'affiliazione
  */
 public interface ClubService {
 

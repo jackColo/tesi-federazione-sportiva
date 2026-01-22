@@ -6,6 +6,7 @@ import com.tesi.federazione.backend.dto.club.UpdatedClubDTO;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.service.ClubService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/club")
 public class ClubController {
 
@@ -31,7 +33,9 @@ public class ClubController {
      */
     @PostMapping("/create")
     public ResponseEntity<ClubDTO> createClub(@RequestBody CreateClubDTO createClubDTO) {
+        log.info("Richiesta creazione nuovo club");
         ClubDTO clubDTO = clubService.createClub(createClubDTO);
+        log.info("Club creato con successo. ID: {}", clubDTO.getId());
         return new ResponseEntity<>(clubDTO, HttpStatus.CREATED);
     }
 
@@ -42,8 +46,10 @@ public class ClubController {
      */
     @PatchMapping("/update/{id}")
     @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
-    public ResponseEntity<ClubDTO> updateClub(@RequestBody UpdatedClubDTO updateClub ) {
+    public ResponseEntity<ClubDTO> updateClub(@PathVariable String id, @RequestBody UpdatedClubDTO updateClub ) {
+        log.info("Richiesta aggiornamento dati per il club {}", id);
         ClubDTO clubDTO = clubService.updateClub(updateClub);
+        log.info("Dati club aggiornati con successo per il club {}", id);
         return new ResponseEntity<>(clubDTO, HttpStatus.OK);
     }
 
@@ -55,7 +61,9 @@ public class ClubController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('CLUB_MANAGER', 'FEDERATION_MANAGER', 'ATHLETE')")
     public ResponseEntity<ClubDTO> getClubById(@PathVariable String id) {
+        log.info("Richiesta recupero club {}", id);
         ClubDTO clubDTO = clubService.getClubById(id);
+        log.info("Club {} recuperato con successo", id);
         return new ResponseEntity<>(clubDTO, HttpStatus.OK);
     }
 
@@ -66,7 +74,9 @@ public class ClubController {
     @GetMapping("/to-approve")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<List<ClubDTO>> getClubsToApprove() {
+        log.info("Richiesta recupero lista club in attesa di approvazione");
         List<ClubDTO> clubDTOs = clubService.getClubsByStatus(AffiliationStatus.SUBMITTED);
+        log.info("Trovati {} club in attesa di approvazione", clubDTOs.size());
         return new ResponseEntity<>(clubDTOs, HttpStatus.OK);
     }
 
@@ -77,7 +87,9 @@ public class ClubController {
     @GetMapping("/all")
     @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER', 'ATHLETE')")
     public ResponseEntity<List<ClubDTO>> getAllClubs() {
+        log.info("Richiesta recupero lista completa di tutti i club");
         List<ClubDTO> clubDTOs = clubService.getAll();
+        log.debug("Recuperati {} club", clubDTOs.size());
         return new ResponseEntity<>(clubDTOs, HttpStatus.OK);
     }
 
@@ -90,7 +102,9 @@ public class ClubController {
     @PostMapping("/renew-submission/{id}")
     @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
     public ResponseEntity<Void> renewClubAffiliationStatus(@PathVariable String id) {
+        log.info("Richiesta rinnovo affiliazione per il club {}", id);
         clubService.updateClubStatus(id, AffiliationStatus.SUBMITTED);
+        log.info("Richiesta affiliazione inviata per il club {}", id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -103,7 +117,9 @@ public class ClubController {
     @PostMapping("/update-status/{id}/{newStatus}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<Void> updateAffiliationStatus(@PathVariable String id, @PathVariable AffiliationStatus newStatus) {
+        log.info("Richiesta cambio stato affiliazione club {} -> Nuovo stato {}", id, newStatus);
         clubService.updateClubStatus(id, newStatus);
+        log.info("Stato aggiornato correttamente per il club {}", id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

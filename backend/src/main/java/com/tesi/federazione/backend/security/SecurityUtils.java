@@ -58,7 +58,7 @@ public class SecurityUtils {
     }
 
     /**
-     * Utility per verificare l'appartenenza ad un determinato club dell'utente che sta facendo richiesta
+     * Utility per verificare l'appartenenza a un determinato club dell'utente che sta facendo richiesta
      * @param clubId Id del club da verificare
      * @return true se appartiene, false altrimenti
      */

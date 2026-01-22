@@ -8,6 +8,7 @@ import com.tesi.federazione.backend.security.SecurityUtils;
 import com.tesi.federazione.backend.service.chat.ChatMediator;
 import com.tesi.federazione.backend.service.chat.ChatMessageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/chat")
 public class ChatMessageController {
 
@@ -46,6 +48,7 @@ public class ChatMessageController {
      */
     @MessageMapping("/chat.send")
     public void SendMessage(@Payload ChatMessageInputDTO message, Principal principal) {
+        log.info("Invio messaggio in corso");
         User currentUser = (User) ((Authentication) principal).getPrincipal();
         chatMediator.routeMessage(message, currentUser);
     }
@@ -60,7 +63,9 @@ public class ChatMessageController {
      */
     @GetMapping("/history/{chatUserId}")
     public ResponseEntity<List<ChatMessageOutputDTO>> getAllMessages(@PathVariable String chatUserId) {
+        log.info("Recupero di tutti i messaggi per la chat del club manager {}", chatUserId);
         List<ChatMessageOutputDTO> chatMessages = chatMessageService.getAllChatMessages(chatUserId);
+        log.info("Trovati {} messaggi", chatMessages.size());
         return new ResponseEntity<>(chatMessages, HttpStatus.OK);
     }
 
@@ -71,8 +76,10 @@ public class ChatMessageController {
     @PostMapping("/assign/{clubManagerId}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<?> takeCharge(@PathVariable String clubManagerId) {
+        log.info("Richiesta di presa in carico della chat {}", clubManagerId);
         String adminId = securityUtils.getCurrentUserId();
         chatMediator.takeCharge(clubManagerId, adminId);
+        log.info("Chat {} presa in carico con successo.", clubManagerId);
         return ResponseEntity.ok("Chat presa in carico con successo.");
 
     }
@@ -84,8 +91,10 @@ public class ChatMessageController {
     @PostMapping("/release/{clubManagerId}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<?> releaseChat(@PathVariable String clubManagerId) {
+        log.info("Rilascio chat {} in corso...", clubManagerId);
         String adminId = securityUtils.getCurrentUserId();
         chatMediator.releaseChat(clubManagerId, adminId);
+        log.info("Chat {} rilasciata con successo", clubManagerId);
         return ResponseEntity.ok("Chat rilasciata con successo.");
     }
 

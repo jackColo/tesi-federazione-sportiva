@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,7 @@ import java.io.IOException;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
@@ -59,27 +61,32 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         // Estrazione dello username dal token
         userEmail = jwtUtils.extractUsername(jwt);
 
-        // Se lo username esiste e non esiste ancora un autenticazione per l'utente nel contesto attuale
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        try {
+            // Se lo username esiste e non esiste ancora un autenticazione per l'utente nel contesto attuale
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            // Caricamento dei dettagli dell'utente
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                // Caricamento dei dettagli dell'utente
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-            // validazione dell'utente rispetto ai dettagli dell'utente
-            if (jwtUtils.isTokenValid(jwt, userDetails)) {
-                // Se l'utente è valido creo l'oggetto di autenticazione per Spring Security
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
+                // validazione dell'utente rispetto ai dettagli dell'utente
+                if (jwtUtils.isTokenValid(jwt, userDetails)) {
+                    // Se l'utente è valido creo l'oggetto di autenticazione per Spring Security
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
 
-                // aggiunta dei dettagli della richiesta all'oggetto appena creato
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    // aggiunta dei dettagli della richiesta all'oggetto appena creato
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Impostazione dell'oggetto di autenticazione nel contesto
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    // Impostazione dell'oggetto di autenticazione nel contesto
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    log.info("Context authentication generated for user {} ", userEmail);
+                }
             }
+        } catch (Exception e) {
+            log.warn("Failed context authentication generation: {}", e.getMessage());
         }
         // Continuo la filterChain passando la richiesta al prossimo controllo (configurata in WebSecurityConfig)
         filterChain.doFilter(request, response);

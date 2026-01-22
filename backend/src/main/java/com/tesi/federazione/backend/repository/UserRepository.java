@@ -22,13 +22,13 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
 
     /**
-     * Ricerca di tutti gli Athlete che appartengono ad uno specifico club
+     * Ricerca di tutti gli Athlete che appartengono a uno specifico club
      * @param clubId Id del club per cui effettuare la ricerca
      * @return List<Athlete> Elenco di tutti gli atleti appartenenti al club richiesto
      */
     List<Athlete> findAllByClubId(String clubId);
     /**
-     * Ricerca di tutti gli Athlete che appartengono ad uno specifico club e hanno uno specifico stato di affiliazione
+     * Ricerca di tutti gli Athlete che appartengono a uno specifico club e hanno uno specifico stato di affiliazione
      * @param status Stato d'affiliazione da ricercare
      * @param clubId Id del club per cui effettuare la ricerca
      * @return List<Athlete> Elenco di tutti gli atleti appartenenti al club richiesto con lo stato di affiliazione indicato

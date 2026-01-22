@@ -4,6 +4,7 @@ import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.security.JwtUtils;
 import com.tesi.federazione.backend.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -28,13 +29,14 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
+@Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
 
     /**
-     * Metodo per la configurazione delle regole d'intradamento:
+     * Metodo per la configurazione delle regole d'instradamento:
      * - iscrizione del client ai percorsi /topic per la ricezione dei messaggi
      * - ricezione dal client dei messaggi attraverso i percorsi /app
      */
@@ -65,11 +67,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
-                // Trasformazion del messaggio generico in un messaggio STOMP
+                // Trasformazione del messaggio generico in un messaggio STOMP
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
                 // Se la connessione è attiva, il token viene estratto e poi validato attraverso le utility JwtUtils (già
-                // definite ed utilizzate per la connessione HTTP) per poi iniettarlo nella sessione WebSocket.
+                // definite e utilizzate per la connessione HTTP) per poi iniettarlo nella sessione WebSocket.
                 if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
 
                     String authorizationHeader = accessor.getFirstNativeHeader("Authorization");
@@ -87,8 +89,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                             // Iniezione del token nella sessione websocket
                             accessor.setUser(authentication);
+                            log.info("Connessione webscoket stabilita per l'utente {}", username);
                         }
                     }
+                } else {
+                    log.error("FAILED: Impossibile stabilire la connessione websocket: token scaduto o invalido");
                 }
                 return message;
             }

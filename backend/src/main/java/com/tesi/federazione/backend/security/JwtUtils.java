@@ -97,7 +97,6 @@ public class JwtUtils {
 
     /**
      * Metodo che valida il token senza bisogno dello UserDetails.
-     *
      * @param authToken Il token da verificare.
      * @return true se il token è integro, false se invalido o scaduto.
      */

@@ -51,6 +51,16 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setMessage(ex.getMessage());
+        error.setTimestamp(LocalDateTime.now());
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralError(Exception ex) {
         ErrorResponse error = new ErrorResponse();
