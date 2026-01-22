@@ -12,10 +12,11 @@ import {
   faUsers,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
-import { filter, from, switchMap } from 'rxjs';
+import { filter, of, switchMap } from 'rxjs';
 import { AthleteService } from '../../../../core/services/athlete.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ClubService } from '../../../../core/services/club.service';
+import { UserService } from '../../../../core/services/user.service';
 import {
   AffiliationStatus,
   affiliationStatusColorClass,
@@ -46,6 +47,7 @@ interface FedTab {
 })
 export class DashboardClubsComponent {
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private clubService = inject(ClubService);
   private athleteService = inject(AthleteService);
   private router = inject(Router);
@@ -67,18 +69,27 @@ export class DashboardClubsComponent {
 
   role = computed(() => this.authService.userRole());
   isFederation = computed(() => this.role() === Role.FEDERATION_MANAGER);
-  isClub = computed(() => this.role() === Role.CLUB_MANAGER);
+  isClubManager = computed(() => this.role() === Role.CLUB_MANAGER);
 
   currentFedTab = signal<FedTab | null>(this.tabs.find(tab => tab.id === 'CLUB') ?? null);
 
   pendingAffiliations = signal<number>(0);
 
-  myClub: Signal<Club | null> = this.isClub()
-    ? toSignal(from(this.clubService.getClub('6939613521b52e78f714e402')), { initialValue: null })
-    : signal(null);
+  myClub: Signal<Club | null> = toSignal(
+    toObservable(this.authService.currentUserId).pipe(
+      filter((userId) => !!userId && this.isClubManager()),
+      switchMap((userId) => this.userService.getUserById(userId!)),
+      switchMap((user) => {
+        const clubId = (user as any).clubId; 
+        if (clubId) {
+          return this.clubService.getClub(clubId);
+        }
+        return of(null);
+      })
+    ), { initialValue: null });
 
   athletes: Signal<Athlete[] | null> = toSignal(
-    this.isClub()
+    this.isClubManager()
       ? toObservable(this.myClub).pipe(
           filter((u): u is Club => !!u),
           switchMap((club) => this.athleteService.getAtheltes(club.id))

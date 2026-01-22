@@ -66,9 +66,11 @@
   <div class="px-6 pb-6 mt-auto">
     <button
       [routerLink]="'/dashboard/events/' + event.id"
+      [disabled]="!canSubscribe()"
       class="w-full py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm
              hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 hover:shadow-sm
-             active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
+             active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2
+             disabled:opacity-50 disabled:cursor-not-allowed"
     >
       @if(isFederation()) {
         Gestisci Evento

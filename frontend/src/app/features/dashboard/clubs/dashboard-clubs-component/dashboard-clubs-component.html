@@ -42,7 +42,7 @@
     </div>
     } }
   </div>
-  } @if (isClub()) {
+  } @if (isClubManager()) {
   <div>
     <h1 class="text-2xl font-bold text-slate-800">La mia società</h1>
     <p class="text-slate-500">Gestisci i tesserati e i dati del club</p>
@@ -71,6 +71,11 @@
         [athlete]="ath"
       ></app-dashboard-clubs-athlete-card-component>
     </div>
+    } @empty {
+      <div class="p-8 text-center text-slate-500">
+          <p>Qui verrà visualizzata la lista dei tuoi atleti.</p>
+      </div>
+
     } } @else {
     <div class="p-8 text-center text-slate-500">
       <p>Qui verrà visualizzata la lista dei tuoi atleti.</p>

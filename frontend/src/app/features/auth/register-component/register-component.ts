@@ -8,6 +8,7 @@ import { CreateClubDTO } from '../../../models/dtos';
 import { AffiliationStatus } from '../../../enums/affiliation-status.enum';
 import { Role } from '../../../enums/role.enum';
 import { ClubService } from '../../../core/services/club.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register-component',
@@ -69,10 +70,15 @@ export class RegisterComponent {
     }
 
     try {
-      this.userService.createClub(club);
-      this.router.navigateByUrl('/auth/login');
+      const result = await lastValueFrom(this.userService.createClub(club));
+      console.log('Club creato con successo:', result);
+      alert('Club creato con successo! Puoi accedere come manager con le credenzili indicate in fase di registrazione.',);
+      this.router.navigate(['/auth/login']); 
+
     } catch (error) {
       console.error('Create club failed', error);
+    } finally {
+      this.isSubmitting = false;
     }
   }
 }

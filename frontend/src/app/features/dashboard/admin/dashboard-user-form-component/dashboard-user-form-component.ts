@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faArrowLeft,
@@ -18,10 +18,10 @@ import {
 import { AuthService } from '../../../../core/services/auth.service';
 import { ClubService } from '../../../../core/services/club.service';
 import { UserService } from '../../../../core/services/user.service';
+import { GenderEnum } from '../../../../enums/gender.enum';
 import { readableRole, Role } from '../../../../enums/role.enum';
 import { Club } from '../../../../models/club.model';
 import { CreateUserDTO, ErrorResponse } from '../../../../models/dtos';
-import { GenderEnum } from '../../../../enums/gender.enum';
 
 @Component({
   selector: 'app-dashboard-user-form-component',
@@ -31,6 +31,7 @@ import { GenderEnum } from '../../../../enums/gender.enum';
 })
 export class DashboardUserFormComponent {
   private fb = inject(FormBuilder);
+  private router = inject(Router);
   private authService = inject(AuthService);
   private clubService = inject(ClubService);
   private userService = inject(UserService);
@@ -153,6 +154,7 @@ export class DashboardUserFormComponent {
       this.userService.createUser(newUser).subscribe({
         next: (user) => {
           alert(`Utente ${user.firstName} ${user.lastName} creato con successo!`);
+          this.router.navigate(['/dashboard']);
         },
         error: (err: ErrorResponse) => {
           alert(`Errore durante la creazione dell'utente: ${err.error.message}`);
