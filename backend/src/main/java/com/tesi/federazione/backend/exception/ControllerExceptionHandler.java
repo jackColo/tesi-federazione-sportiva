@@ -2,6 +2,7 @@ package com.tesi.federazione.backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -38,6 +39,16 @@ public class ControllerExceptionHandler {
         error.setTimestamp(LocalDateTime.now());
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setMessage("Email o password non validi.");
+        error.setTimestamp(LocalDateTime.now());
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)

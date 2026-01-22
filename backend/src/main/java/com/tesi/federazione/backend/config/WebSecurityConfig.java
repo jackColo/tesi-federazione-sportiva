@@ -1,6 +1,7 @@
 package com.tesi.federazione.backend.config;
 
 import com.tesi.federazione.backend.security.JwtAuthTokenFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,27 +22,44 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Classe per la configurazione globale della sicurezza HTTP (Spring Security) che definisce:
+ * - regole di accesso agli endpoint (autorizzazione)
+ * - gestione della sessione (Stateless per JWT)
+ * - configurazione CORS per la comunicazione con il frontend
+ * - algoritmi di cifratura password
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
 
     private final JwtAuthTokenFilter jwtAuthFilter;
 
-    public WebSecurityConfig(JwtAuthTokenFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
-
+    /**
+     * Bean per la codifica delle password. Utilizza l'algoritmo BCrypt per
+     * l'hashing delle credenziali prima del salvataggio nel database.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Bean che espone l'AuthenticationManager predefinito di Spring.
+     * Necessario nei controller/service per invocare la login.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Definizione delle configurazioni CORS.
+     * Abilita il frontend a effettuare chiamate verso questo backend,
+     * specificando metodi HTTP, header e credenziali consentite.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -54,6 +72,14 @@ public class WebSecurityConfig {
         return source;
     }
 
+    /**
+     * Configurazione principale della catena dei filtri di sicurezza
+     * - Disabilita CSRF (non necessario in architetture stateless con JWT)
+     * - Configura le regole CORS
+     * - Definisce gli endpoint pubblici e protegge tutti gli altri
+     * - Imposta la gestione della sessione come STATELESS (nessun cookie di sessione server-side)
+     * - Inserisce il filtro JWT personalizzato prima del filtro standard di autenticazione username/password
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
