@@ -4,7 +4,7 @@ import com.tesi.federazione.backend.model.enums.Role;
 import lombok.Data;
 
 /**
- * Classe DTO per gli oggetti ChatMessage in uscita verso il client
+ * Data Transfer Object (DTO) per gli oggetti ChatMessage in uscita verso il client
  */
 @Data
 public class ChatMessageOutputDTO {

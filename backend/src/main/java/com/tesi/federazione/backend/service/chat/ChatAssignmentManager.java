@@ -11,6 +11,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Classe di metodi per gestire la presa in carico e il rilascio delle chat da parte degli amministratori.
+ * Gestisce le richieste concorrenti da parte degli amministratori tramite lock sugli accessi al chatRepository.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

@@ -3,6 +3,7 @@ package com.tesi.federazione.backend.service.impl;
 import com.tesi.federazione.backend.dto.club.ClubDTO;
 import com.tesi.federazione.backend.dto.club.CreateClubDTO;
 import com.tesi.federazione.backend.dto.club.UpdatedClubDTO;
+import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.exception.ActionNotAllowedException;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.mapper.ClubMapper;
@@ -11,11 +12,11 @@ import com.tesi.federazione.backend.model.ClubManager;
 import com.tesi.federazione.backend.model.enums.AffiliationStatus;
 import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.repository.ClubRepository;
-import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.security.SecurityUtils;
 import com.tesi.federazione.backend.service.ClubService;
 import com.tesi.federazione.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -25,10 +26,10 @@ import java.util.List;
 /**
  * Implementazione del servizio ClubService, necessario alla manipolazione a DB degli oggetti di tipo Club
  */
+@Service
 @RequiredArgsConstructor
 public class ClubServiceImpl implements ClubService {
 
-    private final UserRepository userRepository;
     private final ClubRepository clubRepository;
 
     private final UserService userService;
@@ -49,6 +50,8 @@ public class ClubServiceImpl implements ClubService {
         // Sovrascrivo il ruolo che arriva da FE per sicurezza
         dto.getManager().setRole(Role.CLUB_MANAGER.name());
 
+        CreateUserDTO createUserDTO = dto.getManager();
+
         // Creo prima il club manager, per poterlo associare al club
         ClubManager clubManager = (ClubManager) userService.createUserEntity(dto.getManager());
 
@@ -64,8 +67,9 @@ public class ClubServiceImpl implements ClubService {
         Club club = clubRepository.save(newClub);
 
         // Aggiorno il clubManager creato associandogli l'id del club
-        clubManager.setManagedClub(club.getId());
-        userRepository.save(clubManager);
+        createUserDTO.setId(clubManager.getId());
+        createUserDTO.setClubId(club.getId());
+        userService.updateUser(createUserDTO);
 
         return clubMapper.toDTO(club);
     }
