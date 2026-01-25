@@ -5,7 +5,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * Data Transfer Object (DTO) che rappresenta il riepilogo di una sessione di chat.
+ * DTO di riepilogo utilizzato nella dashboard della chat amministrativa che fornisce
+ * una vista sintetica di tutte le conversazioni (sia attive che inattive).
+ * Include campi calcolati dal server come "waitingForReply", che serve per evidenziare visivamente
+ * agli amministratori le chat che necessitano di un intervento immediato.
+ * L'annotazione @Data di Lombok genera automaticamente i metodi getter e setter.
  */
 @Data
 public class ChatSummaryDTO {

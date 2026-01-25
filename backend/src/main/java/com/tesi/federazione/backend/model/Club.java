@@ -9,6 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Entità che rappresenta un club affiliato alla federazione, mappata sulla collection MongoDB "clubs".
+ * Gestisce i dati anagrafici e lo stato di affiliazione della società.
+ * Le relazioni con ClubManager e Athlete sono gestite tramite DBRef: nel database vengono salvati solo gli ID, evitando documenti troppo pesanti.</p>
+ * L'annotazione @Data di Lombok genera automaticamente i metodi getter e setter.
+ */
 @Data
 @Document(collection = "clubs")
 public class Club {

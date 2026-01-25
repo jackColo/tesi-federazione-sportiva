@@ -6,6 +6,10 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.Set;
 
+/**
+ * DTO di input per la creazione di un nuovo evento.
+ * L'annotazione @Data di Lombok genera automaticamente i metodi getter e setter.
+ */
 @Data
 public class CreateEventDTO {
     private String name;

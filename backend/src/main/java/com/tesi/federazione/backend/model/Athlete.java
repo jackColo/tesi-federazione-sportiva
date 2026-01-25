@@ -8,6 +8,11 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 
+/**
+ * Specializzazione dell'entità User che rappresenta un Atleta.
+ * Utente di base del sistema, ha permessi di accesso ai dati limitati alla sua utenza.
+ * L'annotazione @Data di Lombok genera automaticamente i metodi getter e setter.
+ */
 @Data
 @EqualsAndHashCode(callSuper = true) // Confronta anche i campi della classe genitore
 public class Athlete extends User {
@@ -22,6 +27,9 @@ public class Athlete extends User {
     private LocalDate medicalCertificateExpireDate;
     private String clubId;
 
+    /**
+     * Definisco di default il ruolo degli atleti
+     */
     public Athlete() {
         this.setRole(Role.ATHLETE);
     }

@@ -8,6 +8,10 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * DTO di output per la visualizzazione dei dettagli di un'iscrizione.
+ * L'annotazione @Data di Lombok genera automaticamente i metodi getter e setter.
+ */
 @Data
 public class EnrollmentDTO {
     private String id;

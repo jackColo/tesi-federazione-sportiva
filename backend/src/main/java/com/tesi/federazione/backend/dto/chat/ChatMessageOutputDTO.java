@@ -4,7 +4,10 @@ import com.tesi.federazione.backend.model.enums.Role;
 import lombok.Data;
 
 /**
- * Data Transfer Object (DTO) per gli oggetti ChatMessage in uscita verso il client
+ * DTO di output per la visualizzazione dei messaggi nel client.
+ * Rispetto al modello, il timestamp viene convertito in String in formato ISO,
+ * per facilitare il parsing e la visualizzazione da parte del client.
+ * L'annotazione @Data di Lombok genera automaticamente i metodi getter e setter.
  */
 @Data
 public class ChatMessageOutputDTO {

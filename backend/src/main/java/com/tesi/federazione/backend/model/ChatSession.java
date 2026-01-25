@@ -4,7 +4,11 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 /**
- * Classe di definizione degli oggetti che corrispondono alle sessioni delle chat, utilizzata per il salvataggio a DB.
+ * Entità che definisce lo stato di una conversazione tra un Club Manager e uno specifico
+ * responsabile della federazione (Admin), mappata sulla collection MongoDB "chat_sessions".
+ * Permette di tracciare se una conversazione è attiva o chiusa e quale amministratore
+ * l'ha presa in carico.
+ * L'annotazione @Data di Lombok genera automaticamente i metodi getter e setter.
  */
 @Data
 public class ChatSession {

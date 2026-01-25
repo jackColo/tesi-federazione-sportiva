@@ -7,6 +7,11 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 
+/**
+ * DTO specifico per la visualizzazione dei dettagli di un Atleta.
+ * Estende UserDTO includendo tutti i dati specifici per gli atleti.
+ * L'annotazione @Data di Lombok genera automaticamente i metodi getter e setter.
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AthleteDTO extends UserDTO {
