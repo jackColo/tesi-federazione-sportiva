@@ -47,8 +47,8 @@ public class Event {
     public void cancelEvent() {
         this.state.cancelEvent(this);
     }
-    public void validateRegistration() {
-        this.state.validateRegistration(this);
+    public void validateRegistration(boolean isDraft, boolean isFederationManager) {
+        this.state.validateRegistration(this, isDraft, isFederationManager);
     }
 
 }

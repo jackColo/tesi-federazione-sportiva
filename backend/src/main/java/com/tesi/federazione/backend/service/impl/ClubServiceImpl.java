@@ -16,6 +16,7 @@ import com.tesi.federazione.backend.security.SecurityUtils;
 import com.tesi.federazione.backend.service.ClubService;
 import com.tesi.federazione.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +29,13 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ClubServiceImpl implements ClubService {
 
     private final ClubRepository clubRepository;
-
-    private final UserService userService;
-
     private final ClubMapper clubMapper;
 
+    private final UserService userService;
     private final SecurityUtils securityUtils;
 
     /**
@@ -79,10 +79,13 @@ public class ClubServiceImpl implements ClubService {
      * non permettere l'accesso ad altri club da parte dei club manager.
      * @param id Id del club richiesto
      * @return Club richiesto come ClubDTO
+     * @throws ActionNotAllowedException Se un manager tenta di accedere a un club non suo.
+     * @throws ResourceNotFoundException Se il club non esiste.
      */
     @Override
     public ClubDTO getClubById(String id) {
         if (securityUtils.isClubManager() && !securityUtils.isMyClub(id)) {
+            log.warn("Un club manager può accedere solo ai dati del proprio club");
             throw new ActionNotAllowedException("Accesso al club richiesto non autorizzato");
         }
         Club club = findClubEntity(id);
@@ -108,7 +111,7 @@ public class ClubServiceImpl implements ClubService {
 
     /**
      * Metodo per ottenere l'elenco di tutti i club, nel caso in cui venga utilizzato da un club manager o da un atleta,
-     * l'elenco viene filtrato per sicurezza, restituiendo solo il club a cui appartengono
+     * l'elenco viene filtrato per sicurezza, restituendo solo il club a cui appartengono
      * @return List<ClubDTO> Elenco dei club presenti con filtro di sicurezza
      */
     @Override
@@ -125,10 +128,13 @@ public class ClubServiceImpl implements ClubService {
      * Metodo per aggiornare un club con controllo di sicurezza per non permettere l'accesso ad altri club da parte dei club manager.
      * @param dto UpdatedClubDTO con i nuovi dati per il club da aggiornare
      * @return Club aggiornato come ClubDTO
+     * @throws ActionNotAllowedException Se un manager tenta di modificare un club non suo.
+     * @throws ResourceNotFoundException Se il club non esiste.
      */
     @Override
     public ClubDTO updateClub(UpdatedClubDTO dto) {
         if (securityUtils.isClubManager() && !securityUtils.isMyClub(dto.getId())) {
+            log.warn("Un club manager modificare solo i dati del proprio club");
             throw new ActionNotAllowedException("Accesso al club richiesto non autorizzato");
         }
 
@@ -153,14 +159,17 @@ public class ClubServiceImpl implements ClubService {
     /**
      * Metodo per aggiornare lo stato di affiliazione di un club, per i club manager viene effettuato un controllo per
      * non permettere l'accesso ad altri club.
-     * @param id Id del club di cui aggionrare lo stato di affiliazione
+     * @param id Id del club di cui aggiornare lo stato di affiliazione
      * @param newStatus Nuovo stato di affiliazione per il club
+     * @throws ActionNotAllowedException Se la transizione non è valida o l'utente non ha i permessi.
+     * @throws ResourceNotFoundException Se il club non esiste.
      */
     @Override
     public void updateClubStatus(String id, AffiliationStatus newStatus){
 
         // Verifica dei permessi di accesso al club
         if (securityUtils.isClubManager() && !securityUtils.isMyClub(id)) {
+            log.info("Un club manager modificare solo lo stato di affiliazione del proprio club");
             throw new ActionNotAllowedException("Impossibile modificare lo stato di un altro club!");
         }
 
@@ -168,8 +177,9 @@ public class ClubServiceImpl implements ClubService {
 
         // Verifica della transizione di stato richiesta
         if (!club.getAffiliationStatus().canTransitionTo(newStatus)) {
-            throw new IllegalStateException(
-                    "Transizione negata: impossibile portare allo stato " + newStatus + " un club che si trova nello stato " + club.getAffiliationStatus()
+            log.info("Impossibile impostare lo stato {} ad un club nello stato {}", newStatus, club.getAffiliationStatus());
+            throw new ActionNotAllowedException(
+                    "Impossibile impostare lo stato " + newStatus + " ad un club che si trova nello stato " + club.getAffiliationStatus()
             );
         }
 
@@ -190,6 +200,7 @@ public class ClubServiceImpl implements ClubService {
      * Metodo utility per recuperare un club tramite id un club come Entity e non come DTO
      * @param id Id del club da ricercare
      * @return Club richiesto in formato Club
+     * @throws ResourceNotFoundException Se nel db non esiste un club con l'id indicato
      */
     private Club findClubEntity(String id) {
         return clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Club con ID " + id + " non trovato"));

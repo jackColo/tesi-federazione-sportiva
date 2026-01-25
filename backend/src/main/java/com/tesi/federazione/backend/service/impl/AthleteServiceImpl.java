@@ -1,6 +1,7 @@
 package com.tesi.federazione.backend.service.impl;
 
 import com.tesi.federazione.backend.dto.user.AthleteDTO;
+import com.tesi.federazione.backend.exception.ActionNotAllowedException;
 import com.tesi.federazione.backend.exception.ResourceNotFoundException;
 import com.tesi.federazione.backend.exception.UnauthorizedException;
 import com.tesi.federazione.backend.mapper.UserMapper;
@@ -12,6 +13,7 @@ import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.security.SecurityUtils;
 import com.tesi.federazione.backend.service.AthleteService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +26,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AthleteServiceImpl implements AthleteService {
 
     private final UserRepository userRepository;
@@ -58,7 +61,7 @@ public class AthleteServiceImpl implements AthleteService {
      *
      * @throws ResourceNotFoundException Se l'atleta non esiste.
      * @throws UnauthorizedException Se un Club Manager tenta di modificare un atleta di un altro club.
-     * @throws IllegalStateException Se la transizione di stato non è permessa.
+     * @throws ActionNotAllowedException Se la transizione di stato non è permessa.
      */
     @Override
     public void updateStatus(String id, AffiliationStatus newStatus) {
@@ -66,12 +69,14 @@ public class AthleteServiceImpl implements AthleteService {
 
         // Controllo di sicurezza -> un Club Manager può agire solo sui propri atleti
         if (securityUtils.isClubManager() && !securityUtils.isMyClub(athlete.getClubId())) {
+            log.error("Club manager può aggiornare lo stato di affiliazione solo dei propri atleti");
             throw new UnauthorizedException("Impossibile modificare lo stato di affiliazione: atleta di un altro club.");
         }
 
         // Controllo che la transizione di stato sia valida
         if (!athlete.getAffiliationStatus().canTransitionTo(newStatus)) {
-            throw new IllegalStateException(
+            log.error("Impossibile approvare un atleta che si trova nello stato {}", athlete.getAffiliationStatus());
+            throw new ActionNotAllowedException(
                     "Transizione negata: impossibile approvare un atleta che si trova nello stato " + athlete.getAffiliationStatus()
             );
         }
@@ -104,6 +109,7 @@ public class AthleteServiceImpl implements AthleteService {
     public List<AthleteDTO> getAthletesByClubId(String clubId) {
 
         if (securityUtils.isClubManager() && !securityUtils.isMyClub(clubId)) {
+            log.error("Club manager leggere i dati solo degli atleti del proprio club.");
             throw new UnauthorizedException("Impossibile recuperare i dati degli atleti di un altro club.");
         }
 
@@ -126,9 +132,11 @@ public class AthleteServiceImpl implements AthleteService {
 
         // Se è un club manager filtro i dati per restituire solo gli atleti del suo club
         if (securityUtils.isClubManager()) {
+            String myClubId = securityUtils.getUserClub();
+            log.warn("L'utente è un Club Manager, i risultati verranno filtrati con l'id del suo club {}", myClubId);
             return athletes.stream()
                     .map(user -> (Athlete) user)
-                    .filter(athlete -> athlete.getClubId().equals(securityUtils.getUserClub()))
+                    .filter(athlete -> athlete.getClubId().equals(myClubId))
                     .map(athlete -> (AthleteDTO) userMapper.toDTO(athlete))
                     .toList();
         }

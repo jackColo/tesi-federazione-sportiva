@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class ChatMessageMapper {
 
     /**
-     * Metodo per mappare un messaggio da modello a DTO
+     * Metodo per mappare un messaggio da entità a DTO
      * @param msg Messaggio come oggetto di tipo ChatMessage
      * @return ChatMessageOutputDTO Messaggio come oggetto di tipo ChatMessageOutputDTO
      */

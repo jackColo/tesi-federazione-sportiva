@@ -22,10 +22,10 @@ public class ChatAssignmentManager {
 
     private final ChatSessionRepository chatSessionRepository;
 
-    // Mappa per associare ad un admin un lock quando prende in carico una chat, per evitare che ne prenda in carico altre
+    // Mappa per associare a un admin un lock quando prende in carico una chat, per evitare che ne prenda in carico altre
     private final ConcurrentHashMap<String, ReentrantLock> adminLocks = new ConcurrentHashMap<>();
 
-    // Mappa per associare ad una chat un lock, per evitare che più admin possano richiedere di prenderla in carico in contemporanea
+    // Mappa per associare a una chat un lock, per evitare che più admin possano richiedere di prenderla in carico in contemporanea
     private final ConcurrentHashMap<String, ReentrantLock> chatLocks = new ConcurrentHashMap<>();
 
     /**
@@ -43,7 +43,7 @@ public class ChatAssignmentManager {
         try {
             // Provo ad acquisire il lock, se non riesco in 2 secondi considero l'admin come occupato (con il timer evito Deadlock)
             if (!adminLock.tryLock(2, TimeUnit.SECONDS)) {
-                throw new RuntimeException("Admin occupato");
+                throw new RuntimeException("Impossibile assegnare la chat, l'amministratore risulta già occupato.");
             }
 
             try {

@@ -3,6 +3,7 @@ package com.tesi.federazione.backend.service.impl.chat;
 import com.tesi.federazione.backend.dto.chat.ChatMessageInputDTO;
 import com.tesi.federazione.backend.dto.chat.ChatMessageOutputDTO;
 import com.tesi.federazione.backend.dto.chat.ChatSummaryDTO;
+import com.tesi.federazione.backend.exception.UnauthorizedException;
 import com.tesi.federazione.backend.mapper.ChatMessageMapper;
 import com.tesi.federazione.backend.model.ChatMessage;
 import com.tesi.federazione.backend.model.ChatSession;
@@ -11,8 +12,10 @@ import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.repository.ChatMessageRepository;
 import com.tesi.federazione.backend.repository.ChatSessionRepository;
 import com.tesi.federazione.backend.repository.UserRepository;
+import com.tesi.federazione.backend.security.SecurityUtils;
 import com.tesi.federazione.backend.service.chat.ChatMessageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageServiceImpl implements ChatMessageService {
 
     private final UserRepository userRepository;
@@ -33,21 +37,34 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatMessageMapper chatMessageMapper;
 
+    private final SecurityUtils securityUtils;
+
     /**
      * Metodo per recuperare lo storico di tutti i messaggi inviati nella chat tra amministratori e
      * clubManager con id 'chatUserId'.
      *
      * @param chatUserId Id della chat tra amministratori e clubManager
      * @return List<ChatMessageOutputDTO> Lista ordinata dello storico dei messaggi appartenenti alla chat
+     * @throws UnauthorizedException Se un Club Manager tenta di leggere lo storico di un altro club.
      */
     @Override
     public List<ChatMessageOutputDTO> getAllChatMessages(String chatUserId) {
         List<ChatMessage> chatMessages = chatMessageRepository.findByChatUserIdOrderByTimestampAsc(chatUserId);
+
+        // Un club manager può leggere solo i messaggi della propria chat
+        if (securityUtils.isClubManager()) {
+            String currentUserId = securityUtils.getCurrentUserId();
+            if (!currentUserId.equals(chatUserId)) {
+                log.error("Un club manager può leggere solo i messaggi della propria chat");
+                throw new UnauthorizedException("Non puoi visualizzare lo storico messaggi di altri club manager.");
+            }
+        }
+
         return chatMessages.stream().map(chatMessageMapper::toDTO).toList();
     }
 
     /**
-     * Metodo per salvare un nuovo messaggio a DB
+     * Metodo per salvare un nuovo messaggio nel database
      *
      * @param dto        Messaggio da salvare come oggetto di tipo ChatMessaggeInputDTO
      * @param senderId   Id del mittente del messaggio
@@ -109,6 +126,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             if (b.getLastMessageTime() == null) return -1;
             return b.getLastMessageTime().compareTo(a.getLastMessageTime());
         });
+
+        log.info("Sommario generato. Totale chat: {}", summaries.size());
 
         return summaries;
     }

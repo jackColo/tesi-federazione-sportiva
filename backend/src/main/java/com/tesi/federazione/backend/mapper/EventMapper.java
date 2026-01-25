@@ -4,9 +4,17 @@ import com.tesi.federazione.backend.dto.event.EventDTO;
 import com.tesi.federazione.backend.model.Event;
 import org.springframework.stereotype.Component;
 
+/**
+ * Classe utility per mappare i gli oggetti Event nei formati DTO
+ */
 @Component
 public class EventMapper {
 
+    /**
+     * Metodo per mappare un evento da entità a DTO
+     * @param event Evento come oggetto Event
+     * @return EventDTO Evento come oggetto EventDTO
+     */
     public EventDTO toDTO(Event event) {
         if (event == null) {
             return null;

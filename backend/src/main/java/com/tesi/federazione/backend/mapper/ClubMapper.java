@@ -9,9 +9,17 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+/**
+ * Classe utility per mappare i gli oggetti Club nei formati DTO
+ */
 @Component
 public class ClubMapper {
 
+    /**
+     * Metodo per mappare un club da entità a DTO
+     * @param club Club come oggetto di tipo Club
+     * @return ClubDTO Club come oggetto di tipo ClubDTO
+     */
     public ClubDTO toDTO(Club club) {
         if (club == null) {
             return null;

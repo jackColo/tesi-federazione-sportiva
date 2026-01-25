@@ -1,7 +1,9 @@
 package com.tesi.federazione.backend.security;
 
-import com.tesi.federazione.backend.model.*;
-import org.springframework.security.authorization.AuthorizationDeniedException;
+import com.tesi.federazione.backend.exception.UnauthorizedException;
+import com.tesi.federazione.backend.model.Athlete;
+import com.tesi.federazione.backend.model.ClubManager;
+import com.tesi.federazione.backend.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -99,7 +101,7 @@ public class SecurityUtils {
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             return (User) authentication.getPrincipal();
         }
-        throw new AuthorizationDeniedException("User not authorized!");
+        throw new UnauthorizedException("Utente non autenticato!");
     }
 
     /**

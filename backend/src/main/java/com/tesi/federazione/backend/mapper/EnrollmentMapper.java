@@ -4,9 +4,17 @@ import com.tesi.federazione.backend.dto.enrollment.EnrollmentDTO;
 import com.tesi.federazione.backend.model.Enrollment;
 import org.springframework.stereotype.Component;
 
+/**
+ * Classe utility per mappare i gli oggetti Enrollment nei formati DTO
+ */
 @Component
 public class EnrollmentMapper {
 
+    /**
+     * Metodo per mappare un iscrizione da entità a DTO
+     * @param enrollment Iscrizione come oggetto Enrollment
+     * @return EnrollmentDTO Iscrizione come oggetto EnrollmentDTO
+     */
     public EnrollmentDTO toDTO(Enrollment enrollment) {
         if (enrollment == null) {
             return null;

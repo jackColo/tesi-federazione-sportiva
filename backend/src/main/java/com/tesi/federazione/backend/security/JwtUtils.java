@@ -26,9 +26,15 @@ import java.util.function.Function;
 @Slf4j
 public class JwtUtils {
 
+    /**
+     * Variabile per validare i token: valore impostato nel file di configurazione
+     */
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 
+    /**
+     * Variabile per determinare la scadenza di un token: valore impostato nel file di configurazione
+     */
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
 
@@ -56,7 +62,7 @@ public class JwtUtils {
     }
 
     /**
-     * Metodo per genereare un nuovo token per l'utente "userDetails" autenticato.
+     * Metodo per generare un nuovo token per l'utente "userDetails" autenticato.
      *
      * @param userDetails Dettagli dell'utente autenticato
      * @return JwtResponseDTO Risposta con token, id, email e ruolo dell'utente autenticato

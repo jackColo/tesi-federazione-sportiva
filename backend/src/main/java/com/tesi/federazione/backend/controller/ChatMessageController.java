@@ -105,6 +105,7 @@ public class ChatMessageController {
     @GetMapping("/summaries")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<List<ChatSummaryDTO>> getChatSummaries() {
+        log.info("Generazione sommario chat per dashboard amministratori...");
         return ResponseEntity.ok(chatMessageService.getChatSummaries());
     }
 }

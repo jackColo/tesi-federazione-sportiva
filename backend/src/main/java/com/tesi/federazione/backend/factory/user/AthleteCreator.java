@@ -6,8 +6,18 @@ import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.User;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementazione del Creator per gli utenti con ruolo ATHLETE
+ * Viene registrato nel contesto Spring con il nome "ATHLETE" (tramite @Component("ATHLETE)),
+ * che corrisponde esattamente alla stringa del ruolo passata nel DTO.
+ */
 @Component("ATHLETE")
 public class AthleteCreator implements UserCreator {
+
+    /**
+     * Crea un'istanza di Athlete popolando i dati specifici degli atleti
+     * Imposta di default lo stato di affiliazione a SUBMITTED.
+     */
     @Override
     public User createUser(CreateUserDTO dto) {
         Athlete athlete = new Athlete();
