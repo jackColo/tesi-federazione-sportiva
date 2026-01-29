@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implementazione dello stato REGISTRATION_CLOSED (iscrizioni chiuse).
- *
  * In questa fase le iscrizioni sono terminate ma l'evento non si è ancora svolto.
  * Le transizioni possibili sono verso gli stati OPEN_REGISTRATION, COMPLETED, CANCELLED.
  * Sono permesse modifiche alle registrazioni solo da parte degli amministratori
@@ -76,7 +75,7 @@ public class RegistrationClosedState implements EventState {
      */
     @Override
     public void validateRegistration(Event event, boolean isDraft, boolean isFederationManager) {
-        if (isFederationManager) {
+        if (!isFederationManager) {
             throw new ActionNotAllowedException("Il periodo di registrazione è terminato!");
         } else {
             log.info("L'amministratore può procedere alla gestione delle iscrizioni");
