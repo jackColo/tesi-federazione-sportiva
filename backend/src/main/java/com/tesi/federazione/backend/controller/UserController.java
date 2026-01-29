@@ -80,7 +80,7 @@ public class UserController {
         log.info("Richiesta aggiornamento dati per l'utente {}", id);
         UserDTO userDTO = userService.updateUser(createUserDTO);
         log.info("Dati utente {} aggiornati con successo.", id);
-        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
 }

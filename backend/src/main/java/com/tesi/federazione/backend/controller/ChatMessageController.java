@@ -92,8 +92,7 @@ public class ChatMessageController {
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<?> releaseChat(@PathVariable String clubManagerId) {
         log.info("Rilascio chat {} in corso...", clubManagerId);
-        String adminId = securityUtils.getCurrentUserId();
-        chatMediator.releaseChat(clubManagerId, adminId);
+        chatMediator.releaseChat(clubManagerId);
         log.info("Chat {} rilasciata con successo", clubManagerId);
         return ResponseEntity.ok("Chat rilasciata con successo.");
     }

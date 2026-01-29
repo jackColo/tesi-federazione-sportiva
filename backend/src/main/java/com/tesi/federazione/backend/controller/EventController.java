@@ -67,9 +67,9 @@ public class EventController {
      * @param id ID dell'evento.
      * @param newState Nuovo stato da applicare.
      */
-    @GetMapping("/update-state/{id}/{newState}")
+    @PatchMapping("/update-state/{id}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
-    public ResponseEntity<Void> updateEvent(@PathVariable String id, @PathVariable EventStatus newState) {
+    public ResponseEntity<Void> updateEvent(@PathVariable String id, @RequestBody EventStatus newState) {
         log.info("Richiesta cambio stato evento {} -> Nuovo stato: {}", id, newState);
         eventService.updateEventState(id, newState);
         log.info("Stato evento {} aggiornato con successo.", id);

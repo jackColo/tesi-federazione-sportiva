@@ -31,7 +31,7 @@ public class AthleteController {
      * @param clubId ID del club di cui visualizzare le richieste.
      * @return ResponseEntity<List<AthleteDTO>> Lista di AthleteDTO in attesa di approvazione e HttpStatus.
      */
-    @GetMapping("/to-approve/{id}")
+    @GetMapping("/to-approve/{clubId}")
     @PreAuthorize("hasAuthority('FEDERATION_MANAGER')")
     public ResponseEntity<List<AthleteDTO>> getAthletesToApprove(@PathVariable String clubId) {
         log.info("Ricerca di tutti gli utenti da approvare per il club {}", clubId);
