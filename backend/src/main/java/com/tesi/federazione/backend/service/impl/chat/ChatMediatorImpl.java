@@ -5,7 +5,6 @@ import com.tesi.federazione.backend.exception.ActionNotAllowedException;
 import com.tesi.federazione.backend.model.ChatMessage;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.model.enums.Role;
-import com.tesi.federazione.backend.service.chat.ChatAssignmentManager;
 import com.tesi.federazione.backend.service.chat.ChatMediator;
 import com.tesi.federazione.backend.service.chat.ChatMessageService;
 import lombok.RequiredArgsConstructor;
@@ -82,10 +81,9 @@ public class ChatMediatorImpl implements ChatMediator {
      * Metodo che richiama il gestore del rilascio della chat presa in carico da un amministratore della federazione
      *
      * @param chatUserId Id della chat tra amministratori e clubManager
-     * @param adminId    Id dell'amministratore che sta richiedendo il rilascio della chat
      */
     @Override
-    public void releaseChat(String chatUserId, String adminId) {
+    public void releaseChat(String chatUserId) {
         assignmentManager.releaseChat(chatUserId);
     }
 

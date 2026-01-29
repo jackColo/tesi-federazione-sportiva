@@ -1,4 +1,4 @@
-package com.tesi.federazione.backend.service.chat;
+package com.tesi.federazione.backend.service.impl.chat;
 
 import com.tesi.federazione.backend.exception.ResourceConflictException;
 import com.tesi.federazione.backend.model.ChatSession;

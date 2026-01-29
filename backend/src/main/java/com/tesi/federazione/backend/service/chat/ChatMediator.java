@@ -31,8 +31,7 @@ public interface ChatMediator {
      * Firma del metodo che richiama il gestore del rilascio della chat presa in carico da un amministratore della federazione
      *
      * @param chatUserId Id della chat tra amministratori e clubManager
-     * @param adminId Id dell'amministratore che sta richiedendo il rilascio della chat
      */
-    void releaseChat(String chatUserId, String adminId);
+    void releaseChat(String chatUserId);
 
 }

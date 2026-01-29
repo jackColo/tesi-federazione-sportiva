@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -148,6 +147,11 @@ public class EventServiceImpl implements EventService {
     public void updateEventState(String id, EventStatus newStatus) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + id + " non trovato"));
+
+        if (newStatus == null) {
+            throw new ActionNotAllowedException("Il nuovo stato non può essere null");
+        }
+
         event.setState(EventStateFactory.getInitialState(event.getStatus()));
 
         log.info("Evento {} transizione stato: {} -> {}", id, event.getStatus(), newStatus);
@@ -344,8 +348,8 @@ public class EventServiceImpl implements EventService {
             throw new UnauthorizedException("Non puoi modificare l'iscrizione di atleti per conto di altri club.");
         }
 
-        // Controllo si sicurezza per gli Atleti: può modificare l'iscrizione solo per se stesso
-        if (securityUtils.isAthlete() && !securityUtils.getCurrentUserId().equals(enrollmentDTO.getAthleteId()) && !enrollmentDTO.getStatus().equals(EnrollmentStatus.DRAFT)) {
+        // Controllo di sicurezza per gli Atleti: può modificare l'iscrizione solo per se stesso
+        if (securityUtils.isAthlete() && (!securityUtils.getCurrentUserId().equals(enrollmentDTO.getAthleteId()) || !enrollmentDTO.getStatus().equals(EnrollmentStatus.DRAFT))) {
             log.error("Un Atleta può modificare solo la propria iscrizione e solo quando è ancora una bozza");
             throw new UnauthorizedException("Non puoi modificare l'iscrizione di altri atleti o modificare la tua iscrizione se non è in bozza.");
         }

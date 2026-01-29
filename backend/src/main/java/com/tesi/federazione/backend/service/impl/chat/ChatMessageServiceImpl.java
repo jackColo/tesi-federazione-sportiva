@@ -118,6 +118,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         }
 
         // Ordino l'elenco delle chat mettendo prima quelle in attesa per darne maggiore visibilità agli amministratori
+        if(! summaries.isEmpty()){
         summaries.sort((a, b) -> {
             if (a.isWaitingForReply() != b.isWaitingForReply()) {
                 return a.isWaitingForReply() ? -1 : 1;
@@ -126,6 +127,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             if (b.getLastMessageTime() == null) return -1;
             return b.getLastMessageTime().compareTo(a.getLastMessageTime());
         });
+        }
 
         log.info("Sommario generato. Totale chat: {}", summaries.size());
 
