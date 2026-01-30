@@ -11,7 +11,7 @@ import com.tesi.federazione.backend.model.User;
 public interface UserCreator {
     /**
      * Crea un'istanza specifica di User popolando i campi propri della sottoclasse.
-     * * @param dto Oggetto di trasferimento dati contenente le informazioni per la creazione.
+     * @param dto Oggetto di trasferimento dati contenente le informazioni per la creazione.
      * @return L'entità User (o una sua sottoclasse) istanziata ma non ancora salvata su DB.
      */
     User createUser(CreateUserDTO dto);

@@ -28,7 +28,7 @@ public class SecurityUtils {
 
     /**
      * Utility per recuperare l'email dell'utente autenticato
-     * @return Email dell'untete autenticato
+     * @return Email dell'utente autenticato
      */
     public String getCurrentUserEmail() {
         User user = getCurrentUser();
@@ -37,7 +37,7 @@ public class SecurityUtils {
 
     /**
      * Utility per verificare che l'utente autenticato sia un FEDERATION_MANAGER
-     * @return true se l'utente è un ATHLFEDERATION_MANAGERETE, false altrimenti
+     * @return true se l'utente è un FEDERATION_MANAGER, false altrimenti
      */
     public boolean isFederationManager() {
         return hasAuthority("FEDERATION_MANAGER");
@@ -71,7 +71,7 @@ public class SecurityUtils {
             return clubManager.getManagedClub().equals(clubId);
         } else if (user instanceof Athlete) {
             Athlete athlete = (Athlete) user;
-            return athlete.getId().equals(clubId);
+            return athlete.getClubId().equals(clubId);
         }
         return false;
     }
@@ -87,7 +87,7 @@ public class SecurityUtils {
             return clubManager.getManagedClub();
         } else if (user instanceof Athlete) {
             Athlete athlete = (Athlete) user;
-            return athlete.getId();
+            return athlete.getClubId();
         }
         return null;
     }
