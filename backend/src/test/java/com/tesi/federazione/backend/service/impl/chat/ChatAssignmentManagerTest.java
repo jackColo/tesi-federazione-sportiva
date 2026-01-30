@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -109,5 +111,135 @@ class ChatAssignmentManagerTest {
         String result = chatAssignmentManager.getCurrentAdminForClubManager(clubManagerId);
 
         assertEquals("adminId", result);
+    }
+
+
+    @Nested
+    @DisplayName("Tests per: assignChat() - Test sulla gestione della concorrenza")
+    class AssignChat_concurrencyTests {
+
+        @Test
+        @DisplayName("Concorrenza: 2 Admin contesi sulla stessa chat")
+        void sameChat_TwoAdmins_test() throws InterruptedException {
+            String clubId = "clubId";
+            String admin1 = "admin1";
+            String admin2 = "admin2";
+
+            // AtomicBoolean serve per simulare lo stato "in memoria" durante il test altrimenti entrambi i
+            // thread che creiamo in seguito vedrebbero sempre isChatTaker = false e non riusciremmo a testare
+            AtomicBoolean isChatTaken = new AtomicBoolean(false);
+
+            when(chatSessionRepository.findByClubManagerIdAndActiveTrue(clubId)).thenAnswer(inv -> {
+                if (isChatTaken.get()) {
+                    return Optional.of(new ChatSession());
+                }
+                return Optional.empty();
+            });
+
+            when(chatSessionRepository.save(any())).thenAnswer(inv -> {
+                isChatTaken.set(true);
+                // Imposto una latenza nel salvataggio per mantenere il lock sul primo thread e favorire
+                // l'effettiva verifica dell'efficacia nella gestione della concorrenza
+                Thread.sleep(200);
+                return inv.getArgument(0);
+            });
+
+            when(chatSessionRepository.findByAdminIdAndActiveTrue(anyString())).thenReturn(Optional.empty());
+
+            AtomicInteger successCount = new AtomicInteger(0);
+            AtomicInteger failCount = new AtomicInteger(0);
+
+            Thread t1 = new Thread(() -> {
+                try {
+                    chatAssignmentManager.assignChat(clubId, admin1);
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                    failCount.incrementAndGet();
+                }
+            });
+
+            Thread t2 = new Thread(() -> {
+                try {
+                    chatAssignmentManager.assignChat(clubId, admin2);
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                    failCount.incrementAndGet();
+                }
+            });
+
+            t1.start();
+            t2.start();
+
+            //  uso .join() per fare in modo che il test attenda che i thread terminino
+            t1.join();
+            t2.join();
+
+            assertEquals(1, successCount.get());
+            assertEquals(1, failCount.get());
+            verify(chatSessionRepository, times(1)).save(any());
+        }
+
+        @Test
+        @DisplayName("Concorrenza: Stesso Admin prova a prendere 2 chat diverse")
+        void twoChats_sameAdmin_test() throws InterruptedException {
+            String adminId = "adminId";
+            String userChatId1 = "clubManagerId1";
+            String userChatId2 = "clubManagerId2";
+
+            // AtomicBoolean serve per simulare lo stato "in memoria" durante il test altrimenti entrambi i
+            // thread che creiamo in seguito vedrebbero sempre isChatTaker = false e non riusciremmo a testare
+            AtomicBoolean isAdminBusy = new AtomicBoolean(false);
+
+            when(chatSessionRepository.findByAdminIdAndActiveTrue(adminId)).thenAnswer(inv -> {
+                if (isAdminBusy.get()) {
+                    return Optional.of(new ChatSession());
+                }
+                return Optional.empty();
+            });
+
+            when(chatSessionRepository.save(any())).thenAnswer(inv -> {
+                isAdminBusy.set(true);
+                // Imposto una latenza nel salvataggio per mantenere il lock sul primo thread e favorire
+                // l'effettiva verifica dell'efficacia nella gestione della concorrenza
+                Thread.sleep(200);
+                return inv.getArgument(0);
+            });
+
+            when(chatSessionRepository.findByClubManagerIdAndActiveTrue(anyString())).thenReturn(Optional.empty());
+
+            AtomicInteger successCount = new AtomicInteger(0);
+            AtomicInteger failCount = new AtomicInteger(0);
+
+            Thread t1 = new Thread(() -> {
+                try {
+                    chatAssignmentManager.assignChat(userChatId1, adminId);
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                    failCount.incrementAndGet();
+                }
+            });
+
+            Thread t2 = new Thread(() -> {
+                try {
+                    chatAssignmentManager.assignChat(userChatId2, adminId);
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                    failCount.incrementAndGet();
+                }
+            });
+
+            t1.start();
+            t2.start();
+
+            //  uso .join() per fare in modo che il test attenda che i thread terminino
+            t1.join();
+            t2.join();
+
+            assertEquals(1, successCount.get());
+            assertEquals(1, failCount.get());
+            verify(chatSessionRepository, times(1)).save(any());
+        }
+
+
     }
 }
