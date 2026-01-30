@@ -49,6 +49,10 @@ public class EventServiceTest {
     private EnrollmentMapper enrollmentMapper;
     @Mock
     private SecurityUtils securityUtils;
+    @Mock
+    private ClubService clubService;
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private EventServiceImpl eventService;
