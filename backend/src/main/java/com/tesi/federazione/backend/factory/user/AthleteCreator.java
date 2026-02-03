@@ -21,16 +21,30 @@ public class AthleteCreator implements UserCreator {
     @Override
     public User createUser(CreateUserDTO dto) {
         Athlete athlete = new Athlete();
+        athlete.setAffiliationStatus(AffiliationStatus.SUBMITTED);
+        this.mapData(athlete, dto);
+
+        return athlete;
+    }
+
+    /**
+     * Aggiorno i dati dell'istanza Athlete passata in oggetto, sovrascrivendone i campi passati tramite dto
+     */
+    @Override
+    public void updateUser(User user, CreateUserDTO dto) {
+        if (user instanceof Athlete) {
+            this.mapData((Athlete) user, dto);
+        }
+    }
+
+    // Metodo helper per i campi comuni per evitare duplicazione codice
+    private void mapData(Athlete athlete, CreateUserDTO dto) {
         athlete.setHeight(dto.getHeight());
-        athlete.setWeight(dto.getWeight());
         athlete.setWeight(dto.getWeight());
         athlete.setGender(dto.getGender());
         athlete.setBirthDate(dto.getBirthDate());
         athlete.setMedicalCertificateNumber(dto.getMedicalCertificateNumber());
         athlete.setMedicalCertificateExpireDate(dto.getMedicalCertificateExpireDate());
         athlete.setClubId(dto.getClubId());
-        athlete.setAffiliationStatus(AffiliationStatus.SUBMITTED);
-
-        return athlete;
     }
 }

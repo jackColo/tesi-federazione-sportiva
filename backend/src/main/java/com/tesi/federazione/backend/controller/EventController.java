@@ -199,9 +199,9 @@ public class EventController {
      * @param newStatus Nuovo stato da associare all'iscrizione
      * @return DTO dell'iscrizione con lo stato modificato.
      */
-    @PatchMapping("/enroll/update-status")
+    @PatchMapping("/enroll/update-status/{id}")
     @PreAuthorize("hasAnyAuthority('CLUB_MANAGER', 'FEDERATION_MANAGER')")
-    public ResponseEntity<EnrollmentDTO> updatedEnrollmentStatus(@RequestParam String id, EnrollmentStatus newStatus) {
+    public ResponseEntity<EnrollmentDTO> updatedEnrollmentStatus(@PathVariable String id, @RequestBody EnrollmentStatus newStatus) {
         log.info("Richiesta aggiornamento stato iscrizione {}", id);
         EnrollmentDTO newEnrollment = eventService.updateEnrollmentStatus(id, newStatus);
         log.info("Stato iscrizione {} aggiornato con successo.", id);

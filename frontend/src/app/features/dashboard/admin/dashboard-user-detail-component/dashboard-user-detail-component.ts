@@ -208,10 +208,10 @@ export class DashboardUserDetailComponent {
           this.isEditing = false;
           this.patchValues(newUser);
           alert('Utente aggiornato con successo');
+          window.location.reload();
         },
         error: (err: ErrorResponse) => {
-          console.error(err.error.message);
-          alert("Errore durante l'aggiornamento");
+          alert("Errore durante l'aggiornamento: "+ err.error.message);
         },
       });
     }

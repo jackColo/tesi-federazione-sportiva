@@ -1,5 +1,6 @@
 package com.tesi.federazione.backend.service.impl;
 
+import com.tesi.federazione.backend.dto.club.ClubDTO;
 import com.tesi.federazione.backend.dto.enrollment.CreateEnrollmentDTO;
 import com.tesi.federazione.backend.dto.enrollment.EnrollmentDTO;
 import com.tesi.federazione.backend.dto.event.CreateEventDTO;
@@ -75,9 +76,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDTO getEventById(String id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + id + " non trovato"));
-        long count = enrollmentRepository.findByEventId(id).size();
+        long approvedCount = enrollmentRepository.findByEventIdAndStatus(id, EnrollmentStatus.APPROVED).size();
         EventDTO dto = eventMapper.toDTO(event);
-        dto.setEnrolledCount(count);
+        dto.setEnrolledCount(approvedCount);
 
         return dto;
     }
@@ -218,7 +219,7 @@ public class EventServiceImpl implements EventService {
         }
 
         // Controlli di sicurezza: se non esistono club, atleta o evento con questi ID i service lanciano un errore.
-        clubService.getClubById(enrollmentDTO.getClubId());
+        String clubName = clubService.getClubById(enrollmentDTO.getClubId()).getName();
         userService.getUserById(enrollmentDTO.getAthleteId());
         Event event = eventRepository.findById(enrollmentDTO.getEventId())
                 .orElseThrow(() -> new ResourceNotFoundException("Evento con ID " + enrollmentDTO.getEventId() + " non trovato"));
@@ -229,6 +230,7 @@ public class EventServiceImpl implements EventService {
 
         Enrollment enrollment = new Enrollment();
         enrollment.setAthleteId(enrollmentDTO.getAthleteId());
+        enrollment.setAthleteClubName(clubName);
         enrollment.setAthleteFirstname(enrollmentDTO.getAthleteFirstname());
         enrollment.setAthleteLastname(enrollmentDTO.getAthleteLastname());
         enrollment.setAthleteWeight(enrollmentDTO.getAthleteWeight());
@@ -443,6 +445,8 @@ public class EventServiceImpl implements EventService {
                 throw new ActionNotAllowedException("Puoi impostare l'iscrizione solo nello stato di bozza");
             }
             enrollment.setStatus(newStatus);
+        } else {
+            throw new ActionNotAllowedException("Transizione di stato non permessa.");
         }
     }
 }

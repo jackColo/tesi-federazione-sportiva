@@ -34,5 +34,5 @@ public class CreateEnrollmentDTO {
      * true = Salva come Bozza (dovrà essere verificata dal club manager per l'invio effettivo)
      * false = Invia Iscrizione (la richiesta è corretta e può essere inviata definitivamente).
      */
-    private boolean isDraft;
+    private boolean draft;
 }

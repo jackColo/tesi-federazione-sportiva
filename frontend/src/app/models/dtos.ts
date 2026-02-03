@@ -163,7 +163,7 @@ export interface CreateEnrollmentDTO {
   athleteGender: string;
   athleteAffiliationStatus: AffiliationStatus;
   athleteMedicalCertificateExpireDate: string;
-  isDraft: boolean;
+  draft: boolean;
 }
 
 export interface EnrollmentDTO {
@@ -174,6 +174,7 @@ export interface EnrollmentDTO {
   enrollmentDate: string;
   status: EnrollmentStatus;
   athleteId: string;
+  athleteClubName: string;
   athleteFirstname: string;
   athleteLastname: string;
   athleteWeight: string;

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, input, InputSignal, Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faArrowLeft,
@@ -48,6 +48,8 @@ import { User } from '../../../../../models/user.model';
 })
 export class DashboardEventEnrollFormComponent {
   private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private authService = inject(AuthService);
   private eventService = inject(EventService);
   private userService = inject(UserService);
@@ -117,10 +119,10 @@ export class DashboardEventEnrollFormComponent {
                   );
                   this.eventName = event.name;
                 },
-                error: (err: ErrorResponse) => alert('Errore ' + err.error.message),
+                error: (err: ErrorResponse) => alert('Errore: ' + err.error.message),
               });
             },
-            error: (err: ErrorResponse) => alert('Errore ' + err.error.message),
+            error: (err: ErrorResponse) => alert('Errore: ' + err.error.message),
           });
           return enrollment;
         }
@@ -133,6 +135,7 @@ export class DashboardEventEnrollFormComponent {
           enrollmentDate: new Date().toISOString(),
           status: EnrollmentStatus.DRAFT,
           athleteId: '',
+          athleteClubName: '',
           athleteFirstname: '',
           athleteLastname: '',
           athleteWeight: '',
@@ -150,7 +153,7 @@ export class DashboardEventEnrollFormComponent {
               );
               this.eventName = event.name;
             },
-            error: (err: ErrorResponse) => alert('Errore ' + err.error.message),
+            error: (err: ErrorResponse) => alert('Errore: ' + err.error.message),
           });
         }
         if (athleteId) {
@@ -246,15 +249,15 @@ export class DashboardEventEnrollFormComponent {
     if (!this.enrollId()) {
       const newEnrollment: CreateEnrollmentDTO = {
         ...updatedData,
-        isDraft: updatedData.status === EnrollmentStatus.DRAFT,
+        draft: updatedData.status === EnrollmentStatus.DRAFT,
       };
 
       this.eventService.enrollAthlete(newEnrollment).subscribe({
         next: (res) => {
-          alert('Atleta iscritto con successo');
+          alert('Iscrizione compilata con successo');
           this.isEditing = false;
           this.form.disable();
-          window.location.reload();
+          this.router.navigate(['../../../'], { relativeTo: this.route });
         },
 
         error: (err: ErrorResponse) => alert('Errore nel salvataggio: ' + err.error.message),

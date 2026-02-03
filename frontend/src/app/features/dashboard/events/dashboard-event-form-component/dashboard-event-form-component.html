@@ -2,7 +2,7 @@
 <div class="max-w-4xl mx-auto space-y-6" [formGroup]="form">
   <div class="flex items-center gap-4">
     <a
-      routerLink="../"
+      [routerLink]='evt.id ? "../../"+evt.id : "../"'
       class="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
     >
       <fa-icon [icon]="icons.faArrowLeft"></fa-icon>

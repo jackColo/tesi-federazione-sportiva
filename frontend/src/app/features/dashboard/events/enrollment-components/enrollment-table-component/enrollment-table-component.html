@@ -1,115 +1,123 @@
-@if(enrollments(); as enrollments) {
-<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-  <div class="flex justify-between items-center mb-4">
-    <h3 class="font-bold text-slate-800 flex items-center gap-2">
-      {{ 'Elenco Iscritti' }}
-      @if (enrollments.length > 0) {
-      <span
-        class="bg-blue-100 rounded-full text-blue-800 text-xs font-semibold px-1.5 py-0.5 rounded"
-      >
-        {{ enrollments.length }}
-      </span>
-      }
-    </h3>
-  </div>
-
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm text-left">
-      <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-xs">
-        <tr>
-          <th class="px-4 py-3">Atleta</th>
-
-          @if (!isFederation()) {
-          <th class="px-4 py-3">Club</th>
-          }
-
-          <th class="px-4 py-3">Disciplina</th>
-
-          @if (!isFederation()) {
-          <th class="px-4 py-3">Data Iscrizione</th>
-          }
-
-          <th class="px-4 py-3">Stato</th>
-
-          <th class="px-4 py-3 text-right">Azioni</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (enr of enrollments; track enr.id) {
-        <tr class="border-b hover:bg-slate-50 transition-colors">
-          <td class="px-4 py-3 font-medium text-slate-900">
-            {{ enr.athleteFirstname }} {{ enr.athleteLastname }}
-          </td>
-
-          <td class="px-4 py-3 text-slate-600">Nome club</td>
-          
-          <td class="px-4 py-3 text-slate-500">
-            {{ getReadableCompetitonType(enr.discipline) }}
-          </td>
-
-          <td class="px-4 py-3 text-slate-500">
-            {{ enr.enrollmentDate | date : 'shortDate' }}
-          </td>
-
-          <td class="px-4 py-3">
-            <span
-              [class]="
-                'px-2 py-1 rounded-full text-xs font-medium ' +
-                getEnrollmentStatusColorClass(enr.status)
-              "
-            >
-              {{ getReadableEnrollmentStatus(enr.status) }}
-            </span>
-          </td>
-
-          <td class="px-4 py-3 text-right">
-            @if (isFederation()) {
-            <button
-              (click)="acceptEnrollment()"
-              class="text-emerald-500 cursor-pointer hover:underline hover:text-emerald-700 text-xs font-bold transition-colors"
-              title="Accetta iscrizione"
-            >
-              Accetta
-            </button>
-            <button
-              (click)="rejectEnrollment()"
-              class="text-red-500 cursor-pointer hover:underline hover:text-red-700 text-xs font-bold transition-colors"
-              title="Accetta iscrizione"
-            >
-              Rifiuta
-            </button>
-            } @else if(isClub() && enr.status === 'DRAFT') {
-            <button
-              (click)="submitEnrollment()"
-              class="text-red-500 cursor-pointer hover:underline hover:text-red-700 text-xs font-bold transition-colors"
-              title="Accetta iscrizione"
-            >
-              Conferma
-            </button>
-            }
-            <button
-              [routerLink]="'../enroll/' + enr.id"
-              class="text-blue-700 cursor-pointer text-lg"
-              title="Visualizza dettagli"
-            >
-              <fa-icon [icon]="icons.faEye"></fa-icon>
-            </button>
-          </td>
-        </tr>
-        } @empty {
-        <tr>
-          <td [colSpan]="6" class="px-4 py-12 text-center text-slate-400">
-            <div class="flex flex-col items-center gap-2">
-              <fa-icon [icon]="icons.faUserSlash" class="text-2xl opacity-20"></fa-icon>
-              <p>Nessuna iscrizione trovata.</p>
-            </div>
-          </td>
-        </tr>
+@if (enrollments(); as enrollments) {
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-bold text-slate-800 flex items-center gap-2">
+        {{ 'Elenco Iscritti' }}
+        @if (enrollments.length > 0) {
+          <span
+            class="bg-blue-100 rounded-full text-blue-800 text-xs font-semibold px-1.5 py-0.5 rounded"
+          >
+            {{ enrollments.length }}
+          </span>
         }
-      </tbody>
-    </table>
+      </h3>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-xs">
+          <tr>
+            <th class="px-4 py-3">Atleta</th>
+
+              <th class="px-4 py-3">Club</th>
+
+            <th class="px-4 py-3">Disciplina</th>
+
+              <th class="px-4 py-3">Data Iscrizione</th>
+
+              <th class="px-4 py-3">Scadenza certificato</th>
+
+            <th class="px-4 py-3">Stato Iscrizione</th>
+
+            <th class="px-4 py-3 text-right">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (enr of enrollments; track enr.id) {
+            <tr class="border-b hover:bg-slate-50 transition-colors">
+              <td class="px-4 py-3 font-medium text-slate-900">
+                {{ enr.athleteFirstname }} {{ enr.athleteLastname }}
+              </td>
+
+              <td class="px-4 py-3 text-slate-600">{{ enr.athleteClubName }}</td>
+
+              <td class="px-4 py-3 text-slate-500">
+                {{ getReadableCompetitonType(enr.discipline) }}
+              </td>
+
+              <td class="px-4 py-3 text-slate-500">
+                {{ enr.enrollmentDate | date: 'shortDate' }}
+              </td>
+
+              <td class="px-4 py-3 text-slate-500">
+                {{ enr.athleteMedicalCertificateExpireDate | date: 'shortDate' }}
+              </td>
+
+              <td class="px-4 py-3">
+                <span
+                  [class]="
+                    'px-2 py-1 rounded-full text-xs font-medium ' +
+                    getEnrollmentStatusColorClass(enr.status)
+                  "
+                >
+                  {{ getReadableEnrollmentStatus(enr.status) }}
+                </span>
+              </td>
+
+              <td class="px-4 py-3 flex flex-row justify-end gap-4">
+                <div class="">
+                  @if (isFederation() && enr.status === 'SUBMITTED') {
+                    <button
+                      (click)="acceptEnrollment(enr.id)"
+                      class="text-emerald-500 cursor-pointer mt-1 px-1 hover:bg-emerald-100 rounded-full hover:text-emerald-700"
+                      title="Accetta iscrizione"
+                    >
+                      <fa-icon [icon]="icons.faCheck" class="text-lg"></fa-icon>
+                    </button>
+                    <button
+                      (click)="rejectEnrollment(enr.id)"
+                      class="text-red-500 cursor-pointer mt-1 px-1 hover:bg-red-100 rounded-full hover:text-red-700"
+                      title="Rifiuta iscrizione"
+                    >
+                      <fa-icon [icon]="icons.faClose" class="text-lg"></fa-icon>
+                    </button>
+                  } @else if (isClub() && enr.status === 'DRAFT') {
+                    <button
+                      (click)="submitEnrollment(enr.id)"
+                      class="flex items-center justify-center text-emerald-500 cursor-pointer pt-1 px-1 hover:bg-emerald-100 rounded-full hover:text-emerald-700"
+                      title="Invia iscrizione"
+                    >
+                      <fa-icon [icon]="icons.faPaperPlane" class="text-lg"></fa-icon>
+                    </button>
+                  }
+                </div>
+                @if (isFederation() && enr.status !== 'DRAFT' || !isFederation()) { 
+                  <button
+                  [routerLink]="'../enroll/' + enr.id"
+                  class="flex items-center justify-center text-sky-700 mt-1 px-1 cursor-pointer hover:bg-sky-100 rounded-full hover:text-sky-900"
+                  title="Visualizza dettagli"
+                >
+                  <fa-icon [icon]="icons.faEye" class="text-lg"></fa-icon>
+                </button>
+              }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td [colSpan]="6" class="px-4 py-12 text-center text-slate-400">
+                <div class="flex flex-col items-center gap-2">
+                  <fa-icon [icon]="icons.faUserSlash" class="text-2xl opacity-20"></fa-icon>
+                  <p>Nessuna iscrizione trovata.</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 } @else {
-<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">Nessun atleta iscritto</div>
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+    Nessun atleta iscritto
+  </div>
 }

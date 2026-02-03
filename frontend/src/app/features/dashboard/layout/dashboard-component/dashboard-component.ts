@@ -37,22 +37,22 @@ export class DashboardComponent {
     edit: faEdit,
     
     // Icone generiche
-    add: faUserPlus,       // Usata per "Nuovo Admin"
-    userPlus: faUserPlus,  // Usata per "Registra Atleta"
-    bolt: faBolt,          // Icona decorativa header
+    add: faUserPlus,       
+    userPlus: faUserPlus, 
+    bolt: faBolt,          
     
     // Icone Admin
-    calendar: faCalendar,  // Crea Evento
-    users: faUsers,        // Gestione Club
+    calendar: faCalendar,  
+    users: faUsers,        
     
     // Icone Atleta
-    user: faUser,      // Cerca Eventi
-    list: faList,          // Iscrizioni
-    headset: faHeadset,    // Supporto
+    user: faUser,     
+    list: faList,       
+    headset: faHeadset,  
     
     // Icone Club Manager
-    ticket: faTicket,      // Iscrivi a Gara
-    building: faBuilding   // Il mio Club
+    ticket: faTicket,    
+    building: faBuilding 
   };
 
   userEmail = computed(() => this.authService.currentUserEmail() || '');

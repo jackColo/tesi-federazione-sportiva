@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, input, InputSignal, Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faArrowLeft,
@@ -43,6 +43,8 @@ export class DashboardEventFormComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private eventService = inject(EventService);
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
   id: InputSignal<string | undefined> = input<string>();
 
   isEditing = false;
@@ -162,7 +164,7 @@ export class DashboardEventFormComponent {
           alert('Evento creato con successo');
           this.isEditing = false;
           this.form.disable();
-          window.location.reload();
+          this.router.navigate(['../'], { relativeTo: this.route });
         },
         error: (err: ErrorResponse) => alert('Errore nel salvataggio: ' + err.error.message),
       });

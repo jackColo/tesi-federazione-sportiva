@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { CreateClubDTO } from '../../../models/dtos';
+import { CreateClubDTO, ErrorResponse } from '../../../models/dtos';
 import { AffiliationStatus } from '../../../enums/affiliation-status.enum';
 import { Role } from '../../../enums/role.enum';
 import { ClubService } from '../../../core/services/club.service';
@@ -75,8 +75,8 @@ export class RegisterComponent {
       alert('Club creato con successo! Puoi accedere come manager con le credenzili indicate in fase di registrazione.',);
       this.router.navigate(['/auth/login']); 
 
-    } catch (error) {
-      console.error('Create club failed', error);
+    } catch (err: ErrorResponse | any) {
+        alert("Errore durante la registrazione: "+ err.error.message);
     } finally {
       this.isSubmitting = false;
     }

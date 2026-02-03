@@ -120,7 +120,7 @@ export class DashboardClubDetailComponent {
         this.isEditing = false;
         this.form.disable();
       },
-      error: (err: ErrorResponse) => alert("Errore nell'invio della richiesta"),
+      error: (err: ErrorResponse) => alert("Errore nell'invio della richiesta: "+ err.error.message),
     });
   }
 
@@ -130,6 +130,7 @@ export class DashboardClubDetailComponent {
       .updateAffiliationStatus(this.club()!.id, AffiliationStatus.ACCEPTED)
       .subscribe(() => {
         alert('Affiliazione approvata');
+          window.location.reload();
       });
   }
 
@@ -137,7 +138,10 @@ export class DashboardClubDetailComponent {
     if (!this.club()) return;
     this.clubService
       .updateAffiliationStatus(this.club()!.id, AffiliationStatus.REJECTED)
-      .subscribe(() => alert('Affiliazione rifiutata'));
+      .subscribe(() => {
+        alert('Affiliazione rifiutata')
+          window.location.reload();
+      });
   }
 
   resubmitAffiliation() {
@@ -149,7 +153,7 @@ export class DashboardClubDetailComponent {
           alert('Richiesta inviata con successo!');
           this.isEditing = false;
         },
-        error: (err: ErrorResponse) => alert("Errore nell'invio della richiesta"),
+        error: (err: ErrorResponse) => alert("Errore nell'invio della richiesta: "+ err.error.message),
       });
   }
 

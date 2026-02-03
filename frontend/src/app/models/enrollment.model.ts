@@ -12,6 +12,7 @@ export class Enrollment {
   private _status: EnrollmentStatus;
 
   private _athleteId: string;
+  private _athleteClubName: string;
   private _athleteFirstname: string;
   private _athleteLastname: string;
   private _athleteWeight: string;
@@ -29,6 +30,7 @@ export class Enrollment {
     this._status = data.status;
 
     this._athleteId = data.athleteId;
+    this._athleteClubName = data.athleteClubName;
     this._athleteFirstname = data.athleteFirstname;
     this._athleteLastname = data.athleteLastname;
     this._athleteWeight = data.athleteWeight;
@@ -91,6 +93,13 @@ export class Enrollment {
     this._athleteId = value;
   }
 
+  get athleteClubName(): string {
+    return this._athleteClubName;
+  }
+  set athleteClubName(value: string) {
+    this._athleteClubName = value;
+  }
+
   get athleteLastname(): string {
     return this._athleteLastname;
   }
@@ -142,6 +151,7 @@ export class Enrollment {
       enrollmentDate: this.enrollmentDate,
       status: this.status,
       athleteId: this.athleteId,
+      athleteClubName: this.athleteClubName,
       athleteFirstname: this.athleteFirstname,
       athleteLastname: this.athleteLastname,
       athleteWeight: this.athleteWeight,

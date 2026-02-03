@@ -55,6 +55,7 @@ export class DashboardClubsCardComponent {
     this.clubService.updateAffiliationStatus(clubId, AffiliationStatus.ACCEPTED).subscribe({
       next: () => {
         alert(`Club approvato con successo!`);
+        window.location.reload();
       },
       error: (err: ErrorResponse) => {
         alert(`Errore durante l'approvazione del club': ${err.error.message}`);
@@ -66,6 +67,7 @@ export class DashboardClubsCardComponent {
     this.clubService.updateAffiliationStatus(clubId, AffiliationStatus.REJECTED).subscribe({
       next: () => {
         alert(`Richiesta del club respinta con successo!`);
+        window.location.reload();
       },
       error: (err: ErrorResponse) => {
         alert(`Errore durante il rifiuto della richiesta del club': ${err.error.message}`);

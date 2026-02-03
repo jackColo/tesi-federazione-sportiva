@@ -2,6 +2,7 @@ package com.tesi.federazione.backend.controller;
 
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
+import com.tesi.federazione.backend.security.RequiresClubApproval;
 import com.tesi.federazione.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,7 @@ public class UserController {
      * @return ResponseEntity<UserDTO> Utente creato e HttpStatus.
      */
     @PostMapping("/create")
+    @RequiresClubApproval
     @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER')")
     public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO createUserDTO) {
         log.info("Inizio creazione nuovo utente {}", createUserDTO.getEmail());

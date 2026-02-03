@@ -203,7 +203,7 @@ class EventControllerTest {
         }
 
         @Test
-        @DisplayName("Test per PATCH /enroll/update-status")
+        @DisplayName("Test per PATCH /enroll/update-status/{id}")
         void updatedEnrollmentStatusTest() throws Exception {
             String enrollId = "enrollId";
             EnrollmentStatus newStatus = EnrollmentStatus.APPROVED;
@@ -214,9 +214,8 @@ class EventControllerTest {
 
             when(eventService.updateEnrollmentStatus(enrollId, newStatus)).thenReturn(responseDto);
 
-            mockMvc.perform(patch("/api/event/enroll/update-status")
-                            .param("id", enrollId)
-                            .param("newStatus", newStatus.toString())
+            mockMvc.perform(patch("/api/event/enroll/update-status/{enrollId}", enrollId)
+                            .content(objectMapper.writeValueAsString(newStatus))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.status").value("APPROVED"));

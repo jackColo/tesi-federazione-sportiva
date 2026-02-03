@@ -196,7 +196,6 @@ public class UserServiceTest {
             when(creators.get("ATHLETE")).thenReturn(mockCreator);
 
             Athlete mockAthlete = new Athlete();
-            when(mockCreator.createUser(updateUserDTO)).thenReturn(mockAthlete);
 
             when(userRepository.save(any(User.class))).thenReturn(mockAthlete);
             when(userMapper.toDTO(any(User.class))).thenReturn(new UserDTO());
@@ -207,18 +206,16 @@ public class UserServiceTest {
             verify(creators).get("ATHLETE");
             verify(userRepository).save(any(User.class));
 
-            // A. Creiamo il "retino" per catturare un oggetto User
+            // Serve a catturare l'oggetto che verrà salvato tramite userRepository.save()
             ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
 
-            // B. Verifichiamo il save e CATTURIAMO l'oggetto passato
+            // Verifichiamo il save e catturiamo l'oggetto passato durante il salvataggio
             verify(userRepository).save(userCaptor.capture());
-
-            // C. Estraiamo l'oggetto catturato
             User savedUser = userCaptor.getValue();
 
-            // Verifica: La password è rimasta quella vecchia (NON null, NON vuota)?
+            // Verifica: La password è rimasta quella vecchia
             assertEquals("passwordCifrataSegreta", savedUser.getPassword());
-            // Verifica: L'ID è rimasto lo stesso?
+            // Verifica: L'ID è rimasto lo stesso
             assertEquals("user-123", savedUser.getId());
 
         }

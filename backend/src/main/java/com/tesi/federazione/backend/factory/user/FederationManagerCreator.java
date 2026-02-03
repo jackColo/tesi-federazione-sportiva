@@ -21,4 +21,12 @@ public class FederationManagerCreator implements UserCreator {
     public User createUser(CreateUserDTO dto) {
         return new FederationManager();
     }
+
+    /**
+     * Aggiorno i dati dell'istanza FederationManager passata in oggetto, sovrascrivendone i campi passati tramite dto
+     * Attualmente vuota perchè non sono previsti campi aggiuntivi
+     */
+    @Override
+    public void updateUser(User user, CreateUserDTO dto) {
+    }
 }

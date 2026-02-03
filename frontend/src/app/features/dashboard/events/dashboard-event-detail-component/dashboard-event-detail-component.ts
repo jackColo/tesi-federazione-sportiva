@@ -132,25 +132,25 @@ export class DashboardEventDetailComponent {
 
   openEventRegistrations() {
     const message =
-      'Sei sicuro di voler aprire le iscrizioni? Tutti i club riceveranno una notifica.';
+      'Sei sicuro di voler aprire le iscrizioni?';
     this.updateEventStatus(EventStatus.REGISTRATION_OPEN, message);
   }
 
   closeEventRegistrations() {
     const message =
-      'Sei sicuro di voler chiudere le iscrizioni? Tutti i club riceveranno una notifica.';
+      'Sei sicuro di voler chiudere le iscrizioni?';
     this.updateEventStatus(EventStatus.REGISTRATION_CLOSED, message);
   }
 
   setCancelledStatus() {
     const message =
-      "ATTENZIONE: Stai per annullare l'evento. Tutti i partecipanti riceveranno una notifica e lo stato delle iscrizioni verrà impostato a RIFIUTATO.";
+      "ATTENZIONE: Stai per annullare l'evento. Lo stato delle iscrizioni RICEVUTE o già ACCETTATE verrà re-impostato a RIFIUTATO.";
     this.updateEventStatus(EventStatus.CANCELLED, message);
   }
 
   setScheduledStatus() {
     const message =
-      "ATTENZIONE: Stai per ripristinare l'evento. Tutti i partecipanti riceveranno una notifica e lo stato le iscrizioni RIFIUTATE verranno rimesse in BOZZA.";
+      "ATTENZIONE: Stai per ripristinare l'evento, lo stato delle iscrizioni RIFIUTATE verranno rimesse in BOZZA. Assicurati che la data dell'evento sia corretta, altrimenti, modifica l'evento prima di procedere.";
     this.updateEventStatus(EventStatus.SCHEDULED, message);
   }
 

@@ -1,5 +1,6 @@
 package com.tesi.federazione.backend.service.impl;
 
+import com.tesi.federazione.backend.dto.club.ClubDTO;
 import com.tesi.federazione.backend.dto.enrollment.CreateEnrollmentDTO;
 import com.tesi.federazione.backend.dto.enrollment.EnrollmentDTO;
 import com.tesi.federazione.backend.dto.event.CreateEventDTO;
@@ -109,7 +110,7 @@ public class EventServiceTest {
             when(eventMapper.toDTO(event)).thenReturn(eventDTO);
 
             List<Enrollment> enrollments = List.of(new Enrollment(), new Enrollment());
-            when(enrollmentRepository.findByEventId(eventId)).thenReturn(enrollments);
+            when(enrollmentRepository.findByEventIdAndStatus(eventId, EnrollmentStatus.APPROVED)).thenReturn(enrollments);
 
             when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
 
@@ -118,7 +119,7 @@ public class EventServiceTest {
             assertNotNull(result);
             assertEquals(2, result.getEnrolledCount());
             verify(eventRepository).findById(eventId);
-            verify(enrollmentRepository).findByEventId(eventId);
+            verify(enrollmentRepository).findByEventIdAndStatus(eventId, EnrollmentStatus.APPROVED);
         }
 
         @Test
@@ -349,7 +350,7 @@ public class EventServiceTest {
             Event event = new Event();
             event.setId(eventId);
             event.setStatus(EventStatus.CANCELLED);
-            event.setDate(LocalDate.of(2030,1,1));
+            event.setDate(LocalDate.of(2030, 1, 1));
 
             when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
 
@@ -396,10 +397,13 @@ public class EventServiceTest {
             Event mockEvent = new Event();
             mockEvent.setId("eventId");
             mockEvent.setStatus(EventStatus.REGISTRATION_OPEN);
+            ClubDTO clubDTO = new ClubDTO();
+            clubDTO.setName("Clubname");
 
             when(securityUtils.isClubManager()).thenReturn(true);
             when(securityUtils.isMyClub("clubId")).thenReturn(true);
             when(enrollmentRepository.existsByEventIdAndAthleteIdAndDiscipline(any(), any(), any())).thenReturn(false);
+            when(clubService.getClubById(any())).thenReturn(clubDTO);
 
             when(eventRepository.findById("eventId")).thenReturn(Optional.of(mockEvent));
             when(enrollmentRepository.save(any(Enrollment.class))).thenReturn(new Enrollment());
@@ -432,6 +436,10 @@ public class EventServiceTest {
             mockEvent.setId("eventId");
             mockEvent.setStatus(EventStatus.REGISTRATION_OPEN);
 
+            ClubDTO clubDTO = new ClubDTO();
+            clubDTO.setName("Clubname");
+
+            when(clubService.getClubById(any())).thenReturn(clubDTO);
             when(eventRepository.findById("eventId")).thenReturn(Optional.of(mockEvent));
             when(enrollmentRepository.save(any())).thenReturn(new Enrollment());
             when(enrollmentMapper.toDTO(any())).thenReturn(new EnrollmentDTO());
@@ -819,7 +827,7 @@ public class EventServiceTest {
             when(securityUtils.isFederationManager()).thenReturn(true);
             when(enrollmentRepository.findById(enrollmentDTO.getId())).thenReturn(Optional.of(enrollment));
             when(eventRepository.findById(enrollmentDTO.getEventId())).thenReturn(Optional.of(event));
-            when(enrollmentRepository.existsByEventIdAndAthleteIdAndDiscipline("eventId","me", CompetitionType.BOXE)).thenReturn(false);
+            when(enrollmentRepository.existsByEventIdAndAthleteIdAndDiscipline("eventId", "me", CompetitionType.BOXE)).thenReturn(false);
 
             when(enrollmentRepository.save(any(Enrollment.class))).thenReturn(updatedEnrollment);
             when(enrollmentMapper.toDTO(any(Enrollment.class))).thenReturn(enrollmentDTO);
@@ -906,6 +914,24 @@ public class EventServiceTest {
             assertThrows(ActionNotAllowedException.class, () ->
                     eventService.updateEnrollmentStatus(enrollId, EnrollmentStatus.APPROVED)
             );
+
+            verify(enrollmentRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("FALLIMENTO: cambio di stato non concesso")
+        void fail_invalidTransition() {
+            String enrollId = "enrollId";
+            EnrollmentStatus oldStatus = EnrollmentStatus.APPROVED;
+            EnrollmentStatus newStatus = EnrollmentStatus.REJECTED;
+
+            Enrollment enrollment = new Enrollment();
+            enrollment.setId(enrollId);
+            enrollment.setStatus(oldStatus);
+
+            when(enrollmentRepository.findById(enrollId)).thenReturn(Optional.of(enrollment));
+
+            assertThrows(ActionNotAllowedException.class, () -> eventService.updateEnrollmentStatus(enrollId, newStatus));
 
             verify(enrollmentRepository, never()).save(any());
         }

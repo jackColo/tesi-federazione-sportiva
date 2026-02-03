@@ -84,6 +84,7 @@ export class DashboardClubsAthleteCardComponent {
     this.athleteService.updateAthleteAffiliationStatus(clubId, AffiliationStatus.ACCEPTED).subscribe({
       next: () => {
         alert(`Affiliazione confermata con successo!`);
+          window.location.reload();
       },
       error: (err: ErrorResponse) => {
         alert(`Errore durante la conferma dell'affiliazione': ${err.error.message}`);
@@ -95,6 +96,7 @@ export class DashboardClubsAthleteCardComponent {
     this.athleteService.updateAthleteAffiliationStatus(clubId, AffiliationStatus.REJECTED).subscribe({
       next: () => {
         alert(`Affiliazione respinta con successo!`);
+          window.location.reload();
       },
       error: (err: ErrorResponse) => {
         alert(`Errore durante il rifiuto dell'affiliazione': ${err.error.message}`);
@@ -106,6 +108,7 @@ export class DashboardClubsAthleteCardComponent {
     this.athleteService.renewAthleteAffiliationRequest(clubId).subscribe({
       next: () => {
         alert(`Richiesta inviata con successo!`);
+        window.location.reload();
       },
       error: (err: ErrorResponse) => {
         alert(`Errore durante l'invio della richiesta': ${err.error.message}`);

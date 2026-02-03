@@ -33,6 +33,7 @@ public class Enrollment {
     private EnrollmentStatus status;
 
     // I seguenti campi rappresentano lo snapshot di tutti i dati dell'atleta al momento dell'iscrizione
+    private String athleteClubName;
     private String athleteFirstname;
     private String athleteLastname;
     private String athleteWeight;

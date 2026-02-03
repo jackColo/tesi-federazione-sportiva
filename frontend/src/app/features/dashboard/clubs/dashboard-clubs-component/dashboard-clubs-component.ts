@@ -109,6 +109,10 @@ export class DashboardClubsComponent {
   }
 
   navigateToAddAthlete() {
+    if (this.myClub()?.affiliationStatus !== AffiliationStatus.ACCEPTED && !this.myClub()?.firstAffiliationDate) {
+      alert("L'affiliazione del tuo club deve essere approvata per poter affiliare i tuoi atleti.");
+      return;
+    }
     this.router.navigate(['dashboard', 'user', 'new']);
   }
 

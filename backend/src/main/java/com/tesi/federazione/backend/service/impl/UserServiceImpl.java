@@ -75,11 +75,14 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        User user = createEntity(dto);
-        user.setId(dto.getId());
-        user.setPassword(existingUser.getPassword());
+        UserCreator creator = getCreator(dto.getRole());
+        creator.updateUser(existingUser, dto);
 
-        User savedUser = userRepository.save(user);
+        existingUser.setEmail(dto.getEmail());
+        existingUser.setFirstName(dto.getFirstName());
+        existingUser.setLastName(dto.getLastName());
+
+        User savedUser = userRepository.save(existingUser);
         return userMapper.toDTO(savedUser);
 
     }
@@ -178,29 +181,7 @@ public class UserServiceImpl implements UserService {
             throw new ResourceConflictException("Esiste già un utente con l'email " + dto.getEmail());
         }
 
-        User user = createEntity(dto);
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-
-        return userRepository.save(user);
-    }
-
-    /**
-     * Metodo helper privato che utilizza la mappa dei 'creators'
-     * per istanziare l'oggetto User corretto in base alla stringa del ruolo presente nel DTO.
-     *
-     * @param dto CreateUserDTO contenente i dati necessari alla creazione dell'entity User
-     * @return User entity creata tramite il creator corretto
-     * @throws ActionNotAllowedException Se non esiste il creator per il ruolo indicato
-     */
-    private User createEntity(CreateUserDTO dto) {
-        String roleKey = dto.getRole();
-
-        UserCreator creator = creators.get(roleKey);
-
-        if (creator == null) {
-            log.error("Nessun UserCreator trovato per il ruolo: {}", roleKey);
-            throw new ActionNotAllowedException("UserCreator per il ruolo " + roleKey + " non trovato");
-        }
+        UserCreator creator = getCreator(dto.getRole());
 
         User user = creator.createUser(dto);
 
@@ -208,6 +189,26 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
 
-        return user;
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        return userRepository.save(user);
+    }
+
+    /**
+     * Metodo helper privato che utilizza la mappa dei 'creators' per recuperare quello corretto in base al ruolo dell'utente.
+     *
+     * @param roleKey Ruolo dell0utente
+     * @return UserCreator da utilizzare
+     * @throws ActionNotAllowedException Se non esiste il creator per il ruolo indicato
+     */
+    private UserCreator getCreator(String roleKey) {
+
+        UserCreator creator = creators.get(roleKey);
+
+        if (creator == null) {
+            log.error("Nessun UserCreator trovato per il ruolo: {}", roleKey);
+            throw new ActionNotAllowedException("UserCreator per il ruolo " + roleKey + " non trovato");
+        }
+        return creator;
     }
 }

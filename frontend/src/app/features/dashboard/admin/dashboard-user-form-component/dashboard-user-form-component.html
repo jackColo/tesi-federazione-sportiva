@@ -12,6 +12,24 @@
     </div>
   </div>
 
+  @if (!isAdmin()) {
+    <div
+      class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg animate-in fade-in slide-in-from-top-2"
+    >
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <fa-icon [icon]="icons.faExclamationTriangle" class="text-yellow-400"></fa-icon>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            <span class="font-bold">Attenzione:</span> Verificare che l'affiliazione del club sia
+            stata approvata per aggiungere nuovi atleti.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
   <div>
     <div class="flex flex-col sm:flex-row gap-3 mb-1">
       <div class="flex-1 group">

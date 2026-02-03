@@ -2,6 +2,7 @@ package com.tesi.federazione.backend.repository;
 
 import com.tesi.federazione.backend.model.Enrollment;
 import com.tesi.federazione.backend.model.enums.CompetitionType;
+import com.tesi.federazione.backend.model.enums.EnrollmentStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -17,6 +18,13 @@ public interface EnrollmentRepository extends MongoRepository<Enrollment, String
      * @return List<Enrollment> Elenco di tutte le iscrizioni presenti a DB per l'evento richiesto
      */
     List<Enrollment> findByEventId(String eventId);
+
+    /**
+     * Ricerca di tutte le iscrizioni ACCETTATE relative ad uno specifico evento.
+     * @param eventId Id dell'evento
+     * @return List<Enrollment> Elenco di tutte le iscrizioni presenti a DB per l'evento richiesto
+     */
+    List<Enrollment> findByEventIdAndStatus(String eventId, EnrollmentStatus status);
 
     /**
      * Ricerca di tutte le iscrizioni relative ad uno specifico club per uno specifico evento.

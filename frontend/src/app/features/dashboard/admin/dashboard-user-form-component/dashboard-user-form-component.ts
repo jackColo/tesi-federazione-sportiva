@@ -9,6 +9,7 @@ import {
   faBuilding,
   faCheck,
   faEnvelope,
+  faExclamationTriangle,
   faLock,
   faShieldAlt,
   faTimes,
@@ -45,7 +46,8 @@ export class DashboardUserFormComponent {
     faTimes,
     faUser,
     faLock,
-    faVenusMars
+    faVenusMars,
+    faExclamationTriangle
   };
 
   availableClubs: Signal<Club[]> = toSignal(this.clubService.getAllClubs(), {
@@ -78,6 +80,10 @@ export class DashboardUserFormComponent {
         {
           id: Role.FEDERATION_MANAGER,
           name: readableRole(Role.FEDERATION_MANAGER),
+        },
+        {
+          id: Role.ATHLETE,
+          name: readableRole(Role.ATHLETE),
         },
       ]
     : [

@@ -22,6 +22,7 @@ public class EnrollmentDTO {
     private EnrollmentStatus status;
 
     private String athleteId;
+    private String athleteClubName;
     private String athleteFirstname;
     private String athleteLastname;
     private String athleteWeight;

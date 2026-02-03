@@ -287,19 +287,5 @@
 
   </div>
   }
-
-  <div class="bg-blue-50 rounded-xl border border-blue-100 p-6">
-    <h3 class="font-bold text-blue-800 mb-2 text-sm flex items-center gap-2">
-      <fa-icon [icon]="icons.faInfoCircle"></fa-icon> Info Permessi
-    </h3>
-    <p class="text-sm text-blue-600">
-      L'utente ha ruolo <strong>{{ roleLabel() }}</strong>.
-      @if(club()) {
-        È associato alla società <span class="font-mono font-bold">{{ club()?.name }}</span>.
-      } @else {
-        Non è attualmente associato a nessuna società.
-      }
-    </p>
-  </div>
 </div>
 }

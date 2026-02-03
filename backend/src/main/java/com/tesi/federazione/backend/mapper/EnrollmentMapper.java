@@ -28,6 +28,8 @@ public class EnrollmentMapper {
         dto.setCompetitionType(enrollment.getDiscipline());
         dto.setEnrollmentDate(enrollment.getEnrollmentDate());
 
+        dto.setAthleteId(enrollment.getAthleteId());
+        dto.setAthleteClubName(enrollment.getAthleteClubName());
         dto.setAthleteFirstname(enrollment.getAthleteFirstname());
         dto.setAthleteLastname(enrollment.getAthleteLastname());
         dto.setAthleteWeight(enrollment.getAthleteWeight());

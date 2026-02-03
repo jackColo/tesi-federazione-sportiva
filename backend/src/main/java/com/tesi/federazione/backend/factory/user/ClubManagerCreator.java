@@ -25,4 +25,15 @@ public class ClubManagerCreator implements UserCreator {
         }
         return clubManager;
     }
+
+    /**
+     * Aggiorno i dati dell'istanza ClubManager passata in oggetto, sovrascrivendone i campi passati tramite dto.
+     * Attualmente vuota perchè non è previsto che un ClubManager possa cambiare club
+     * (unico campo aggiuntivo rispetto allo User di base)
+     */
+    @Override
+    public void updateUser(User user, CreateUserDTO dto) {
+
+    }
+
 }
