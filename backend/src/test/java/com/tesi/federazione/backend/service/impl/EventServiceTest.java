@@ -910,12 +910,21 @@ public class EventServiceTest {
         @DisplayName("FALLIMENTO: Club Manager aggiorna iscrizione di atleti di altro club")
         void fail_clubManagerUnauthorized() {
             String enrollId = "enrollId";
+            String eventId = "eventId";
             EnrollmentStatus newStatus = EnrollmentStatus.DRAFT;
 
             Enrollment enrollment = new Enrollment();
+            enrollment.setId(enrollId);
+            enrollment.setEventId(eventId);
             enrollment.setClubId("clubId");
 
+            Event event = new Event();
+            event.setId(eventId);
+            event.setStatus(EventStatus.REGISTRATION_OPEN);
+
             when(enrollmentRepository.findById(enrollId)).thenReturn(Optional.of(enrollment));
+            when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
             when(securityUtils.isClubManager()).thenReturn(true);
             when(securityUtils.isMyClub(enrollment.getClubId())).thenReturn(false);
 
@@ -926,12 +935,21 @@ public class EventServiceTest {
         @DisplayName("FALLIMENTO: Club Manager tenta di approvare")
         void fail_ClubManagerCannotApprove() {
             String enrollId = "enrollId";
+            String eventId = "eventId";
+
             Enrollment enrollment = new Enrollment();
             enrollment.setId(enrollId);
+            enrollment.setEventId(eventId);
             enrollment.setClubId("myClub");
             enrollment.setStatus(EnrollmentStatus.SUBMITTED);
 
+            Event event = new Event();
+            event.setId(eventId);
+            event.setStatus(EventStatus.REGISTRATION_OPEN);
+
             when(enrollmentRepository.findById(enrollId)).thenReturn(Optional.of(enrollment));
+            when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
             when(securityUtils.isClubManager()).thenReturn(true);
             when(securityUtils.isMyClub("myClub")).thenReturn(true);
 
@@ -946,12 +964,21 @@ public class EventServiceTest {
         @DisplayName("FALLIMENTO: atleta prova a sottomettere")
         void fail_AthleteCannotSubmit() {
             String enrollId = "enrollId";
+            String eventId = "eventId";
+
             Enrollment enrollment = new Enrollment();
             enrollment.setId(enrollId);
+            enrollment.setEventId(eventId);
             enrollment.setClubId("myClub");
             enrollment.setStatus(EnrollmentStatus.SUBMITTED);
 
+            Event event = new Event();
+            event.setId(eventId);
+            event.setStatus(EventStatus.REGISTRATION_OPEN);
+
             when(enrollmentRepository.findById(enrollId)).thenReturn(Optional.of(enrollment));
+            when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
             when(securityUtils.isClubManager()).thenReturn(false);
             when(securityUtils.isAthlete()).thenReturn(true);
 
@@ -966,14 +993,21 @@ public class EventServiceTest {
         @DisplayName("FALLIMENTO: cambio di stato non concesso")
         void fail_invalidTransition() {
             String enrollId = "enrollId";
+            String eventId = "eventId";
             EnrollmentStatus oldStatus = EnrollmentStatus.APPROVED;
             EnrollmentStatus newStatus = EnrollmentStatus.REJECTED;
 
             Enrollment enrollment = new Enrollment();
             enrollment.setId(enrollId);
+            enrollment.setEventId(eventId);
             enrollment.setStatus(oldStatus);
 
+            Event event = new Event();
+            event.setId(eventId);
+            event.setStatus(EventStatus.REGISTRATION_OPEN);
+
             when(enrollmentRepository.findById(enrollId)).thenReturn(Optional.of(enrollment));
+            when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
 
             assertThrows(ActionNotAllowedException.class, () -> eventService.updateEnrollmentStatus(enrollId, newStatus));
 
@@ -984,16 +1018,26 @@ public class EventServiceTest {
         @DisplayName("SUCCESSO: federation manager approva cambio stato")
         void success() {
             String enrollId = "enrollId";
+            String eventId = "eventId";
             EnrollmentStatus oldStatus = EnrollmentStatus.SUBMITTED;
             EnrollmentStatus newStatus = EnrollmentStatus.APPROVED;
 
             Enrollment enrollment = new Enrollment();
             enrollment.setId(enrollId);
+            enrollment.setEventId(eventId);
             enrollment.setStatus(oldStatus);
 
+            Event event = new Event();
+            event.setId(eventId);
+            event.setStatus(EventStatus.REGISTRATION_OPEN);
+
             when(enrollmentRepository.findById(enrollId)).thenReturn(Optional.of(enrollment));
+            when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
             when(securityUtils.isClubManager()).thenReturn(false);
             when(securityUtils.isAthlete()).thenReturn(false);
+            when(securityUtils.isFederationManager()).thenReturn(true);
+
             when(enrollmentRepository.save(any(Enrollment.class))).thenReturn(enrollment);
             when(enrollmentMapper.toDTO(any(Enrollment.class))).thenReturn(new EnrollmentDTO());
 

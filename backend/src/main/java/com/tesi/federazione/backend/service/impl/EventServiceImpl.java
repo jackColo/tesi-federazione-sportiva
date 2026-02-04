@@ -424,6 +424,16 @@ public class EventServiceImpl implements EventService {
         Enrollment enrollment = enrollmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Iscrizione con ID " + id + " non trovata"));
 
+        Event event = eventRepository.findById(enrollment.getEventId())
+                .orElseThrow(() -> new ResourceNotFoundException("Evento associato non trovato"));
+
+        // Inizializzo il pattern State sull'evento
+        event.setState(EventStateFactory.getInitialState(event.getStatus()));
+
+        // Valido se l'azione è permessa nell'attuale stato dell'evento
+        boolean isDraft = newStatus.equals(EnrollmentStatus.DRAFT);
+        event.validateRegistration(isDraft, securityUtils.isFederationManager());
+
         // Un Club Manager può modificare l'iscrizione solo per atleti del proprio club
         if (securityUtils.isClubManager()) {
             if (!securityUtils.isMyClub(enrollment.getClubId())) {
