@@ -1,5 +1,6 @@
 package com.tesi.federazione.backend.service.impl;
 
+import com.tesi.federazione.backend.dto.user.AthleteDTO;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.exception.ActionNotAllowedException;
@@ -10,6 +11,7 @@ import com.tesi.federazione.backend.factory.user.UserCreator;
 import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.ClubManager;
+import com.tesi.federazione.backend.model.FederationManager;
 import com.tesi.federazione.backend.model.User;
 import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.repository.UserRepository;
@@ -24,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -265,7 +268,6 @@ public class UserServiceTest {
         }
 
     }
-
 
     @Nested
     @DisplayName("Tests per: changeUserPassword()")
@@ -572,6 +574,34 @@ public class UserServiceTest {
                 userService.getUserById(targetId);
             });
         }
+    }
+
+
+    @Nested
+    @DisplayName("Tests per: getAllByRole()")
+    class GetAllByRoleTest {
+
+        @Test
+        @DisplayName("SUCCESSO: Restituisce tutti gli utenti con ruolo richiesto")
+        public void success() {
+            Role role = Role.FEDERATION_MANAGER;
+            FederationManager manager1 = new FederationManager();
+            manager1.setId("2345");
+            manager1.setRole(role);
+
+            FederationManager manager2 = new FederationManager();
+            manager2.setId("2222");
+            manager1.setRole(role);
+
+            when(userRepository.findByRole(role)).thenReturn(List.of(manager1, manager2));
+            when(userMapper.toDTO(any(FederationManager.class))).thenReturn(new UserDTO());
+
+            List<UserDTO> result = userService.getAllByRole(role);
+
+            assertEquals(2, result.size());
+            verify(userMapper, times(2)).toDTO(any(FederationManager.class));
+        }
+
     }
 
 }

@@ -3,6 +3,9 @@ package com.tesi.federazione.backend.service;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.model.User;
+import com.tesi.federazione.backend.model.enums.Role;
+
+import java.util.List;
 
 /**
  * Interfaccia per il service che gestisce le operazioni sugli utenti.
@@ -67,4 +70,11 @@ public interface UserService {
      * @param oldPassword nuova password.
      */
     void changeUserPassword(String id, String oldPassword, String newPassword);
+
+    /**
+     * Recupera tutti gli utenti presenti nel sistema con il ruolo indicato.
+     * @param role Ruolo per cui filtrare
+     * @return List<UserDTO> Lista di tutti gli atleti visibili al richiedente.
+     */
+    List<UserDTO> getAllByRole(Role role);
 }

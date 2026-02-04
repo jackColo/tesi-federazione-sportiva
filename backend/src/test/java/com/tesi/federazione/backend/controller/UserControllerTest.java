@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -134,5 +136,22 @@ class UserControllerTest {
 
         // 5. Verifichiamo che il service sia stato chiamato con i parametri giusti
         verify(userService).changeUserPassword(userId, oldPassword, newPassword);
+    }
+
+    @Test
+    @DisplayName("Test per GET /find-by-role/{role}")
+    void findByRoleTest() throws Exception {
+        Role role = Role.FEDERATION_MANAGER;
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId("userId");
+        userDTO.setRole(Role.FEDERATION_MANAGER.toString());
+
+        when(userService.getAllByRole(role)).thenReturn(List.of(userDTO));
+
+        mockMvc.perform(get("/api/user/find-by-role/{role}", role)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].role").value(role.toString()))
+                .andExpect(jsonPath("$[0].id").value("userId"));
     }
 }

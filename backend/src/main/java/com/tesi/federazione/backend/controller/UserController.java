@@ -3,6 +3,7 @@ package com.tesi.federazione.backend.controller;
 import com.tesi.federazione.backend.dto.user.ChangePasswordRequestDTO;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
+import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.security.RequiresClubApproval;
 import com.tesi.federazione.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Controller per la gestione delle operazioni sugli oggetti USER
@@ -100,6 +103,21 @@ public class UserController {
         userService.changeUserPassword(id, request.getOldPassword(), request.getNewPassword());
         log.info("Password utente {} aggiornata con successo.", id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Aggiorna la password di un utente esistente
+     *
+     * @param role L'ID dell'utente di cui si vuole aggiornare la password.
+     * @return ResponseEntity<UserDTO> L'utente aggiornato e HttpStatus OK.
+     */
+    @GetMapping("/find-by-role/{role}")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER')")
+    public ResponseEntity<List<UserDTO>> findByRole(@PathVariable Role role) {
+        log.info("Richiesta dell'elenco di utenti con ruolo {}", role);
+        List<UserDTO> users = userService.getAllByRole(role);
+        log.info("Trovati {} utenti con ruolo {}.", users.size(), role);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 }

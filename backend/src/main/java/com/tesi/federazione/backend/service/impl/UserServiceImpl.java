@@ -1,5 +1,6 @@
 package com.tesi.federazione.backend.service.impl;
 
+import com.tesi.federazione.backend.dto.user.AthleteDTO;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.exception.ActionNotAllowedException;
@@ -11,6 +12,7 @@ import com.tesi.federazione.backend.mapper.UserMapper;
 import com.tesi.federazione.backend.model.Athlete;
 import com.tesi.federazione.backend.model.ClubManager;
 import com.tesi.federazione.backend.model.User;
+import com.tesi.federazione.backend.model.enums.Role;
 import com.tesi.federazione.backend.repository.UserRepository;
 import com.tesi.federazione.backend.security.SecurityUtils;
 import com.tesi.federazione.backend.service.UserService;
@@ -19,8 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Implementazione del servizio per la gestione degli utenti.
@@ -220,6 +222,22 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+
+    /**
+     * Recupera tutti gli utenti presenti nel sistema con il ruolo indicato.
+     *
+     * @return List<UserDTO> Lista di tutti gli atleti visibili al richiedente.
+     */
+    @Override
+    public List<UserDTO> getAllByRole(Role role) {
+        List<User> users = userRepository.findByRole(role);
+
+        // Se è un federation manager restituisco tutto
+        return users.stream()
+                .map(userMapper::toDTO)
+                .toList();
     }
 
     /**
