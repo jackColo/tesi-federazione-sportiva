@@ -10,13 +10,13 @@ export enum EnrollmentStatus {
 export function readableEnrollmentStatus(status: EnrollmentStatus): string {
   switch (status) {
     case EnrollmentStatus.SUBMITTED:
-      return 'Richiesta inviata';
+      return 'Inviata';
     case  EnrollmentStatus.APPROVED:
-      return 'Iscrizione accettata';
+      return 'Accettata';
     case  EnrollmentStatus.REJECTED:
-      return 'Iscrizione respinta';
+      return 'Respinta';
     case  EnrollmentStatus.RETIRED:
-      return 'Ritirato';
+      return 'Ritirata';
     case  EnrollmentStatus.DRAFT:
       return 'Bozza';
     default:

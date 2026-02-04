@@ -172,6 +172,21 @@ public class EventController {
     }
 
     /**
+     * Recupera la lista delle iscrizioni approvate per un determinato evento.
+     *
+     * @param eventId ID dell'evento
+     * @return Lista di iscrizioni e HttpStatus.
+     */
+    @GetMapping("/enroll-approved-all/{eventId}")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER')")
+    public ResponseEntity<List<EnrollmentDTO>> getApprovedEnrollmentsByEventId(@PathVariable String eventId) {
+        log.info("Recupero iscrizioni approvate per evento {}", eventId);
+        List<EnrollmentDTO> enrollments = eventService.getApprovedEnrollmentsByEventId(eventId);
+        log.info("Trovate {} iscrizioni", enrollments.size());
+        return new ResponseEntity<>(enrollments, HttpStatus.OK);
+    }
+
+    /**
      * Aggiorna un'iscrizione esistente.
      * Controlli sui permessi:
      * - Un manager può aggiornare le iscrizioni solo di atleti del suo club

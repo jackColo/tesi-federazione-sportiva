@@ -304,6 +304,18 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
+     * Recupera tutte le iscrizioni accettate di un determinato evento
+     *
+     * @param eventId ID dell'evento.
+     * @return Lista di iscrizioni accettate relative all'evento indicato.
+     */
+    @Override
+    public List<EnrollmentDTO> getApprovedEnrollmentsByEventId(String eventId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByEventIdAndStatus(eventId, EnrollmentStatus.APPROVED);
+        return enrollments.stream().map(enrollmentMapper::toDTO).toList();
+    }
+
+    /**
      * Recupera una singola iscrizione per ID.
      * Controlli sui permessi:
      * - Un manager può visualizzare solo le iscrizioni di atleti del suo club

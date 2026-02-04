@@ -77,6 +77,14 @@ export class EventService {
       .pipe(map((data) => data.map((d) => new Enrollment(d))));
   }
 
+  getApprovedEventEnrollments(
+    eventId: string,
+  ): Observable<Enrollment[]> {
+    return this.http
+      .get<EnrollmentDTO[]>(`${this.apiUrl}enroll-approved-all/${eventId}`,)
+      .pipe(map((data) => data.map((d) => new Enrollment(d))));
+  }
+
   updateEnrollment(enrollment: Enrollment): Observable<Enrollment> {
     const enrollmentDTO: EnrollmentDTO = enrollment.toDTO();
     return this.http

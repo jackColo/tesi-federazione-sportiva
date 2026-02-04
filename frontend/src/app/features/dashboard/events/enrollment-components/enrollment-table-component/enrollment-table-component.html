@@ -11,6 +11,21 @@
           </span>
         }
       </h3>
+      
+      @if (isFederation()) {
+        <div class="flex items-center">
+          <label class="inline-flex items-center cursor-pointer select-none">
+            <input 
+              type="checkbox" 
+              class="sr-only peer" 
+              [checked]="showApprovedOnly()"
+              (change)="showApprovedOnly.set($any($event.target).checked)"
+            >
+            <div class="relative w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-slate-600">Solo Approvati</span>
+          </label>
+        </div>
+      }
     </div>
 
     <div class="overflow-x-auto">
@@ -23,7 +38,7 @@
 
             <th class="px-4 py-3">Disciplina</th>
 
-              <th class="px-4 py-3">Data Iscrizione</th>
+              <th class="px-4 py-3">Stato affiliazione <span class="italic text-[8px]">(all'iscrizione)</span></th>
 
               <th class="px-4 py-3">Scadenza certificato</th>
 
@@ -45,8 +60,8 @@
                 {{ getReadableCompetitonType(enr.discipline) }}
               </td>
 
-              <td class="px-4 py-3 text-slate-500">
-                {{ enr.enrollmentDate | date: 'shortDate' }}
+              <td [class]="'px-4 py-3 text-slate-500' + getAffiliationStatusColorClass(enr.athleteAffiliationStatus)">
+                {{ getReadableAffiliationStatus(enr.athleteAffiliationStatus) }}
               </td>
 
               <td class="px-4 py-3 text-slate-500">
@@ -65,7 +80,7 @@
               </td>
 
               <td class="px-4 py-3 flex flex-row justify-end gap-4">
-                <div class="">
+                <div class="flex flex-row gap-2">
                   @if (isFederation() && enr.status === 'SUBMITTED') {
                     <button
                       (click)="acceptEnrollment(enr.id)"

@@ -3,8 +3,8 @@ import {
     Component,
     computed,
     inject,
-    Input,
     input,
+    signal,
     Signal
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -19,6 +19,7 @@ import { Role } from '../../../../../enums/role.enum';
 import { Enrollment } from '../../../../../models/enrollment.model';
 import { CompetitionType, readableCompetitionType } from '../../../../../enums/competition-type.enum';
 import { ErrorResponse } from '../../../../../models/dtos';
+import { AffiliationStatus, affiliationStatusColorClass, readableAffiliationStatus } from '../../../../../enums/affiliation-status.enum';
 
 @Component({
   selector: 'app-enrollment-table',
@@ -32,20 +33,23 @@ export class EnrollmentTableComponent {
   clubId = input<string>();
   eventId = input.required<string>();
   athleteId = input<string>();
-
+  
   icons = { faUserSlash, faFilePdf, faEye, faCheck, faClose, faPaperPlane};
-
+  
   isFederation = computed(() => this.authService.userRole() === Role.FEDERATION_MANAGER);
   isClub = computed(() => this.authService.userRole() === Role.CLUB_MANAGER);
   isAthlete = computed(() => this.authService.userRole() === Role.ATHLETE);
+
+  showApprovedOnly = signal(false);
 
   enrollments: Signal<Enrollment[] | null> = toSignal(
     combineLatest([
       toObservable(this.eventId),
       toObservable(this.athleteId),
       toObservable(this.clubId),
+      toObservable(this.showApprovedOnly)
     ]).pipe(
-      switchMap(([eventId, athleteId, clubId]) => {
+      switchMap(([eventId, athleteId, clubId, approvedOnly]) => {
         if (!eventId) return of([]);
 
         if (this.isAthlete()) {
@@ -56,7 +60,14 @@ export class EnrollmentTableComponent {
           return clubId ? this.eventService.getEventEnrollments(eventId, clubId) : [];
         }
 
-        return this.eventService.getEventEnrollments(eventId);
+        if (this.isFederation()) {
+           if (approvedOnly) {
+             return this.eventService.getApprovedEventEnrollments(eventId);
+           }
+           return this.eventService.getEventEnrollments(eventId);
+        }
+
+        return [];
       })
     ),
     { initialValue: null }
@@ -101,6 +112,14 @@ export class EnrollmentTableComponent {
 
   getEnrollmentStatusColorClass(status: EnrollmentStatus) {
     return enrollmentStatusColorClass(status)
+  }
+
+  getReadableAffiliationStatus(status: AffiliationStatus) {
+    return readableAffiliationStatus(status);
+  }
+
+  getAffiliationStatusColorClass(status: AffiliationStatus) {
+    return affiliationStatusColorClass(status)
   }
 
 }

@@ -150,7 +150,7 @@ export class DashboardEventDetailComponent {
 
   setScheduledStatus() {
     const message =
-      "ATTENZIONE: Stai per ripristinare l'evento, lo stato delle iscrizioni RIFIUTATE verranno rimesse in BOZZA. Assicurati che la data dell'evento sia corretta, altrimenti, modifica l'evento prima di procedere.";
+      "ATTENZIONE: Stai per ripristinare l'evento, le iscrizioni pervenute verranno rimesse in BOZZA. Assicurati che la data dell'evento sia corretta, altrimenti, modifica l'evento prima di procedere.";
     this.updateEventStatus(EventStatus.SCHEDULED, message);
   }
 

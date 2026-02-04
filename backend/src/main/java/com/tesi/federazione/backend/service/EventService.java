@@ -82,6 +82,14 @@ public interface EventService {
     List<EnrollmentDTO> getEnrollmentsByEventId(String eventId, String clubId, String athleteId);
 
     /**
+     * Recupera tutte le iscrizioni accettate di un determinato evento
+     *
+     * @param eventId ID dell'evento.
+     * @return Lista di iscrizioni accettate relative all'evento indicato.
+     */
+    List<EnrollmentDTO> getApprovedEnrollmentsByEventId(String eventId);
+
+    /**
      * Recupera una singola iscrizione per ID.
      * Controlli sui permessi:
      * - Un manager può visualizzare solo le iscrizioni di atleti del suo club

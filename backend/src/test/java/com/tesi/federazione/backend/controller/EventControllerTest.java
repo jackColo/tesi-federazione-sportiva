@@ -188,6 +188,24 @@ class EventControllerTest {
         }
 
         @Test
+        @DisplayName("Test per GET /enroll-approved-all/{eventId}")
+        void getApprovedEnrollmentsByEventIdTest() throws Exception {
+            String eventId = "eventId";
+
+            EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
+            enrollmentDTO.setId("enrollId");
+            enrollmentDTO.setStatus(EnrollmentStatus.APPROVED);
+
+            when(eventService.getApprovedEnrollmentsByEventId(eq(eventId)))
+                    .thenReturn(List.of(enrollmentDTO));
+
+            mockMvc.perform(get("/api/event/enroll-approved-all/{eventId}", eventId)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.size()").value(1));
+        }
+
+        @Test
         @DisplayName("Test per PATCH /enroll/update")
         void updatedEnrollmentTest() throws Exception {
             EnrollmentDTO updateDto = new EnrollmentDTO();

@@ -621,6 +621,16 @@ public class EventServiceTest {
         }
     }
 
+    @Test
+    @DisplayName("Test per: getApprovedEnrollmentsByEventId")
+    void success_getApprovedEnrollmentsByEventId() {
+        String eventId = "eventId";
+        when(enrollmentRepository.findByEventIdAndStatus(eventId, EnrollmentStatus.APPROVED)).thenReturn(Collections.emptyList());
+
+        eventService.getApprovedEnrollmentsByEventId(eventId);
+
+        verify(enrollmentRepository).findByEventIdAndStatus(eventId, EnrollmentStatus.APPROVED);
+    }
 
     @Nested
     @DisplayName("Tests per: getEnrollment()")
