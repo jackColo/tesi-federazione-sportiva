@@ -16,11 +16,11 @@ export enum AffiliationStatus {
 export function readableAffiliationStatus(status: AffiliationStatus): string {
   switch (status) {
     case AffiliationStatus.SUBMITTED:
-      return 'Richiesta inviata';
+      return 'Inviata';
     case AffiliationStatus.ACCEPTED:
       return 'Attiva';
     case AffiliationStatus.REJECTED:
-      return 'Richiesta respinta';
+      return 'Respinta';
     case AffiliationStatus.EXPIRED:
       return 'Scaduta';
     default:

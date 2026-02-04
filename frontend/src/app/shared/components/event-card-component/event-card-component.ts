@@ -28,7 +28,7 @@ export class EventCardComponent {
     const userRole = this.authService.userRole();
 
     return (
-      eventStatus === EventStatus.REGISTRATION_OPEN &&
+      (eventStatus === EventStatus.REGISTRATION_OPEN || eventStatus === EventStatus.SCHEDULED) &&
       (userRole === Role.ATHLETE || userRole === Role.CLUB_MANAGER)
     );
   });

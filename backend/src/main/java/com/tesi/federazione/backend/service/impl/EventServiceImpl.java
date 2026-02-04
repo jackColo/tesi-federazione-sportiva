@@ -393,6 +393,7 @@ public class EventServiceImpl implements EventService {
         // Aggiorno i dati dell'iscrizione realmente modificabili
         enrollment.setAthleteWeight(enrollmentDTO.getAthleteWeight());
         enrollment.setAthleteHeight(enrollmentDTO.getAthleteHeight());
+        enrollment.setAthleteAffiliationStatus(enrollmentDTO.getAthleteAffiliationStatus());
 
         this.setNewEnrollmentStatus(enrollment, enrollmentDTO.getStatus());
 

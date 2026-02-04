@@ -80,8 +80,8 @@ export class DashboardClubsAthleteCardComponent {
   isAdmin = computed(() => this.authService.userRole() === Role.FEDERATION_MANAGER);
   isManager = computed(() => this.authService.userRole() === Role.CLUB_MANAGER);
 
-  approveAthleteAffiliation(clubId: string) {
-    this.athleteService.updateAthleteAffiliationStatus(clubId, AffiliationStatus.ACCEPTED).subscribe({
+  approveAthleteAffiliation(athleteId: string) {
+    this.athleteService.updateAthleteAffiliationStatus(athleteId, AffiliationStatus.ACCEPTED).subscribe({
       next: () => {
         alert(`Affiliazione confermata con successo!`);
           window.location.reload();

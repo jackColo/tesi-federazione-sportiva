@@ -26,9 +26,12 @@ import { EventService } from '../../../../../core/services/event.service';
 import { UserService } from '../../../../../core/services/user.service';
 import {
   AffiliationStatus,
-  readableAffiliationStatus
+  readableAffiliationStatus,
 } from '../../../../../enums/affiliation-status.enum';
-import { CompetitionType, readableCompetitionType } from '../../../../../enums/competition-type.enum';
+import {
+  CompetitionType,
+  readableCompetitionType,
+} from '../../../../../enums/competition-type.enum';
 import {
   EnrollmentStatus,
   enrollmentStatusColorClass,
@@ -39,6 +42,7 @@ import { Athlete } from '../../../../../models/athlete.model';
 import { CreateEnrollmentDTO, EnrollmentDTO, ErrorResponse } from '../../../../../models/dtos';
 import { Enrollment } from '../../../../../models/enrollment.model';
 import { User } from '../../../../../models/user.model';
+import { AthleteService } from '../../../../../core/services/athlete.service';
 
 @Component({
   selector: 'app-dashboard-event-enroll-form',
@@ -51,6 +55,7 @@ export class DashboardEventEnrollFormComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private athleteService = inject(AthleteService);
   private eventService = inject(EventService);
   private userService = inject(UserService);
 
@@ -61,7 +66,8 @@ export class DashboardEventEnrollFormComponent {
 
   isEditing = false;
   competitionTypes = Object.values(CompetitionType);
-  eStatus = Object.values(EnrollmentStatus);
+  avaiableEnrollStatus = Object.values(EnrollmentStatus);
+  affiliationStatuses = Object.values(AffiliationStatus);
   eventName = '';
 
   icons = {
@@ -90,6 +96,8 @@ export class DashboardEventEnrollFormComponent {
     competitionType: ['', Validators.required],
     athleteWeight: ['', [Validators.required]],
     athleteHeight: ['', [Validators.required]],
+    athleteMedicalCertificateExpireDate: ['', Validators.required],
+    athleteAffiliationStatus: [''],
   });
 
   enrollment: Signal<Enrollment | null> = toSignal(
@@ -100,31 +108,24 @@ export class DashboardEventEnrollFormComponent {
       toObservable(this.id),
     ]).pipe(
       switchMap(([enrollId, athleteId, clubId, eventId]) => {
-        if (this.isAthlete())
-          this.eStatus = this.eStatus.filter((type) => type === EnrollmentStatus.DRAFT);
-        else if (this.isClub())
-          this.eStatus = this.eStatus.filter((type) => type === EnrollmentStatus.DRAFT || type === EnrollmentStatus.SUBMITTED || type === EnrollmentStatus.RETIRED);
-        else if (this.isFederation())
-          this.eStatus = this.eStatus.filter((type) => type === EnrollmentStatus.SUBMITTED || type === EnrollmentStatus.APPROVED || type === EnrollmentStatus.REJECTED);
-
+        this.avaiableEnrollStatus = Object.values(EnrollmentStatus);
 
         if (enrollId) {
-          const enrollment = this.eventService.getEnrollmentById(enrollId);
-          enrollment.subscribe({
-            next: (enrll) => {
+          return this.eventService.getEnrollmentById(enrollId).pipe(
+            switchMap((enrll) => {
               this.eventService.getEventById(enrll.eventId).subscribe({
                 next: (event) => {
                   this.competitionTypes = this.competitionTypes.filter((type) =>
-                    event.disciplines.find((d) => d === type)
+                    event.disciplines.find((d) => d === type),
                   );
                   this.eventName = event.name;
                 },
-                error: (err: ErrorResponse) => alert('Errore: ' + err.error.message),
+                error: (err: ErrorResponse) =>
+                  alert("Errore durante il recupero dell'iscrizione: " + err.error.message),
               });
-            },
-            error: (err: ErrorResponse) => alert('Errore: ' + err.error.message),
-          });
-          return enrollment;
+              return of(enrll);
+            }),
+          );
         }
 
         const draftEnrollment: EnrollmentDTO = {
@@ -149,7 +150,7 @@ export class DashboardEventEnrollFormComponent {
           this.eventService.getEventById(eventId).subscribe({
             next: (event) => {
               this.competitionTypes = this.competitionTypes.filter((type) =>
-                event.disciplines.find((d) => d === type)
+                event.disciplines.find((d) => d === type),
               );
               this.eventName = event.name;
             },
@@ -171,13 +172,13 @@ export class DashboardEventEnrollFormComponent {
                 athleteAffiliationStatus: athleteUser.affiliationStatus,
                 athleteMedicalCertificateExpireDate: athleteUser.medicalCertificateExpireDate,
               });
-            })
+            }),
           );
         }
         return of(new Enrollment(draftEnrollment));
-      })
+      }),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   constructor() {
@@ -189,11 +190,42 @@ export class DashboardEventEnrollFormComponent {
           competitionType: enrl.discipline,
           athleteWeight: enrl.athleteWeight,
           athleteHeight: enrl.athleteHeight,
+          athleteMedicalCertificateExpireDate: enrl.athleteMedicalCertificateExpireDate
+            ? enrl.athleteMedicalCertificateExpireDate.split('T')[0]
+            : '',
+          athleteAffiliationStatus: enrl.athleteAffiliationStatus,
         });
-
         this.form.disable();
       }
     });
+  }
+
+  // Restituisce gli stati disponibili per la transizione in base al ruolo e allo stato corrente dell'iscrizione
+  getAvailableStatuses(currentStatus: EnrollmentStatus): EnrollmentStatus[] {
+    if (this.isFederation()) {
+      return [EnrollmentStatus.SUBMITTED, EnrollmentStatus.APPROVED, EnrollmentStatus.REJECTED];
+    }
+
+    if (this.isClub()) {
+      if (currentStatus === EnrollmentStatus.DRAFT) {
+        return [EnrollmentStatus.DRAFT, EnrollmentStatus.SUBMITTED];
+      }
+      if (currentStatus === EnrollmentStatus.REJECTED) {
+        return [EnrollmentStatus.REJECTED, EnrollmentStatus.DRAFT];
+      }
+      if (
+        currentStatus === EnrollmentStatus.SUBMITTED ||
+        currentStatus === EnrollmentStatus.APPROVED
+      ) {
+        return [currentStatus, EnrollmentStatus.RETIRED];
+      }
+    }
+
+    if (this.isAthlete()) {
+      return [EnrollmentStatus.DRAFT];
+    }
+
+    return [currentStatus];
   }
 
   isCertificateExpired(dateStr: string | null | undefined): boolean {
@@ -210,7 +242,25 @@ export class DashboardEventEnrollFormComponent {
 
   toggleEdit() {
     this.isEditing = true;
-    this.form.enable();
+    const currentStatus = this.form.get('status')?.value as EnrollmentStatus;
+    const isDraft = currentStatus === EnrollmentStatus.DRAFT;
+
+    if (this.isFederation()) {
+      this.form.enable(); // Federation Manager può modificare tutto
+    } else {
+      // Club Manager e Atleta:
+      // - in bozza possono modificare tutto tranne lo stato dell'affiliazione
+      // - fuori bozza, l'atleta non può fare nulla mentre il club manager può solo cambiare lo stato (verso stati consentiti)
+      if (isDraft) {
+        this.form.enable();
+        this.form.get('athleteAffiliationStatus')?.disable();
+      } else {
+        this.form.disable();
+        if (this.isClub()) {
+          this.form.get('status')?.enable();
+        }
+      }
+    }
   }
 
   cancelEdit() {
@@ -223,6 +273,10 @@ export class DashboardEventEnrollFormComponent {
         competitionType: enrl.discipline,
         athleteWeight: enrl.athleteWeight,
         athleteHeight: enrl.athleteHeight,
+        athleteMedicalCertificateExpireDate: enrl.athleteMedicalCertificateExpireDate
+          ? enrl.athleteMedicalCertificateExpireDate.split('T')[0]
+          : '',
+        athleteAffiliationStatus: enrl.athleteAffiliationStatus,
       });
     }
   }
@@ -230,20 +284,39 @@ export class DashboardEventEnrollFormComponent {
   saveChanges() {
     if (this.form.invalid || !this.enrollment()) return;
 
+    // Controllo modifiche per alert di conferma
+    const certDateControl = this.form.get('athleteMedicalCertificateExpireDate');
+    const affStatusControl = this.form.get('athleteAffiliationStatus');
+
+    if (certDateControl?.dirty) {
+      const msg =
+        "Attenzione: La data di scadenza del certificato verrà aggiornata solo per l'iscrizione attuale.\n\nRicordati di aggiornarla anche nella scheda dell'atleta.";
+      if (!confirm(msg)) return;
+    }
+    const shouldUpdateAthleteStatus = this.isFederation() && affStatusControl?.dirty;
+
+    if (shouldUpdateAthleteStatus) {
+      const msg =
+        "Attenzione: Stai modificando lo stato di affiliazione.\n\nQuesto aggiornamento verrà applicato anche al profilo dell'atleta. Continuare?";
+      if (!confirm(msg)) return;
+    }
+
     const rawData: EnrollmentDTO = {
       ...this.enrollment()?.toDTO(),
       ...this.form.getRawValue(),
     };
 
     const addFixedTime = (dateStr: string) => {
-      return dateStr ? `${dateStr}T03:00:00` : null;
+      if (!dateStr) return '';
+      return dateStr.includes('T') ? dateStr : `${dateStr}T03:00:00`;
     };
 
     let updatedData = {
       ...rawData,
-      enrollmentDate: rawData.enrollmentDate,
-      athleteMedicalCertificateExpireDate:
-        addFixedTime(rawData.athleteMedicalCertificateExpireDate) ?? '',
+      athleteMedicalCertificateExpireDate: addFixedTime(
+        rawData.athleteMedicalCertificateExpireDate,
+      ),
+      athleteAffiliationStatus: rawData.athleteAffiliationStatus,
     };
 
     if (!this.enrollId()) {
@@ -253,7 +326,7 @@ export class DashboardEventEnrollFormComponent {
       };
 
       this.eventService.enrollAthlete(newEnrollment).subscribe({
-        next: (res) => {
+        next: () => {
           alert('Iscrizione compilata con successo');
           this.isEditing = false;
           this.form.disable();
@@ -264,19 +337,48 @@ export class DashboardEventEnrollFormComponent {
       });
     } else {
       updatedData.id = this.enrollId() ?? '';
-      const newEnrollmentData: Enrollment = new Enrollment(updatedData);
 
-      this.eventService.updateEnrollment(newEnrollmentData).subscribe({
-        next: (res) => {
-          alert('Iscrizione modificata con successo');
-          this.isEditing = false;
-          this.form.disable();
-          window.location.reload();
-        },
-
-        error: (err: ErrorResponse) => alert('Errore nel salvataggio: ' + err.error.message),
-      });
+      const athleteId = this.enrollment()?.athleteId;
+      if (shouldUpdateAthleteStatus && athleteId) {
+        // Aggiornamento Atleta
+        this.athleteService
+          .updateAthleteAffiliationStatus(athleteId, updatedData.athleteAffiliationStatus)
+          .subscribe({
+            next: () => {
+              alert(`Affiliazione confermata con successo!`);
+              const newEnrollmentData: Enrollment = new Enrollment(updatedData);
+              // Aggiornamento Iscrizione
+              return this.eventService.updateEnrollment(newEnrollmentData).subscribe({
+                next: () => {
+                  alert('Iscrizione modificata con successo');
+                  this.finalizeSave();
+                },
+                error: (err: ErrorResponse) => {
+                  alert(`Errore': ${err.error.message}`);
+                },
+              });
+            },
+            error: (err: ErrorResponse) => {
+              alert(`Errore': ${err.error.message}`);
+            },
+          });
+      } else {
+        const newEnrollmentData: Enrollment = new Enrollment(updatedData);
+        this.eventService.updateEnrollment(newEnrollmentData).subscribe({
+          next: () => {
+            alert('Iscrizione modificata con successo');
+            this.finalizeSave();
+          },
+          error: (err: ErrorResponse) => alert('Errore nel salvataggio: ' + err.error.message),
+        });
+      }
     }
+  }
+
+  finalizeSave() {
+    this.isEditing = false;
+    this.form.disable();
+    window.location.reload();
   }
 
   getReadableCompetitionType(type: CompetitionType) {
