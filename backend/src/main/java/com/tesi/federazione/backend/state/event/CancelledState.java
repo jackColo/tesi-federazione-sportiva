@@ -25,6 +25,7 @@ public class CancelledState implements EventState {
         if (event.getDate().isBefore(LocalDate.now())) {
             throw new ActionNotAllowedException("Non puoi riattivare un evento scaduto");
         }
+
         event.setStatus(EventStatus.SCHEDULED);
         event.setState(new ScheduledState());
 

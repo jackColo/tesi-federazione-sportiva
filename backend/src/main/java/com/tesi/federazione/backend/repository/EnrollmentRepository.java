@@ -13,21 +13,21 @@ import java.util.List;
  */
 public interface EnrollmentRepository extends MongoRepository<Enrollment, String> {
     /**
-     * Ricerca di tutte le iscrizioni relative ad uno specifico evento.
+     * Ricerca di tutte le iscrizioni relative a uno specifico evento.
      * @param eventId Id dell'evento
      * @return List<Enrollment> Elenco di tutte le iscrizioni presenti a DB per l'evento richiesto
      */
     List<Enrollment> findByEventId(String eventId);
 
     /**
-     * Ricerca di tutte le iscrizioni ACCETTATE relative ad uno specifico evento.
+     * Ricerca di tutte le iscrizioni ACCETTATE relative a uno specifico evento.
      * @param eventId Id dell'evento
      * @return List<Enrollment> Elenco di tutte le iscrizioni presenti a DB per l'evento richiesto
      */
     List<Enrollment> findByEventIdAndStatus(String eventId, EnrollmentStatus status);
 
     /**
-     * Ricerca di tutte le iscrizioni relative ad uno specifico club per uno specifico evento.
+     * Ricerca di tutte le iscrizioni relative a uno specifico club per uno specifico evento.
      * @param eventId Id dell'evento
      * @param clubId Id del club
      * @return List<Enrollment> Elenco di tutte le iscrizioni presenti a DB relative a club ed evento richiesti.
@@ -35,15 +35,15 @@ public interface EnrollmentRepository extends MongoRepository<Enrollment, String
     List<Enrollment> findByEventIdAndClubId(String eventId, String clubId);
 
     /**
-     * Ricerca di tutte le iscrizioni relative ad uno specifico atleta per uno specifico evento.
+     * Ricerca di tutte le iscrizioni relative a uno specifico atleta per uno specifico evento.
      * @param eventId Id dell'evento
      * @param athleteId Id dell'atleta
-     * @return List<Enrollment> Elenco di tutte le iscrizioni presenti a DB relative a atleta ed evento richiesti.
+     * @return List<Enrollment> Elenco di tutte le iscrizioni presenti a DB relative ad atleta ed evento richiesti.
      */
     List<Enrollment> findByEventIdAndAthleteId(String eventId, String athleteId);
 
     /**
-     * Verifica circa la presenza dell'iscrizione di un atleta ad uno specifico evento e per una specifica disciplina
+     * Verifica circa la presenza dell'iscrizione di un atleta a uno specifico evento e per una specifica disciplina
      * @param eventId Id dell'evento
      * @param athleteId Id dell'atleta
      * @param competitionType Enum relativo alla disciplina da verificare

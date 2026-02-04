@@ -160,12 +160,14 @@ public class EventServiceImpl implements EventService {
         switch (newStatus) {
             case SCHEDULED:
                 event.resumeEvent();
+                restoreEventEnrollments(id);
                 break;
             case COMPLETED:
                 event.completeEvent();
                 break;
             case CANCELLED:
                 event.cancelEvent();
+                cancelEventEnrollments(id);
                 break;
             case REGISTRATION_CLOSED:
                 event.closeRegistrations();
@@ -448,5 +450,39 @@ public class EventServiceImpl implements EventService {
         } else {
             throw new ActionNotAllowedException("Transizione di stato non permessa.");
         }
+    }
+
+    /**
+     * Metodo helper per ripristinare le iscrizioni: Porta tutte le iscrizioni non nello stato DRAFT
+     */
+    private void restoreEventEnrollments(String eventId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByEventId(eventId);
+
+        List<Enrollment> toRestore = enrollments.stream()
+                .map(e -> {
+                    e.setStatus(EnrollmentStatus.DRAFT);
+                    return e;
+                })
+                .collect(Collectors.toList());
+
+        enrollmentRepository.saveAll(toRestore);
+        log.info(" {} iscrizioni riportate in bozza per l'evento {}", toRestore.size(), eventId);
+    }
+
+    /**
+     * Metodo helper per rifiutare tutte le iscrizioni se l'evento viene cancellato
+     */
+    private void cancelEventEnrollments(String eventId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByEventId(eventId);
+
+        List<Enrollment> toCancel = enrollments.stream()
+                .filter(e -> !e.getStatus().equals(EnrollmentStatus.DRAFT))
+                .map(e -> {
+                    e.setStatus(EnrollmentStatus.REJECTED);
+                    return e;
+                })
+                .collect(Collectors.toList());
+
+        enrollmentRepository.saveAll(toCancel);
     }
 }

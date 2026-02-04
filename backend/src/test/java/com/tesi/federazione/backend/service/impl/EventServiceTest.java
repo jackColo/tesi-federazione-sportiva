@@ -332,13 +332,32 @@ public class EventServiceTest {
             event.setId(eventId);
             event.setStatus(EventStatus.SCHEDULED);
 
+            Enrollment enrollmentSubmitted = new Enrollment();
+            enrollmentSubmitted.setId("enrollId1");
+            enrollmentSubmitted.setStatus(EnrollmentStatus.SUBMITTED);
+
+            Enrollment enrollmentDraft = new Enrollment();
+            enrollmentDraft.setId("enrollId2");
+            enrollmentDraft.setStatus(EnrollmentStatus.DRAFT);
+
             when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+            when(enrollmentRepository.findByEventId(eventId)).thenReturn(List.of(enrollmentSubmitted, enrollmentDraft));
 
             eventService.updateEventState(eventId, EventStatus.CANCELLED);
 
             ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
             verify(eventRepository).save(eventCaptor.capture());
             assertEquals(EventStatus.CANCELLED, eventCaptor.getValue().getStatus());
+
+            ArgumentCaptor<List<Enrollment>> enrollmentListCaptor = ArgumentCaptor.forClass(List.class);
+            verify(enrollmentRepository).saveAll(enrollmentListCaptor.capture());
+
+            List<Enrollment> savedEnrollments = enrollmentListCaptor.getValue();
+
+            // Mi aspetto che venga salvata solo quella NON draft
+            assertEquals(1, savedEnrollments.size());
+            assertEquals("enrollId1", savedEnrollments.get(0).getId());
+            assertEquals(EnrollmentStatus.REJECTED, savedEnrollments.get(0).getStatus());
         }
 
 
@@ -352,13 +371,28 @@ public class EventServiceTest {
             event.setStatus(EventStatus.CANCELLED);
             event.setDate(LocalDate.of(2030, 1, 1));
 
+            Enrollment enrollmentRejected = new Enrollment();
+            enrollmentRejected.setId("enrollId");
+            enrollmentRejected.setStatus(EnrollmentStatus.REJECTED);
+
             when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+            when(enrollmentRepository.findByEventId(eventId)).thenReturn(List.of(enrollmentRejected));
 
             eventService.updateEventState(eventId, EventStatus.SCHEDULED);
 
             ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
             verify(eventRepository).save(eventCaptor.capture());
             assertEquals(EventStatus.SCHEDULED, eventCaptor.getValue().getStatus());
+
+            ArgumentCaptor<List<Enrollment>> enrollmentListCaptor = ArgumentCaptor.forClass(List.class);
+            verify(enrollmentRepository).saveAll(enrollmentListCaptor.capture());
+
+            List<Enrollment> savedEnrollments = enrollmentListCaptor.getValue();
+
+            // Mi aspetto che venga salvata solo quella NON draft
+            assertEquals(1, savedEnrollments.size());
+            assertEquals("enrollId", savedEnrollments.get(0).getId());
+            assertEquals(EnrollmentStatus.DRAFT, savedEnrollments.get(0).getStatus());
         }
 
         @Test
