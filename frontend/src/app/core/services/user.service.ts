@@ -53,7 +53,27 @@ export class UserService {
     });
   }
 
+  getClubManagers(): Observable<ClubManager[]> {
+    return this.findByRole(Role.CLUB_MANAGER).pipe(
+      map((users) => {
+        return users.filter((u): u is ClubManager => u instanceof ClubManager);
+      })
+    );  
+  }
+  getFederationManagers(): Observable<FederationManager[]> {
+     return this.findByRole(Role.FEDERATION_MANAGER).pipe(
+      map((users) => {
+        return users.filter((u): u is FederationManager => u instanceof FederationManager);
+      })
+    );  
+  }
+
   /* UTILS */
+
+  private findByRole(role: Role): Observable<User[]> {
+    return this.http.get<UserDTO[]>(`${this.apiUrl}find-by-role/${role}`)
+      .pipe(map((data) => data.map((d) => this.createUserInstance(d))));
+  }
 
   // Method to adapt factory method to FE
   protected createUserInstance(dto: UserDTO): User {

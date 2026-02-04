@@ -24,9 +24,11 @@ import {
 } from '../../../../enums/affiliation-status.enum';
 import { Role } from '../../../../enums/role.enum';
 import { Athlete } from '../../../../models/athlete.model';
+import { ClubManager } from '../../../../models/club-manager.model';
 import { Club } from '../../../../models/club.model';
 import { DashboardClubsAthleteCardComponent } from './dashboard-clubs-athlete-card-component/dashboard-clubs-athlete-card-component';
 import { DashboardClubsCardComponent } from './dashboard-clubs-card-component/dashboard-clubs-card-component';
+import { DashboardClubsClubManagerCardComponent } from './dashboard-clubs-club-manager-card-component/dashboard-clubs-club-manager-card-component';
 
 interface FedTab {
   id: string;
@@ -42,6 +44,7 @@ interface FedTab {
     FontAwesomeModule,
     DashboardClubsAthleteCardComponent,
     DashboardClubsCardComponent,
+    DashboardClubsClubManagerCardComponent,
   ],
   templateUrl: './dashboard-clubs-component.html',
 })
@@ -64,6 +67,7 @@ export class DashboardClubsComponent {
 
   tabs: FedTab[] = [
     { id: 'CLUB', label: 'Club', icon: this.icons.faBuilding },
+    { id: 'CLUB_MANAGER', label: 'Club Managers', icon: this.icons.faUsers },
     { id: 'ATHLETE', label: 'Atleti', icon: this.icons.faUsers },
   ];
 
@@ -92,9 +96,16 @@ export class DashboardClubsComponent {
     this.isClubManager()
       ? toObservable(this.myClub).pipe(
           filter((u): u is Club => !!u),
-          switchMap((club) => this.athleteService.getAtheltes(club.id))
+          switchMap((club) => this.athleteService.getAthletesByClubId(club.id))
         )
       : this.athleteService.getAthletes(),
+    { initialValue: null }
+  );
+
+  clubManagers: Signal<ClubManager[] | null> = toSignal(
+    this.isFederation()
+      ? this.userService.getClubManagers()
+      : of(null),
     { initialValue: null }
   );
 

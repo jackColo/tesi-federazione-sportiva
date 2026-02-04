@@ -30,7 +30,17 @@
     <div class="m-8">
       <app-dashboard-clubs-card-component [club]="club"></app-dashboard-clubs-card-component>
     </div>
-    }} } @case ('ATHLETE') {
+    }} } @case ('CLUB_MANAGER') {
+    <div class="py-2 text-center text-slate-500 bg-white rounded shadow-sm">
+      @if (clubManagers(); as clubManagers) { @for (clbMan of clubManagers; track clbMan.id) {
+      <div class="m-8">
+        <app-dashboard-clubs-club-manager-card-component
+          [clubManager]="clbMan"
+        ></app-dashboard-clubs-club-manager-card-component>
+      </div>
+      } }
+    </div>
+    } @case ('ATHLETE') {
     <div class="py-2 text-center text-slate-500 bg-white rounded shadow-sm">
       @if (athletes(); as athletes) { @for (ath of athletes; track ath.id) {
       <div class="m-8">

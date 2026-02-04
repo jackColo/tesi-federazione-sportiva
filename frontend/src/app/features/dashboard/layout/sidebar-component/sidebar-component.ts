@@ -9,7 +9,8 @@ import {
   faEnvelope,
   faHeadset,
   faRightFromBracket,
-  faUsers
+  faUsers,
+  faUserShield
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
@@ -33,7 +34,8 @@ export class SidebarComponent {
     faChartLine,
     faCalendar,
     faUsers,
-    faRightFromBracket
+    faRightFromBracket,
+    faUserShield
   }
 
   userEmail = computed(() => {
@@ -72,6 +74,10 @@ export class SidebarComponent {
 
   showClubChat = computed(() => {
     return this.userRole() === Role.CLUB_MANAGER;
+  });
+
+  showFederationManagers = computed(() => {
+    return this.userRole() === Role.FEDERATION_MANAGER;
   });
 
   logout(): void {

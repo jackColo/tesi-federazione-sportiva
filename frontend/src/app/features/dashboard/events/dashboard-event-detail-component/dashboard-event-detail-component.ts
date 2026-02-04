@@ -105,7 +105,7 @@ export class DashboardEventDetailComponent {
           switchMap((user) => {
             if (user.clubId) {
               this.clubId = user.clubId;
-              if (role === Role.CLUB_MANAGER) return this.athleteService.getAtheltes(user.clubId);
+              if (role === Role.CLUB_MANAGER) return this.athleteService.getAthletesByClubId(user.clubId);
               else {
                 this.selectedAthleteId.set(user.id);
                 return of([]);

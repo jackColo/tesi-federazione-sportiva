@@ -21,6 +21,7 @@ import { DashboardEventEnrollFormComponent } from './features/dashboard/events/e
 import { DashboardComponent } from './features/dashboard/layout/dashboard-component/dashboard-component';
 import { DashboardSkeletonComponent } from './features/dashboard/layout/dashboard-skeleton-component/dashboard-skeleton-component';
 import { ClubChatPageComponent } from './shared/components/chat/club-chat-page-component';
+import { DashboardFederationManagersComponent } from './features/dashboard/admin/dashboard-federation-managers-component/dashboard-federation-managers-component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -109,6 +110,11 @@ export const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'federation-managers',
+        component: DashboardFederationManagersComponent,
+        canActivate: [roleGuard([Role.FEDERATION_MANAGER])],
+      }
     ],
   },
   { path: '**', redirectTo: '', pathMatch: 'full' },

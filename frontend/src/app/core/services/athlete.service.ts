@@ -27,7 +27,7 @@ export class AthleteService extends UserService {
     );
   }
 
-  getAtheltes(clubId: string): Observable<Athlete[]> {
+  getAthletesByClubId(clubId: string): Observable<Athlete[]> {
     return this.http.get<UserDTO[]>(`${this.apiUrl}club/${clubId}`).pipe(
       map((data) => {
         const users = data.map((d) => this.createUserInstance(d));
