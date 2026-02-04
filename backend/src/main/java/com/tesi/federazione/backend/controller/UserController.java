@@ -1,5 +1,6 @@
 package com.tesi.federazione.backend.controller;
 
+import com.tesi.federazione.backend.dto.user.ChangePasswordRequestDTO;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.security.RequiresClubApproval;
@@ -83,6 +84,22 @@ public class UserController {
         UserDTO userDTO = userService.updateUser(createUserDTO);
         log.info("Dati utente {} aggiornati con successo.", id);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
+    /**
+     * Aggiorna la password di un utente esistente
+     *
+     * @param id L'ID dell'utente di cui si vuole aggiornare la password.
+     * @param request ChangePasswordRequestDTO contenente la vecchia e la nuova password.
+     * @return ResponseEntity<UserDTO> L'utente aggiornato e HttpStatus OK.
+     */
+    @PostMapping("/change-password/{id}")
+    @PreAuthorize("hasAnyAuthority('FEDERATION_MANAGER', 'CLUB_MANAGER', 'ATHLETE')")
+    public ResponseEntity<Void> changeUserPassword(@PathVariable String id, @RequestBody ChangePasswordRequestDTO request) {
+        log.info("Richiesta cambio password per l'utente {}", id);
+        userService.changeUserPassword(id, request.getOldPassword(), request.getNewPassword());
+        log.info("Password utente {} aggiornata con successo.", id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

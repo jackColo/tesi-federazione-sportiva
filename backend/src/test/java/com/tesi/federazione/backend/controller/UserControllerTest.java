@@ -1,6 +1,7 @@
 package com.tesi.federazione.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tesi.federazione.backend.dto.user.ChangePasswordRequestDTO;
 import com.tesi.federazione.backend.dto.user.CreateUserDTO;
 import com.tesi.federazione.backend.dto.user.UserDTO;
 import com.tesi.federazione.backend.model.enums.Role;
@@ -16,7 +17,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,7 +75,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("Test per POST /create")
-    void createUser() throws Exception {
+    void createUserTest() throws Exception {
         CreateUserDTO createUserDto = new CreateUserDTO();
         createUserDto.setEmail("new@user.com");
         createUserDto.setPassword("password");
@@ -88,14 +89,14 @@ class UserControllerTest {
         mockMvc.perform(post("/api/user/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createUserDto)))
-                .andExpect(status().isCreated()) // Il controller restituisce HttpStatus.CREATED
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("userId"))
                 .andExpect(jsonPath("$.email").value("new@user.com"));
     }
 
     @Test
     @DisplayName("Test per PATCH /update/{id}")
-    void updateUser() throws Exception {
+    void updateUserTest() throws Exception {
         String id = "userId";
         CreateUserDTO updateDto = new CreateUserDTO();
         updateDto.setEmail("updated@email.com");
@@ -112,5 +113,26 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.email").value("updated@email.com"));
+    }
+
+    @Test
+    @DisplayName("Test per POST /change-password/{id}")
+    void changeUserPasswordTest() throws Exception {
+        String userId = "userId";
+        String oldPassword = "oldPassword";
+        String newPassword = "newPassword";
+        ChangePasswordRequestDTO request = new ChangePasswordRequestDTO();
+        request.setOldPassword(oldPassword);
+        request.setNewPassword(newPassword);
+
+        doNothing().when(userService).changeUserPassword(userId, oldPassword, newPassword);
+
+        mockMvc.perform(post("/api/user/change-password/{id}", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        // 5. Verifichiamo che il service sia stato chiamato con i parametri giusti
+        verify(userService).changeUserPassword(userId, oldPassword, newPassword);
     }
 }

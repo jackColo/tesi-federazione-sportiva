@@ -266,6 +266,106 @@ public class UserServiceTest {
 
     }
 
+
+    @Nested
+    @DisplayName("Tests per: changeUserPassword()")
+    class ChangeUserPasswordTests {
+
+        @Test
+        @DisplayName("FALLIMENTO: utente non trovato")
+        public void userNotFound() {
+            String userId = "userId";
+            String oldPassword = "oldPassword";
+            String newPassword = "newPassword";
+
+            when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+            // Verifichiamo che venga lanciata l'eccezione
+            assertThrows(ResourceNotFoundException.class, () -> {
+                userService.changeUserPassword(userId, oldPassword, newPassword);
+            });
+
+            verify(userRepository, never()).save(any(User.class));
+        }
+
+        @Test
+        @DisplayName("FALLIMENTO: modifica password di altro utente")
+        public void fail_unauthorizedRequest() {
+            String currentUserId = "userId";
+            String userId = "otherUserId";
+            String oldPassword = "oldPassword";
+            String newPassword = "newPassword";
+
+            User user = new User();
+            user.setId(userId);
+
+            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+            when(securityUtils.getCurrentUserId()).thenReturn(currentUserId);
+
+            // Verifichiamo che venga lanciata l'eccezione
+            assertThrows(UnauthorizedException.class, () -> {
+                userService.changeUserPassword(userId, oldPassword, newPassword);
+            });
+
+            verify(userRepository, never()).save(any(User.class));
+        }
+
+
+        @Test
+        @DisplayName("FALLIMENTO: vecchia password errata")
+        public void fail_passwordMismatch() {
+            String userId = "userId";
+            String wrongOldPassword = "wrongOldPassword";
+            String newPassword = "newPassword";
+            String dbEncodedPassword = "encodedRealPassword";
+
+            User user = new User();
+            user.setId(userId);
+            user.setPassword(dbEncodedPassword);
+
+            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+            when(securityUtils.getCurrentUserId()).thenReturn(userId);
+            when(passwordEncoder.matches(wrongOldPassword, user.getPassword())).thenReturn(false);
+
+            // Verifichiamo che venga lanciata l'eccezione
+            assertThrows(ActionNotAllowedException.class, () -> {
+                userService.changeUserPassword(userId, wrongOldPassword, newPassword);
+            });
+
+            verify(userRepository, never()).save(any(User.class));
+        }
+
+        @Test
+        @DisplayName("SUCCESSO: password modificata correttamente")
+        public void success() {
+            String userId = "userId";
+            String oldPassword = "oldPassword";
+            String newPassword = "newPassword";
+            String dbEncodedPassword = "encodedPassword";
+            String dbEncodedNewPassword = "encodedNewPassword";
+
+            User user = new User();
+            user.setId(userId);
+            user.setPassword(dbEncodedPassword);
+
+            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+            when(securityUtils.getCurrentUserId()).thenReturn(userId);
+            when(passwordEncoder.matches(oldPassword, user.getPassword())).thenReturn(true);
+            when(passwordEncoder.encode(newPassword)).thenReturn(dbEncodedNewPassword);
+
+            userService.changeUserPassword(userId, oldPassword, newPassword);
+
+            ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+            verify(userRepository).save(userCaptor.capture());
+            User savedUser = userCaptor.getValue();
+            assertEquals(dbEncodedNewPassword, savedUser.getPassword());
+            verify(passwordEncoder).encode(newPassword);
+        }
+
+
+
+    }
+
     @Nested
     @DisplayName("Tests per: getUserByEmail()")
     class getUserByEmailTests {

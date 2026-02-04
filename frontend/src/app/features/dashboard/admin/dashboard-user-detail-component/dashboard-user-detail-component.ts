@@ -70,29 +70,33 @@ export class DashboardUserDetailComponent {
     faRulerVertical,
     faVenusMars,
     faFileMedical,
-    faInfoCircle
+    faInfoCircle,
   };
-
 
   isAdmin = computed(() => this.authService.userRole() === Role.FEDERATION_MANAGER);
   isClubManager = computed(() => this.authService.userRole() === Role.CLUB_MANAGER);
+
+  user: Signal<User | null> = toSignal(
+    toObservable(this.id).pipe(switchMap((id) => this.userService.getUserById(id))),
+    { initialValue: null },
+  );
 
   isTargetAthlete = computed(() => {
     const u = this.user();
     return u instanceof Athlete;
   });
 
-  user: Signal<User | null> = toSignal(
-    toObservable(this.id).pipe(switchMap((id) => this.userService.getUserById(id))),
-    { initialValue: null }
-  );
+  isMe = computed(() => {
+    const u = this.user();
+    return u ? u.id === this.authService.currentUserId() : false;
+  });
 
   club: Signal<Club | null> = toSignal(
     toObservable(this.user).pipe(
       filter((u): u is User => !!u && !!u.clubId),
-      switchMap((u) => this.clubService.getClub(u.clubId!))
+      switchMap((u) => this.clubService.getClub(u.clubId!)),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   availableClubs: Signal<Club[]> = toSignal(this.clubService.getAllClubs(), { initialValue: [] });
@@ -108,23 +112,52 @@ export class DashboardUserDetailComponent {
     gender: [null as GenderEnum | null],
     medicalCertificateNumber: [null as string | null],
     medicalCertificateExpireDate: [null as string | null],
+    oldPassword: [''],
+    newPassword: [''],
+    confirmPassword: [''],
   });
 
   constructor() {
     effect(() => {
-      this.patchValues(this.user())
+      this.patchValues(this.user());
+    });
+
+    // LISTENER PER CAMBIO PASSWORD
+    // Se l'utente scrive qualcosa in newPassword, rendiamo obbligatori gli altri campi
+    this.form.get('newPassword')?.valueChanges.subscribe((value) => {
+      const oldPassCtrl = this.form.get('oldPassword');
+      const confirmPassCtrl = this.form.get('confirmPassword');
+
+      if (value && value.length > 0) {
+        // Sto modificando la password -> Rendo tutto obbligatorio
+        this.form.get('newPassword')?.setValidators([Validators.required, Validators.minLength(8)]);
+        oldPassCtrl?.setValidators([Validators.required]);
+        confirmPassCtrl?.setValidators([Validators.required]);
+      } else {
+        // Password vuota -> Tolgo i validatori (tranne se l'utente ha scritto in old/confirm, ma semplifichiamo)
+        this.form.get('newPassword')?.clearValidators();
+        oldPassCtrl?.clearValidators();
+        confirmPassCtrl?.clearValidators();
+      }
+      // Ricalcola lo stato di validazione
+      this.form.get('newPassword')?.updateValueAndValidity({ emitEvent: false });
+      oldPassCtrl?.updateValueAndValidity();
+      confirmPassCtrl?.updateValueAndValidity();
     });
   }
 
   patchValues(u: User | null) {
-    if(!u)
-      return;
+    if (!u) return;
 
     this.form.patchValue({
       firstName: u.firstName,
       lastName: u.lastName,
       email: u.email,
       clubId: u.clubId,
+
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
     });
 
     if (u instanceof Athlete) {
@@ -147,12 +180,13 @@ export class DashboardUserDetailComponent {
 
   cancelEdit() {
     this.isEditing = false;
-    this.patchValues(this.user())
+    this.patchValues(this.user());
   }
 
   onSubmit() {
     if (this.form.valid && this.user()) {
       const formValues = this.form.getRawValue();
+
       const currentUser = this.user()!;
 
       let updatedUser: UserDTO;
@@ -206,12 +240,31 @@ export class DashboardUserDetailComponent {
       this.userService.updateUser(updatedUser).subscribe({
         next: (newUser) => {
           this.isEditing = false;
-          this.patchValues(newUser);
+          if (formValues.newPassword && formValues.newPassword.length > 0) {
+            if (formValues.newPassword !== formValues.confirmPassword) {
+              alert('Le password non coincidono!');
+              return;
+            }
+
+            this.userService
+              .changeUserPassword(this.user()!.id, formValues.oldPassword!, formValues.newPassword!)    
+              .subscribe({
+                next: () => {
+                  alert('Utente e password aggiornati con successo! Effettua nuovamente il login.');
+                  this.authService.logout();
+                },
+                error: (err: ErrorResponse) => {
+                  alert('Errore cambio password: ' + err.error.message);
+                },
+              });
+            return;
+          }
           alert('Utente aggiornato con successo');
+          this.patchValues(newUser);
           window.location.reload();
         },
         error: (err: ErrorResponse) => {
-          alert("Errore durante l'aggiornamento: "+ err.error.message);
+          alert("Errore durante l'aggiornamento: " + err.error.message);
         },
       });
     }

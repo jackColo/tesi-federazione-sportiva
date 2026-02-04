@@ -46,6 +46,13 @@ export class UserService {
       .pipe(map((data) => this.createUserInstance(data)));
   }
 
+  changeUserPassword(userId: string, oldPassword: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}change-password/${userId}`, {
+      oldPassword,
+      newPassword,
+    });
+  }
+
   /* UTILS */
 
   // Method to adapt factory method to FE

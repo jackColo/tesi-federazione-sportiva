@@ -1,291 +1,392 @@
 @if (user(); as u) {
-<div class="max-w-4xl mx-auto space-y-6" [formGroup]="form">
-  
-  <div class="flex items-center gap-4">
-    <a
-      routerLink="../../"
-      class="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
-    >
-      <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
-    </a>
+  <div class="max-w-4xl mx-auto space-y-6" [formGroup]="form">
+    <div class="flex items-center gap-4">
+      <a
+        routerLink="../../"
+        class="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
+      >
+        <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
+      </a>
 
-    <div class="flex-1">
-      <div class="flex items-center gap-3">
-        <h1 class="text-2xl font-bold text-slate-800">
-          {{ u.firstName }} {{ u.lastName }}
-        </h1>
+      <div class="flex-1">
+        <div class="flex items-center gap-3">
+          <h1 class="text-2xl font-bold text-slate-800">{{ u.firstName }} {{ u.lastName }}</h1>
 
-        <span
-          class="px-2.5 py-0.5 rounded-full text-xs font-bold border uppercase tracking-wide"
-          [ngClass]="roleColorClass()"
-        >
-          {{ roleLabel() }}
-        </span>
+          <span
+            class="px-2.5 py-0.5 rounded-full text-xs font-bold border uppercase tracking-wide"
+            [ngClass]="roleColorClass()"
+          >
+            {{ roleLabel() }}
+          </span>
+        </div>
+        <p class="text-slate-500 text-sm mt-1 flex items-center gap-2">
+          <fa-icon [icon]="icons.faIdBadge" class="text-slate-400"></fa-icon>
+          ID Utente: <span class="font-mono text-xs select-all">{{ u.id }}</span>
+        </p>
       </div>
-      <p class="text-slate-500 text-sm mt-1 flex items-center gap-2">
-        <fa-icon [icon]="icons.faIdBadge" class="text-slate-400"></fa-icon>
-        ID Utente: <span class="font-mono text-xs select-all">{{ u.id }}</span>
-      </p>
-    </div>
 
-    <div class="ml-auto flex gap-2">
-      @if (!isEditing) {
-        <button
-          (click)="toggleEdit()"
-          class="btn-icon text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors p-2 rounded-lg"
-          title="Modifica Dati"
-        >
-          <fa-icon [icon]="icons.faPen"></fa-icon>
-        </button>
-        @if(isAdmin()) {
-        <button
-          (click)="delete.emit()"
-          class="btn-icon text-red-600 bg-red-50 hover:bg-red-100 transition-colors p-2 rounded-lg"
-          title="Elimina Utente"
-        >
-          <fa-icon [icon]="icons.faTrash"></fa-icon>
-        </button>
+      <div class="ml-auto flex gap-2">
+        @if (!isEditing) {
+          <button
+            (click)="toggleEdit()"
+            class="btn-icon text-blue-600 bg-blue-100 hover:bg-blue-100 transition-colors p-2 rounded-lg"
+            title="Modifica Dati"
+          >
+            <fa-icon [icon]="icons.faPen"></fa-icon>
+          </button>
         } 
-      } @else {
-        <button
-          (click)="onSubmit()"
-          [disabled]="form.invalid"
-          class="btn-icon text-green-600 bg-green-50 hover:bg-green-100 transition-colors p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Salva Modifiche"
-        >
-          <fa-icon [icon]="icons.faCheck"></fa-icon>
-        </button>
-        <button
-          (click)="cancelEdit()"
-          class="btn-icon text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors p-2 rounded-lg"
-          title="Annulla"
-        >
-          <fa-icon [icon]="icons.faTimes"></fa-icon>
-        </button>
-      }
-    </div>
-  </div>
-
-  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    
-    <div class="p-8 border-b border-slate-100">
-      <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
-          <fa-icon [icon]="icons.faUser" class="text-sm"></fa-icon>
-        </div>
-        Dati Personali
-      </h3>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="group">
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Nome
-          </label>
-          <input
-            type="text"
-            formControlName="firstName"
-            [disabled]="!isEditing"
-            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-lg font-bold text-slate-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-700 disabled:border-transparent"
-          />
-        </div>
-
-        <div class="group">
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Cognome
-          </label>
-          <input
-            type="text"
-            formControlName="lastName"
-            [disabled]="!isEditing"
-            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-lg font-bold text-slate-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-700 disabled:border-transparent"
-          />
-        </div>
       </div>
     </div>
 
-    <div class="p-8 bg-slate-50/30">
-      <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
-          <fa-icon [icon]="icons.faShieldAlt" class="text-sm"></fa-icon>
-        </div>
-        Account e Contatti
-      </h3>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="p-8 border-b border-slate-100">
+        <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
+          <div
+            class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"
+          >
+            <fa-icon [icon]="icons.faUser" class="text-sm"></fa-icon>
+          </div>
+          Dati Personali
+        </h3>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Email
-          </label>
-          <div class="relative">
-             <input
-              type="email"
-              formControlName="email"
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="group">
+            <label
+              class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+            >
+              Nome
+            </label>
+            <input
+              type="text"
+              formControlName="firstName"
               [disabled]="!isEditing"
-              class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
+              class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-lg font-bold text-slate-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-700 disabled:border-transparent"
             />
-            @if(isEditing) {
-              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
-                 <fa-icon [icon]="icons.faEnvelope"></fa-icon>
-              </div>
-            }
+          </div>
+
+          <div class="group">
+            <label
+              class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+            >
+              Cognome
+            </label>
+            <input
+              type="text"
+              formControlName="lastName"
+              [disabled]="!isEditing"
+              class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-lg font-bold text-slate-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-700 disabled:border-transparent"
+            />
           </div>
         </div>
+      </div>
 
-        @if (u.clubId || isTargetAthlete() || isClubManager()) {
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Società di Appartenenza
-          </label>
-          
-          @if (!isEditing || (!isAdmin() && !isClubManager())) {
-            <div class="w-full px-3 py-2 bg-slate-50 rounded-lg text-sm font-bold text-slate-700 border border-transparent">
-               @if(u.clubId && club()) { {{ club()?.name }} } @else { - }
-            </div>
-          } @else {
+      <div class="p-8 bg-slate-50/30">
+        <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
+          <div
+            class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"
+          >
+            <fa-icon [icon]="icons.faShieldAlt" class="text-sm"></fa-icon>
+          </div>
+          Account e Contatti
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label
+              class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+            >
+              Email
+            </label>
             <div class="relative">
-              <select
-                formControlName="clubId"
-                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all appearance-none"
+              <input
+                type="email"
+                formControlName="email"
+                [disabled]="!isEditing"
+                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
+              />
+              @if (isEditing) {
+                <div
+                  class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400"
+                >
+                  <fa-icon [icon]="icons.faEnvelope"></fa-icon>
+                </div>
+              }
+            </div>
+          </div>
+
+          @if (u.clubId || isTargetAthlete() || isClubManager()) {
+            <div>
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
               >
-                <option [ngValue]="null">Nessun Club</option>
-                @for (c of availableClubs(); track c.id) {
-                  <option [value]="c.id">{{ c.name }}</option>
-                }
-              </select>
-               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
-                 <fa-icon [icon]="icons.faBuilding"></fa-icon>
-               </div>
+                Società di Appartenenza
+              </label>
+
+              @if (!isEditing || (!isAdmin() && !isClubManager())) {
+                <div
+                  class="w-full px-3 py-2 bg-slate-50 rounded-lg text-sm font-bold text-slate-700 border border-transparent"
+                >
+                  @if (u.clubId && club()) {
+                    {{ club()?.name }}
+                  } @else {
+                    -
+                  }
+                </div>
+              } @else {
+                <div class="relative">
+                  <select
+                    formControlName="clubId"
+                    class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all appearance-none"
+                  >
+                    <option [ngValue]="null">Nessun Club</option>
+                    @for (c of availableClubs(); track c.id) {
+                      <option [value]="c.id">{{ c.name }}</option>
+                    }
+                  </select>
+                  <div
+                    class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400"
+                  >
+                    <fa-icon [icon]="icons.faBuilding"></fa-icon>
+                  </div>
+                </div>
+              }
             </div>
           }
         </div>
-        }
       </div>
     </div>
-  </div>
 
-  @if(isTargetAthlete()) {
-  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-top-2">
-    
-    <div class="p-8 border-b border-slate-100">
-      <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500">
-          <fa-icon [icon]="icons.faUser" class="text-sm"></fa-icon>
-        </div>
-        Profilo Atleta
-      </h3>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Data di Nascita
-          </label>
-          <input
-            type="date"
-            formControlName="birthDate"
-            [disabled]="!isEditing"
-            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
-          />
-          @if (shouldShowError('birthDate')) { <p class="text-xs text-red-500 mt-1">{{ getErrorMessage('birthDate') }}</p> }
-        </div>
-
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Sesso
-          </label>
-          <div class="relative">
-            <select
-              formControlName="gender"
-              [disabled]="!isEditing"
-              class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent appearance-none"
+    @if (isTargetAthlete()) {
+      <div
+        class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-top-2"
+      >
+        <div class="p-8 border-b border-slate-100">
+          <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
+            <div
+              class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500"
             >
-              <option value="M">Maschio</option>
-              <option value="F">Femmina</option>
-              <option value="NB">Non binario</option>
-            </select>
-            @if(isEditing) {
-              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
-                <fa-icon [icon]="icons.faVenusMars"></fa-icon>
+              <fa-icon [icon]="icons.faUser" class="text-sm"></fa-icon>
+            </div>
+            Profilo Atleta
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Data di Nascita
+              </label>
+              <input
+                type="date"
+                formControlName="birthDate"
+                [disabled]="!isEditing"
+                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
+              />
+              @if (shouldShowError('birthDate')) {
+                <p class="text-xs text-red-500 mt-1">{{ getErrorMessage('birthDate') }}</p>
+              }
+            </div>
+
+            <div>
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Sesso
+              </label>
+              <div class="relative">
+                <select
+                  formControlName="gender"
+                  [disabled]="!isEditing"
+                  class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent appearance-none"
+                >
+                  <option value="M">Maschio</option>
+                  <option value="F">Femmina</option>
+                  <option value="NB">Non binario</option>
+                </select>
+                @if (isEditing) {
+                  <div
+                    class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400"
+                  >
+                    <fa-icon [icon]="icons.faVenusMars"></fa-icon>
+                  </div>
+                }
               </div>
-            }
+            </div>
+
+            <div>
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Peso (kg)
+              </label>
+              <div class="relative">
+                <input
+                  type="number"
+                  formControlName="weight"
+                  placeholder="0.00"
+                  [disabled]="!isEditing"
+                  class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
+                />
+                @if (isEditing) {
+                  <span class="absolute right-3 top-2 text-xs text-slate-400 font-bold">KG</span>
+                }
+              </div>
+              @if (shouldShowError('weight')) {
+                <p class="text-xs text-red-500 mt-1">{{ getErrorMessage('weight') }}</p>
+              }
+            </div>
+
+            <div>
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Altezza (cm)
+              </label>
+              <div class="relative">
+                <input
+                  type="number"
+                  formControlName="height"
+                  placeholder="0"
+                  [disabled]="!isEditing"
+                  class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
+                />
+                @if (isEditing) {
+                  <span class="absolute right-3 top-2 text-xs text-slate-400 font-bold">CM</span>
+                }
+              </div>
+              @if (shouldShowError('height')) {
+                <p class="text-xs text-red-500 mt-1">{{ getErrorMessage('height') }}</p>
+              }
+            </div>
           </div>
         </div>
 
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Peso (kg)
-          </label>
-          <div class="relative">
-             <input
-              type="number"
-              formControlName="weight"
-              placeholder="0.00"
-              [disabled]="!isEditing"
-              class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
-            />
-            @if(isEditing) { <span class="absolute right-3 top-2 text-xs text-slate-400 font-bold">KG</span> }
-          </div>
-          @if (shouldShowError('weight')) { <p class="text-xs text-red-500 mt-1">{{ getErrorMessage('weight') }}</p> }
-        </div>
+        <div class="p-8 bg-slate-50/30">
+          <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
+            <div
+              class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"
+            >
+              <fa-icon [icon]="icons.faFileMedical" class="text-sm"></fa-icon>
+            </div>
+            Certificazione Medica
+          </h3>
 
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Altezza (cm)
-          </label>
-          <div class="relative">
-             <input
-              type="number"
-              formControlName="height"
-              placeholder="0"
-              [disabled]="!isEditing"
-              class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
-            />
-            @if(isEditing) { <span class="absolute right-3 top-2 text-xs text-slate-400 font-bold">CM</span> }
-          </div>
-          @if (shouldShowError('height')) { <p class="text-xs text-red-500 mt-1">{{ getErrorMessage('height') }}</p> }
-        </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Nr. Certificato
+              </label>
+              <input
+                type="text"
+                formControlName="medicalCertificateNumber"
+                [disabled]="!isEditing"
+                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
+              />
+              @if (shouldShowError('medicalCertificateNumber')) {
+                <p class="text-xs text-red-500 mt-1">
+                  {{ getErrorMessage('medicalCertificateNumber') }}
+                </p>
+              }
+            </div>
 
+            <div>
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Scadenza
+              </label>
+              <input
+                type="date"
+                formControlName="medicalCertificateExpireDate"
+                [disabled]="!isEditing"
+                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
+              />
+              @if (shouldShowError('medicalCertificateExpireDate')) {
+                <p class="text-xs text-red-500 mt-1">
+                  {{ getErrorMessage('medicalCertificateExpireDate') }}
+                </p>
+              }
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    }
 
-    <div class="p-8 bg-slate-50/30">
-      <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
-          <fa-icon [icon]="icons.faFileMedical" class="text-sm"></fa-icon> </div>
-        Certificazione Medica
-      </h3>
+    @if (isMe()) {
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+        <div class="p-8">
+          <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
+            Modulo cambio password
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="group">
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Password attuale
+              </label>
+              <input
+                type="password"
+                formControlName="oldPassword"
+                [disabled]="!isEditing"
+                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-lg font-bold text-slate-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-700 disabled:border-transparent"
+              />
+            </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Nr. Certificato
-          </label>
-          <input
-            type="text"
-            formControlName="medicalCertificateNumber"
-            [disabled]="!isEditing"
-            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
-          />
-          @if (shouldShowError('medicalCertificateNumber')) { <p class="text-xs text-red-500 mt-1">{{ getErrorMessage('medicalCertificateNumber') }}</p> }
-        </div>
+            <div class="group"></div>
 
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1">
-            Scadenza
-          </label>
-          <input
-            type="date"
-            formControlName="medicalCertificateExpireDate"
-            [disabled]="!isEditing"
-            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-600 disabled:border-transparent"
-          />
-          @if (shouldShowError('medicalCertificateExpireDate')) { <p class="text-xs text-red-500 mt-1">{{ getErrorMessage('medicalCertificateExpireDate') }}</p> }
+            <div class="group">
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Nuova password
+              </label>
+              <input
+                type="password"
+                formControlName="newPassword"
+                [disabled]="!isEditing"
+                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-lg font-bold text-slate-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-700 disabled:border-transparent"
+              />
+            </div>
+
+            <div class="group">
+              <label
+                class="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider pl-1"
+              >
+                Conferma password
+              </label>
+              <input
+                type="password"
+                formControlName="confirmPassword"
+                [disabled]="!isEditing"
+                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-lg font-bold text-slate-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all disabled:bg-slate-50 disabled:text-slate-700 disabled:border-transparent"
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-
+    }
+    @if (isEditing) {
+      <div class="w-full flex flex-row gap-2 justify-end">
+        <button
+          (click)="onSubmit()"
+          [disabled]="form.invalid"
+          class="btn-icon text-green-600 bg-green-100 hover:bg-green-100 transition-colors p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Salva Modifiche"
+        >
+          Salva
+        </button>
+        <button
+          (click)="cancelEdit()"
+          class="btn-icon text-red-600 bg-red-100 hover:bg-red-200 transition-colors p-2 rounded-lg"
+          title="Annulla"
+        >
+          Annulla
+        </button>
+      </div>
+        }
   </div>
-  }
-</div>
 }

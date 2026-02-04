@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Implementazione del servizio per la gestione degli utenti.
@@ -192,6 +193,33 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         return userRepository.save(user);
+    }
+
+    /**
+     * Metodo per aggiornare la password di un utente esistente.
+     * Controllo di sicurezza per consentire la modifica solo della propria password.
+     *
+     * @param id          L'ID dell'utente di cui si vuole aggiornare la password.
+     * @param newPassword vecchia password.
+     * @param oldPassword nuova password.
+     * @throws UnauthorizedException     Se l'utente cerca di modificare la password di altri
+     * @throws ResourceNotFoundException Se l'utente da modificare non viene trovato
+     * @throws ActionNotAllowedException Se la vecchia password non coincide con quella salvata
+     */
+    @Override
+    public void changeUserPassword(String id, String oldPassword, String newPassword) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Utente con id " + id + " non trovato"));
+
+        if (!securityUtils.getCurrentUserId().equals(id)) {
+            throw new UnauthorizedException("Puoi modificare la password solo per il tuo profilo.");
+        }
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new ActionNotAllowedException("La vecchia password è errata, riprovare.");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
     /**

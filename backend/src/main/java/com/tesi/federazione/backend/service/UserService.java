@@ -56,4 +56,15 @@ public interface UserService {
      * @return User Oggetto appena creato
      */
     User createUserEntity(CreateUserDTO dto);
+
+
+    /**
+     * Metodo per aggiornare la password di un utente esistente.
+     * Controllo di sicurezza per consentire la modifica solo della propria password.
+     *
+     * @param id L'ID dell'utente di cui si vuole aggiornare la password.
+     * @param newPassword vecchia password.
+     * @param oldPassword nuova password.
+     */
+    void changeUserPassword(String id, String oldPassword, String newPassword);
 }
