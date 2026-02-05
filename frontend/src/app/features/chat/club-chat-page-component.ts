@@ -8,7 +8,7 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [ChatWindowComponent],
   template: `
     <div
-      class="flex h-[calc(100vh-400px)] w-full bg-gray-100 overflow-hidden font-sans rounded-xl border border-gray-200"
+      class="flex h-[calc(100vh-300px)] w-full bg-gray-100 overflow-hidden font-sans rounded-xl border border-gray-200"
     >
       <div class="py-8 px-16 flex-1 flex flex-col">
         <h1 class="text-2xl font-bold mb-2 text-gray-700">Assistenza tecnica</h1>
