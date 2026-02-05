@@ -12,9 +12,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../../core/services/auth.service';
-import { ChatMessageService } from '../../../../core/services/chatMessage.service';
-import { ChatMessage } from '../../../../models/chat-message.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { ChatMessageService } from '../../../core/services/chatMessage.service';
+import { ChatMessage } from '../../../models/chat-message.model';
 
 @Component({
   selector: 'app-chat-window',

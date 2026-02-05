@@ -1,9 +1,9 @@
 import { Component, inject, signal, computed, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChatMessageService } from '../../../../core/services/chatMessage.service';
-import { AuthService } from '../../../../core/services/auth.service';
+import { ChatMessageService } from '../../../core/services/chatMessage.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { ChatWindowComponent } from '../chat-window-component/chat-window-component';
-import { ChatSummaryDTO } from '../../../../models/dtos';
+import { ChatSummaryDTO } from '../../../models/dtos';
 import { catchError, merge, of, Subject, switchMap, timer } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -31,31 +31,30 @@ export class AdminChatDashboardComponent {
     faCommentDots,
   };
 
-  // 2. LISTA REATTIVA (Sostituisce ngOnInit e polling manuale)
-  // Combiniamo il Timer (ogni 10s) con il Refresh Manuale
+  // Tengo aggiornata la lista delle chat combiniamo il Timer del polling (ogni 10s) con il Refresh Manuale che avviene ogni volta 
+  // che l'admin tenta di prendere in carico o rilasciare una chat. In questo modo, se un altro admin prende in carico una chat, 
+  // entro massimo 10s non la vedrò più come in attesa.
   chatList = toSignal(
     merge(
-      timer(0, 10000), // Parte subito (0) e ripete ogni 10s
-      this.refresh$ // Emette quando chiamiamo this.refresh$.next()
+      timer(0, 10000),
+      this.refresh$
     ).pipe(
-      // Ogni volta che uno dei due emette, chiamiamo il backend
+      // Ogni volta che uno dei due emette un segnale, chiamiamo il backend
       switchMap(() =>
         this.chatService.getChatSummaries().pipe(
-          // Gestiamo l'errore QUI per non rompere l'intero flusso del polling
+          // la gestione dell'errore qui non rompe l'intero flusso del polling
           catchError((err) => {
             console.error('Errore polling chat:', err);
-            return of([]); // Ritorna lista vuota in caso di errore
+            return of([]); 
           })
         )
       )
     ),
-    { initialValue: [] as ChatSummaryDTO[] } // Valore iniziale prima della risposta
+    { initialValue: [] as ChatSummaryDTO[] } 
   );
 
-  // Stato Locale
   selectedChatId = signal<string | null>(null);
 
-  // Computed: Recupera l'oggetto chat selezionato dalla lista
   selectedChat = computed(() =>
     this.chatList().find((c) => c.chatUserId === this.selectedChatId())
   );
@@ -65,7 +64,6 @@ export class AdminChatDashboardComponent {
     return chat?.status === 'ASSIGNED' && chat?.assignedAdminId === this.currentAdminId;
   });
 
-  // Computed: Info per l'header
   assignmentInfo = computed(() => {
     const chat = this.selectedChat();
     if (!chat) return '';
@@ -73,8 +71,6 @@ export class AdminChatDashboardComponent {
     if (chat.assignedAdminId === this.currentAdminId) return 'IN TUA GESTIONE';
     return `GESTITA DA: ${chat.assignedAdminId}`;
   });
-
-  // --- AZIONI ---
 
   selectChat(chatId: string) {
     this.selectedChatId.set(chatId);

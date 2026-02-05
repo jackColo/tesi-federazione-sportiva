@@ -3,13 +3,6 @@ import { Component, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {
-  faArrowRight,
-  faFilter,
-  faSearch,
-  faTrophy,
-  IconDefinition
-} from '@fortawesome/free-solid-svg-icons';
 import { from } from 'rxjs';
 
 import { EventService } from '../../../core/services/event.service';
@@ -27,13 +20,6 @@ export class EventsComponent {
   private eventService = inject(EventService);
   protected readonly EventStatus = EventStatus;
   
-  icons: { [key: string]: IconDefinition } = {
-    search: faSearch,
-    trophy: faTrophy,
-    filter: faFilter,
-    arrow: faArrowRight
-  };
-
   allEvents: Signal<Event[]> = toSignal(
     from(this.eventService.getAllEvents()),
     { initialValue: [] }

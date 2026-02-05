@@ -15,6 +15,6 @@ import { FederationManager } from '../../../../../models/federation-manager.mode
 })
 export class DashboardFederationManagerCardComponent {
   federationManager: InputSignal<FederationManager> = input.required<FederationManager>();
-  faChevronRight = faChevronRight;
+  icons = { faChevronRight };
 
 } 

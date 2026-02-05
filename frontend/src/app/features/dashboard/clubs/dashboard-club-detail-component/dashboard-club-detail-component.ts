@@ -58,15 +58,10 @@ export class DashboardClubDetailComponent {
     faCheckCircle,
   };
 
-  // Form Definition
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
     fiscalCode: ['', Validators.required],
-    // email: ['', [Validators.required, Validators.email]],
-    // phone: ['', Validators.required],
-    // presidentName: ['', Validators.required],
     legalAddress: ['', Validators.required],
-    // city: [''],
   });
 
   club: Signal<Club | null> = toSignal(

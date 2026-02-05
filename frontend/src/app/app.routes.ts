@@ -8,7 +8,7 @@ import { HomeComponent } from './features/home/home-component/home-component';
 
 import { EventsComponent } from './features/events/events-component/events-component';
 
-import { AdminChatDashboardComponent } from './shared/components/chat/admin-chat-dashboard-component/admin-chat-dashboard-component';
+import { AdminChatDashboardComponent } from './features/chat/admin-chat-dashboard-component/admin-chat-dashboard-component';
 
 import { DashboardUserDetailComponent } from './features/dashboard/admin/dashboard-user-detail-component/dashboard-user-detail-component';
 import { DashboardUserFormComponent } from './features/dashboard/admin/dashboard-user-form-component/dashboard-user-form-component';
@@ -20,7 +20,7 @@ import { DashboardEventsComponent } from './features/dashboard/events/dashboard-
 import { DashboardEventEnrollFormComponent } from './features/dashboard/events/enrollment-components/dashboard-event-enroll-form-component/dashboard-event-enroll-form-component';
 import { DashboardComponent } from './features/dashboard/layout/dashboard-component/dashboard-component';
 import { DashboardSkeletonComponent } from './features/dashboard/layout/dashboard-skeleton-component/dashboard-skeleton-component';
-import { ClubChatPageComponent } from './shared/components/chat/club-chat-page-component';
+import { ClubChatPageComponent } from './features/chat/club-chat-page-component';
 import { DashboardFederationManagersComponent } from './features/dashboard/admin/dashboard-federation-managers-component/dashboard-federation-managers-component';
 
 export const routes: Routes = [

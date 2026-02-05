@@ -167,8 +167,4 @@ export class DashboardEventDetailComponent {
       });
     }
   }
-
-  downloadReport() {
-    console.log('Scaricamento PDF...');
-  }
 }

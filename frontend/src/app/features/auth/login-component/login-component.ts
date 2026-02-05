@@ -23,16 +23,18 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private router = inject(Router);
 
-  public loginError: string = '';
-  public faEye = faEye; 
-  public faEyeSlash = faEyeSlash;
-  public passwordVisible = signal<boolean>(false); 
+  loginError: string = '';
+  passwordVisible = signal<boolean>(false); 
+  icons = {
+    faEye,
+    faEyeSlash
+  }
 
-  public togglePasswordVisibility(): void {
+  togglePasswordVisibility(): void {
     this.passwordVisible.update(value => !value);
   }
 
-  public loginForm = this.fb.group({
+  loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]
   });

@@ -133,7 +133,7 @@ export class DashboardUserDetailComponent {
         oldPassCtrl?.setValidators([Validators.required]);
         confirmPassCtrl?.setValidators([Validators.required]);
       } else {
-        // Password vuota -> Tolgo i validatori (tranne se l'utente ha scritto in old/confirm, ma semplifichiamo)
+        // Password vuota -> Tolgo i validatori
         this.form.get('newPassword')?.clearValidators();
         oldPassCtrl?.clearValidators();
         confirmPassCtrl?.clearValidators();

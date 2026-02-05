@@ -15,6 +15,7 @@
         [ngClass]="{
           'bg-blue-50 border-l-blue-500': selectedChatId() === chat.chatUserId,
           'border-l-red-500': selectedChatId() !== chat.chatUserId && chat.status === 'FREE' && chat.waitingForReply,
+          'border-l-green-600':  selectedChatId() !== chat.chatUserId && chat.status === 'ASSIGNED' && chat.assignedAdminId === currentAdminId,
           'border-l-gray-400': selectedChatId() !== chat.chatUserId
         }"
       >
@@ -23,7 +24,7 @@
           <span
             class="w-2.5 h-2.5 rounded-full"
             [ngClass]="{
-              'bg-red-500 animate-pulse': chat.status === 'FREE' && chat.waitingForReply,
+              'bg-red-500': chat.status === 'FREE' && chat.waitingForReply,
               'bg-blue-600': chat.status === 'ASSIGNED' && chat.assignedAdminId === currentAdminId,
               'bg-gray-400': chat.status === 'ASSIGNED' && chat.assignedAdminId !== currentAdminId
             }"

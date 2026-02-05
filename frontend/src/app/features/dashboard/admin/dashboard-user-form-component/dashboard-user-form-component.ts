@@ -74,7 +74,6 @@ export class DashboardUserFormComponent {
   constructor() {
     this.form.get('role')?.valueChanges.subscribe((value) => {
       if (value && value === Role.ATHLETE || value === Role.CLUB_MANAGER) {
-        // Sto modificando la password -> Rendo tutto obbligatorio
         this.form.get('clubId')?.setValidators([Validators.required]);
       } else {
         this.form.get('clubId')?.clearValidators();

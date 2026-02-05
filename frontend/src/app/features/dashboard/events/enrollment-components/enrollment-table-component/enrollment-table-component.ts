@@ -73,20 +73,18 @@ export class EnrollmentTableComponent {
     { initialValue: null }
   );
 
-  downloadReport() {}
-
   changeEnrollmentStatus(newStatus: EnrollmentStatus, enrollId: string, message: string) {
-      if (confirm(message)) {
-        this.eventService.updateEnrollmentStatus(enrollId, newStatus).subscribe({
-          next: () => {
-            alert(`Stato dell'iscrizione modificato con successo!`);
-            window.location.reload();
-          },
-          error: (err: ErrorResponse) => {
-            alert(`Errore durante la modifica dello stato dell'iscrizione: ${err.error.message}`);
-          },
-        });
-      }
+    if (confirm(message)) {
+      this.eventService.updateEnrollmentStatus(enrollId, newStatus).subscribe({
+        next: () => {
+          alert(`Stato dell'iscrizione modificato con successo!`);
+          window.location.reload();
+        },
+        error: (err: ErrorResponse) => {
+          alert(`Errore durante la modifica dello stato dell'iscrizione: ${err.error.message}`);
+        },
+      });
+    }
   }
 
   acceptEnrollment(enrollId: string) {
