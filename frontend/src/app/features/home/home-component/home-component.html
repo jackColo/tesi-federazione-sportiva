@@ -37,21 +37,4 @@
       </div>
     </div>
   </section>
-
-
-  <section class="bg-blue-900 py-8 border-y border-white/10">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        @for (stat of stats(); track stat.label) {
-          <div class="text-center">
-            <div class="text-blue-400 text-3xl mb-2">
-              <fa-icon [icon]="stat.icon"></fa-icon>
-            </div>
-            <p class="text-4xl font-extrabold text-white mb-1">{{ stat.value }}</p>
-            <p class="text-blue-200 text-sm uppercase tracking-wider">{{ stat.label }}</p>
-          </div>
-        }
-      </div>
-    </div>
-  </section>
 </div>

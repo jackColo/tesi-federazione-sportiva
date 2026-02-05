@@ -133,11 +133,11 @@
 
         <div class="flex-1 min-w-0 border-l border-slate-200/50 pl-3 ml-1">
           <div class="flex justify-between items-center mb-1.5">
-            <p class="text-[9px] font-bold uppercase opacity-60">Stato Tesseramento</p>
+            <p class="text-[9px] font-bold uppercase opacity-60">Richiesta affiliazione</p>
             <div class="flex items-center gap-1.5 min-w-0" title="Ultimo Rinnovo">
               <fa-icon [icon]="icons.faCalendarCheck" class="text-[10px] opacity-50"></fa-icon>
               <span class="text-[11px] font-bold font-mono">
-                Ultimo rinnovo:
+                Ultimo aggiornamento:
                 {{
                   athlete().affiliationDate ? (athlete().affiliationDate | date : 'dd/MM/yy') : '-'
                 }}

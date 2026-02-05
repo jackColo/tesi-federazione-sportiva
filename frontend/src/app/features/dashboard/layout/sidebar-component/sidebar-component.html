@@ -59,14 +59,14 @@
         </a>
     }
 
-    <!-- @if(showFederationManagers()) { -->
+    @if(showFederationManagers()) {
         <a routerLink="/dashboard/federation-managers" 
             routerLinkActive="bg-blue-600 text-white shadow-lg"
             class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
             <fa-icon [icon]="icons.faUserShield" class="text-lg"></fa-icon>
             <span class="font-medium">Amministratori</span>
         </a>
-    <!-- } -->
+    }
 
   </nav>
 

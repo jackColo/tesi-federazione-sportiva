@@ -61,8 +61,8 @@ export class DashboardUserFormComponent {
     lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
-    clubId: [null as string | null],
     role: [null as Role | null, Validators.required],
+    clubId: [null as string | null],
     birthDate: [null as string | null],
     weight: [null as number | null],
     height: [null as number | null],
@@ -70,6 +70,18 @@ export class DashboardUserFormComponent {
     medicalCertificateNumber: [null as string | null],
     medicalCertificateExpireDate: [null as string | null],
   });
+
+  constructor() {
+    this.form.get('role')?.valueChanges.subscribe((value) => {
+      if (value && value === Role.ATHLETE || value === Role.CLUB_MANAGER) {
+        // Sto modificando la password -> Rendo tutto obbligatorio
+        this.form.get('clubId')?.setValidators([Validators.required]);
+      } else {
+        this.form.get('clubId')?.clearValidators();
+      }
+      this.form.get('clubId')?.updateValueAndValidity({ emitEvent: false });
+    });
+  }
 
   availableRoles = this.isAdmin()
     ? [

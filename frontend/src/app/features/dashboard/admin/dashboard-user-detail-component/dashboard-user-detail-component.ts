@@ -122,7 +122,6 @@ export class DashboardUserDetailComponent {
       this.patchValues(this.user());
     });
 
-    // LISTENER PER CAMBIO PASSWORD
     // Se l'utente scrive qualcosa in newPassword, rendiamo obbligatori gli altri campi
     this.form.get('newPassword')?.valueChanges.subscribe((value) => {
       const oldPassCtrl = this.form.get('oldPassword');

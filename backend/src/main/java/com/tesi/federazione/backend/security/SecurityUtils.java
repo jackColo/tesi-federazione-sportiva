@@ -100,8 +100,8 @@ public class SecurityUtils {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             return (User) authentication.getPrincipal();
-        }
-        throw new UnauthorizedException("Utente non autenticato!");
+        } else return null;
+        //throw new UnauthorizedException("Utente non autenticato!");
     }
 
     /**
